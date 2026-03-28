@@ -21,12 +21,11 @@
   <article class="detail-card">
     <h3>{{ employee.name }}</h3>
     <dl>
-      <dt>{{ _('ID') }}</dt><dd class="mono">{{ employee.id }}</dd>
+      <dt>{{ _('ID') }}</dt><dd class="mono">{{ employee.id.split(':')[-1] if employee.id is string else employee.id }}</dd>
       <dt>{{ _('Role') }}</dt><dd>{{ employee.role or '-' }}</dd>
       <dt>{{ _('Salary') }}</dt><dd>{{ employee.salary if employee.salary is not none else '-' }}</dd>
-      <dt>{{ _('Ref Store') }}</dt><dd class="mono">{{ employee.refStore or '-' }}</dd>
+      <dt>{{ _('Ref Store') }}</dt><dd class="mono">{{ employee.refStore.split(':')[-1] if employee.refStore is string else (employee.refStore or '-') }}</dd>
       <dt>{{ _('Category') }}</dt><dd>{{ employee.category or '-' }}</dd>
-      <dt>{{ _('Type') }}</dt><dd>{{ employee.type }}</dd>
     </dl>
   </article>
 </section>

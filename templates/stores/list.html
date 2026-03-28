@@ -7,6 +7,12 @@
 </section>
 
 <section class="table-shell">
+  {% set country_names = {
+    'ES': 'Spain',
+    'DE': 'Germany',
+    'FR': 'France',
+    'EC': 'Ecuador'
+  } %}
   <table>
     <thead>
       <tr><th>{{ _('Image') }}</th><th>{{ _('ID') }}</th><th>{{ _('Name') }}</th><th>{{ _('Country') }}</th></tr>
@@ -24,9 +30,10 @@
             <span class="img-fallback">No image</span>
           {% endif %}
         </td>
-        <td class="mono">{{ store.id }}</td>
+        <td class="mono">{{ store.id.split(':')[-1] if store.id is string else store.id }}</td>
         <td><a class="entity-link" href="{{ url_for('stores.get_store', entity_id=store.id) }}">{{ store.name }}</a></td>
-        <td>{{ store.countryCode }}</td>
+        {% set country_code = store.countryCode if store.countryCode is string else '' %}
+        <td>{{ _(country_names.get(country_code, country_code if country_code else '-')) }}</td>
       </tr>
     {% endfor %}
     </tbody>

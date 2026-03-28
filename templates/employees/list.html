@@ -31,11 +31,11 @@
             <span class="img-fallback">No image</span>
           {% endif %}
         </td>
-        <td class="mono">{{ employee.id }}</td>
+        <td class="mono">{{ employee.id.split(':')[-1] if employee.id is string else employee.id }}</td>
         <td><a class="entity-link" href="{{ url_for('employees.get_employee', entity_id=employee.id) }}">{{ employee.name }}</a></td>
         <td>{{ employee.role or '-' }}</td>
         <td class="price-cell">{{ employee.salary if employee.salary is not none else '-' }}</td>
-        <td class="mono">{{ employee.refStore or '-' }}</td>
+        <td class="mono">{{ employee.refStore.split(':')[-1] if employee.refStore is string else (employee.refStore or '-') }}</td>
       </tr>
     {% endfor %}
     </tbody>

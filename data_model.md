@@ -697,3 +697,25 @@ Recommended query models:
   - `Store.type` remains part of NGSIv2 contract but is no longer displayed in detail UI due to redundancy.
 - Validation evidence:
   - Store-detail smoke test validates simplified ID, expanded country name, visible full address, and `Type` field removal.
+
+## 20. Implementation alignment progress (Global entity-format normalization)
+
+### ES
+- Estado: Alineacion aplicada en capa de vista sin cambios de esquema NGSIv2.
+- Alineacion de modelo aplicada:
+  - `Store.id`, `Product.id` y `Employee.id` conservan URN en persistencia/API; UI muestra solo sufijo operativo.
+  - `Employee.refStore` conserva URN en datos y se renderiza simplificado en vistas de listado/detalle.
+  - `Store.countryCode` y `Product.originCountry` mantienen ISO alpha-2 y se renderizan como nombre completo (`ES`, `DE`, `FR`, `EC`) segun idioma activo.
+  - `type` permanece en contrato NGSIv2 para las entidades, pero deja de mostrarse en las vistas detalle de Store/Product/Employee.
+- Evidencia de validacion:
+  - Smoke test transversal valida formato simplificado de IDs y referencias, expansion de paises y eliminacion de `Type` en detalles.
+
+### EN
+- Status: Alignment applied at view layer with no NGSIv2 schema changes.
+- Applied model alignment:
+  - `Store.id`, `Product.id`, and `Employee.id` remain URN-formatted in persistence/API; UI renders only operational suffixes.
+  - `Employee.refStore` remains URN-formatted in data and is rendered simplified in list/detail views.
+  - `Store.countryCode` and `Product.originCountry` remain ISO alpha-2 values and are rendered as full names (`ES`, `DE`, `FR`, `EC`) based on active language.
+  - `type` remains part of NGSIv2 entity contracts but is no longer shown in Store/Product/Employee detail views.
+- Validation evidence:
+  - Cross-view smoke test validates simplified ID/reference formatting, country-name expansion, and `Type` removal in detail pages.

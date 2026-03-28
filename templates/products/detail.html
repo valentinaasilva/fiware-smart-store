@@ -19,11 +19,17 @@
   </article>
   <article class="detail-card">
     <h3>{{ product.name }}</h3>
+    {% set country_names = {
+      'ES': 'Spain',
+      'DE': 'Germany',
+      'FR': 'France',
+      'EC': 'Ecuador'
+    } %}
+    {% set origin_country = product.originCountry if product.originCountry is string else '' %}
     <dl>
-      <dt>{{ _('ID') }}</dt><dd class="mono">{{ product.id }}</dd>
-      <dt>{{ _('Origin Country') }}</dt><dd>{{ product.originCountry or '-' }}</dd>
+      <dt>{{ _('ID') }}</dt><dd class="mono">{{ product.id.split(':')[-1] if product.id is string else product.id }}</dd>
+      <dt>{{ _('Origin Country') }}</dt><dd>{{ _(country_names.get(origin_country, origin_country if origin_country else '-')) }}</dd>
       <dt>{{ _('Price') }}</dt><dd class="price-cell">{{ product.price }}</dd>
-      <dt>{{ _('Type') }}</dt><dd>{{ product.type }}</dd>
     </dl>
   </article>
 </section>

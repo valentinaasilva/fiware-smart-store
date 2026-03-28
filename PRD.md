@@ -566,3 +566,31 @@ Assumptions:
 - Requirement traceability:
 	- FR-010: Store detail attribute rendering is clearer and more semantic.
 	- FR-050: country-name rendering is integrated with bilingual label flow.
+
+## 20. Implementation progress (Global entity-format normalization)
+
+### ES
+- Estado: Implementacion completada para normalizacion de formato en todas las vistas de Stores, Products y Employees (listado y detalle).
+- Alcance implementado:
+	- IDs de Store/Product/Employee mostrados en formato simplificado (sufijo final del URN).
+	- Referencias `refStore` mostradas en formato simplificado en listados y detalle de Employees.
+	- Codigos de pais (`countryCode`, `originCountry`) mostrados como nombre completo en idioma activo (ES, DE, FR, EC).
+	- Campo `Tipo` eliminado en todas las vistas de detalle de Store/Product/Employee.
+	- Cobertura smoke ampliada para validar consistencia transversal de formato.
+- Trazabilidad de requisitos:
+	- FR-010/FR-020/FR-030: vistas de listado y detalle con representacion de datos mas legible para operacion.
+	- FR-050: mapeo de paises integrado al flujo bilingue ES/EN.
+	- NFR-003: consistencia de lectura y escaneo visual en vistas principales.
+
+### EN
+- Status: Completed implementation for formatting normalization across all Stores, Products, and Employees views (list and detail).
+- Implemented scope:
+	- Store/Product/Employee IDs are rendered in simplified format (URN trailing segment).
+	- `refStore` references are rendered in simplified format in Employees list/detail.
+	- Country codes (`countryCode`, `originCountry`) are rendered as full names in active language (ES, DE, FR, EC).
+	- `Type` field was removed from all Store/Product/Employee detail views.
+	- Smoke coverage was extended to validate cross-view format consistency.
+- Requirement traceability:
+	- FR-010/FR-020/FR-030: list/detail views now provide more legible operational rendering.
+	- FR-050: country-name mapping is integrated into the ES/EN bilingual flow.
+	- NFR-003: improved readability consistency across main views.

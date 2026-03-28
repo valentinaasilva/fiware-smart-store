@@ -597,3 +597,27 @@ Test levels:
 - Technical traceability:
   - Affected layer: Presentation (`templates/stores/detail.html`, `models/i18n.py`).
   - Unaffected layers: Application, Data access, and Integration.
+
+## 22. Implementation progress (Global entity-format normalization)
+
+### ES
+- Estado: Implementacion completada para normalizacion transversal de formato en capa de presentacion.
+- Cambios arquitectonicos aplicados:
+  - Simplificacion de URN (`id`, `refStore`) centralizada en logica de templates para vistas de Stores/Products/Employees.
+  - Mapeo de codigos de pais a nombre visible integrado en templates con soporte i18n (`ES`, `DE`, `FR`, `EC`).
+  - Eliminacion del campo `type` en vistas detalle para reducir ruido de interfaz sin cambiar contratos de API.
+  - Pruebas smoke ampliadas para verificar consistencia de render entre listados y detalles.
+- Trazabilidad tecnica:
+  - Capa afectada: Presentation (`templates/stores/*`, `templates/products/*`, `templates/employees/*`, `models/i18n.py`, `tests/test_smoke.py`).
+  - Capas no afectadas: Application, Data access, Integration.
+
+### EN
+- Status: Completed implementation for cross-view formatting normalization in the presentation layer.
+- Applied architectural changes:
+  - URN simplification (`id`, `refStore`) is handled in template logic across Stores/Products/Employees views.
+  - Country-code to full-name mapping is integrated in templates with i18n support (`ES`, `DE`, `FR`, `EC`).
+  - `type` field was removed from detail views to reduce UI noise without API contract changes.
+  - Smoke tests were extended to verify rendering consistency across list and detail pages.
+- Technical traceability:
+  - Affected layer: Presentation (`templates/stores/*`, `templates/products/*`, `templates/employees/*`, `models/i18n.py`, `tests/test_smoke.py`).
+  - Unaffected layers: Application, Data access, Integration.
