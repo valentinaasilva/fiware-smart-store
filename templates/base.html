@@ -16,6 +16,7 @@
       <a href="/" class="{% if request.path == '/' %}active{% endif %}">{{ _('Dashboard') }}</a>
       <a href="/stores" class="{% if request.path.startswith('/stores') %}active{% endif %}">{{ _('Stores') }}</a>
       <a href="/products" class="{% if request.path.startswith('/products') %}active{% endif %}">{{ _('Products') }}</a>
+      <a href="/employees" class="{% if request.path.startswith('/employees') %}active{% endif %}">{{ _('Employees') }}</a>
     </nav>
     <div class="lang-switcher">
       <span class="lang-label">{{ _('Language') }}:</span>
