@@ -9,7 +9,10 @@
 <section class="detail-grid">
   <article class="detail-media">
     {% if employee.image %}
-      <img src="{{ employee.image }}" alt="{{ employee.name }}" loading="lazy">
+      <div class="media-frame media-frame-large">
+        <img src="{{ employee.image }}" alt="{{ employee.name }}" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
+        <div class="img-fallback large is-hidden">No image</div>
+      </div>
     {% else %}
       <span class="img-fallback large">No image</span>
     {% endif %}

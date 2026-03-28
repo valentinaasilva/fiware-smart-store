@@ -547,3 +547,29 @@ Test levels:
   - `tests/conftest.py`, `tests/unit/test_utils.py`, and `tests/integration/test_routes_crud.py` were updated to cover Employee validation rules and invalid cases.
 - Verification:
   - Full suite execution with 101 passing tests.
+
+## 20. Implementation progress (Issue #6)
+
+### ES
+- Estado: Implementacion completada y cerrada para mejoras estructurales de UI.
+- Cambios aplicados:
+  - `templates/base.html` incorpora assets Leaflet y refuerza enlaces de navegacion principal con `url_for`.
+  - `templates/stores/detail.html` incorpora bloque de mapa interactivo con coordenadas de `Store.location`.
+  - `static/js/app.js` implementa inicializacion condicionada de Leaflet, validacion de coordenadas y marcador con popup.
+  - `static/css/main.css` incorpora estilos de mapa y utilidades de fallback visual (`media-frame`, `is-hidden`).
+  - Templates de Stores/Products/Employees estandarizan comportamiento de imagen ante error de carga.
+  - `tests/test_smoke.py` amplifica cobertura de integridad de enlaces y render del contenedor de mapa.
+- Verificacion:
+  - Ejecucion de suite completa con 103 tests en verde.
+
+### EN
+- Status: Implementation completed and closed for structural UI improvements.
+- Applied changes:
+  - `templates/base.html` now includes Leaflet assets and strengthens main navigation links with `url_for`.
+  - `templates/stores/detail.html` now includes an interactive map block powered by `Store.location` coordinates.
+  - `static/js/app.js` now initializes Leaflet conditionally, validates coordinates, and renders a marker popup.
+  - `static/css/main.css` now includes map styling and visual fallback utilities (`media-frame`, `is-hidden`).
+  - Store/Product/Employee templates now share consistent image error/fallback behavior.
+  - `tests/test_smoke.py` now extends link integrity and Store detail map-container checks.
+- Verification:
+  - Full suite execution with 103 passing tests.

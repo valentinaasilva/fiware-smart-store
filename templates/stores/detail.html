@@ -1,15 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% set coords = store.location.coordinates if store.location and store.location.coordinates is defined else none %}
 <section class="detail-header">
-  <a class="back-link" href="/stores">&larr; {{ _('Stores') }}</a>
+  <a class="back-link" href="{{ url_for('stores.list_stores') }}">&larr; {{ _('Stores') }}</a>
   <h2>{{ _('Store Detail') }}</h2>
 </section>
 
 <section class="detail-grid">
   <article class="detail-media">
     {% if store.image %}
-      <img src="{{ store.image }}" alt="{{ store.name }}" width="520" height="300" loading="lazy">
+      <div class="media-frame media-frame-large">
+        <img src="{{ store.image }}" alt="{{ store.name }}" width="520" height="300" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
+        <div class="img-fallback large is-hidden">No image</div>
+      </div>
     {% else %}
       <div class="img-fallback large">No image</div>
     {% endif %}
@@ -22,5 +26,20 @@
       <dt>{{ _('Type') }}</dt><dd>{{ store.type }}</dd>
     </dl>
   </article>
+</section>
+
+<section class="map-shell">
+  <h3>{{ _('Store Location') }}</h3>
+  {% if coords and coords|length == 2 %}
+    <div
+      id="store-map"
+      class="store-map"
+      data-lng="{{ coords[0] }}"
+      data-lat="{{ coords[1] }}"
+      data-title="{{ store.name }}"
+    ></div>
+  {% else %}
+    <div class="img-fallback large">{{ _('Location unavailable') }}</div>
+  {% endif %}
 </section>
 {% endblock %}

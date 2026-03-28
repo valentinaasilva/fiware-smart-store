@@ -28,6 +28,8 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "Role": "Role",
         "Salary": "Salary",
         "Ref Store": "Ref Store",
+        "Store Location": "Store Location",
+        "Location unavailable": "Location unavailable",
     },
     "es": {
         "Home": "Inicio",
@@ -51,6 +53,8 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "Role": "Rol",
         "Salary": "Salario",
         "Ref Store": "Ref Tienda",
+        "Store Location": "Ubicacion de tienda",
+        "Location unavailable": "Ubicacion no disponible",
     },
 }
 

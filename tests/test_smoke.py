@@ -11,7 +11,7 @@ def test_dashboard_loads():
     assert b"fiware-smart-store" in response.data
 
 
-def test_main_navigation_has_three_primary_views():
+def test_main_navigation_has_four_primary_views():
     app = create_app()
     client = app.test_client()
 
@@ -19,9 +19,9 @@ def test_main_navigation_has_three_primary_views():
     assert response.status_code == 200
     body = response.data
     assert b'href="/"' in body
-    assert b'href="/stores"' in body
-    assert b'href="/products"' in body
-    assert b'href="/employees"' not in body
+    assert b'href="/stores' in body
+    assert b'href="/products' in body
+    assert b'href="/employees' in body
 
 
 def test_stores_endpoint_json():
@@ -32,6 +32,30 @@ def test_stores_endpoint_json():
 
     assert response.status_code == 200
     assert response.is_json
+
+
+def test_primary_navigation_links_resolve_successfully():
+    app = create_app()
+    client = app.test_client()
+
+    for path in ("/", "/stores", "/products", "/employees"):
+        response = client.get(path)
+        assert response.status_code == 200
+
+
+def test_store_detail_contains_leaflet_map_container():
+    app = create_app()
+    client = app.test_client()
+
+    stores = client.get("/stores?format=json")
+    assert stores.status_code == 200
+    store_entities = stores.get_json() or []
+    assert len(store_entities) > 0
+
+    store_id = store_entities[0]["id"]
+    detail = client.get(f"/stores/{store_id}")
+    assert detail.status_code == 200
+    assert b'id="store-map"' in detail.data
 
 
 def test_language_toggle_spanish_persists_in_session():
