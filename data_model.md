@@ -543,3 +543,25 @@ Recommended query models:
   - SQLite fallback storage path is now `instance/fiware.db`, preventing path collisions with non-directory entries in the project root.
 - Status note:
   - Issue #1 closure covers the baseline app objective and supermarket-chain initial load; full model convergence remains incremental follow-up work.
+
+## 14. Implementation alignment progress (Issue #2)
+
+### ES
+- Estado: Alineado e implementado para capa de presentacion.
+- Cambios relevantes:
+  - Se incorpora soporte ES/EN en UI sin modificar entidades NGSIv2 ni atributos de dominio.
+  - El cambio de idioma afecta solo labels, titulos y textos de interfaz.
+  - La persistencia del idioma se realiza en sesion HTTP.
+- Impacto en modelo de datos:
+  - Sin cambios de esquema para Store, Product, Employee, Shelf o InventoryItem.
+  - Sin cambios en reglas IR-001..IR-007.
+
+### EN
+- Status: Aligned and implemented at presentation layer.
+- Relevant changes:
+  - ES/EN UI support is added without modifying NGSIv2 entities or domain attributes.
+  - Language switch affects only labels, titles, and interface text.
+  - Language persistence is handled through HTTP session.
+- Data model impact:
+  - No schema changes for Store, Product, Employee, Shelf, or InventoryItem.
+  - No changes to IR-001..IR-007 rules.

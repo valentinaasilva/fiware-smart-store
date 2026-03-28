@@ -44,6 +44,24 @@ body {
   color: var(--accent);
 }
 
+.lang-label {
+  color: var(--muted);
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.lang-link {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+
+.lang-link.active {
+  color: #0b1324;
+  border-color: #bae6fd;
+  background: #e0f2fe;
+}
+
 main {
   padding: 1.5rem;
   max-width: 1100px;
