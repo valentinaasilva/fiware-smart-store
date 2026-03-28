@@ -395,3 +395,47 @@ Test levels:
 1. Is distributed caching needed, or is local in-memory cache enough?
 2. Should notification events persist beyond one server session?
 3. Must SQLite mode support full dashboard aggregations or only a subset?
+
+## 15. Implementation progress (Issue #1)
+
+### ES
+- Implementado en iteracion 1:
+  - `app.py` con app factory, inicializacion SocketIO y registro de blueprints.
+  - `models/data_source.py` con DataSourceSelector y bootstrap Orion/SQLite.
+  - `models/orion_client.py` con operaciones NGSIv2 base y registro de providers/subscriptions.
+  - `models/database.py` con repositorio SQLite generico para entidades JSON.
+  - Blueprints CRUD iniciales en `routes/` y webhook realtime en `routes/notifications.py`.
+  - Plantillas server-rendered base y estilos iniciales.
+- Implementado especificamente para cierre de Issue #1:
+  - Script de carga de datos `scripts/load_test_data.py` integrado al flujo de desarrollo local.
+  - Inicializacion de dataset funcional para cadena de supermercados (4 stores, 10 products, 10 employees, 12 shelves, 55+ inventory items).
+  - Suites de pruebas para validacion estructural de entidades y reglas de integridad.
+- Desviaciones temporales respecto a arquitectura objetivo:
+  - Persistencia fallback implementada con `sqlite3` generico en vez de SQLAlchemy tipado.
+  - Validacion de dominio en capa inicial minima; se ampliara por entidad.
+- Estado de la arquitectura para este issue:
+  - Completado y estable para alcance base de plataforma y carga de datos de prueba.
+- Decision vigente:
+  - Mantener interfaz comun de repositorio para poder migrar la implementacion SQLite sin romper rutas.
+
+### EN
+- Implemented in iteration 1:
+  - `app.py` with app factory, SocketIO initialization, and blueprint registration.
+  - `models/data_source.py` with DataSourceSelector and Orion/SQLite bootstrap.
+  - `models/orion_client.py` with baseline NGSIv2 operations and provider/subscription registration.
+  - `models/database.py` with generic SQLite JSON-entity repository.
+  - Initial CRUD blueprints in `routes/` and realtime webhook in `routes/notifications.py`.
+  - Base server-rendered templates and initial styling.
+- Implemented specifically to close Issue #1:
+  - Test data loading script `scripts/load_test_data.py` integrated into local development workflow.
+  - Functional supermarket bootstrap dataset (4 stores, 10 products, 10 employees, 12 shelves, 55+ inventory items).
+  - Test suites for entity-structure validation and integrity rule checks.
+- Temporary deviations from target architecture:
+  - Fallback persistence currently implemented with generic `sqlite3` instead of typed SQLAlchemy models.
+  - Domain validation currently minimal and to be expanded per entity.
+- Stability fix applied:
+  - Default SQLite location switched to `instance/fiware.db` and repository path normalization added to avoid collisions with existing file paths such as `services`.
+- Architecture status for this issue:
+  - Completed and stable for baseline platform scope and test-data provisioning.
+- Current decision:
+  - Keep a common repository interface to allow SQLite implementation migration without route changes.

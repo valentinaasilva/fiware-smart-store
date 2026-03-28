@@ -1,0 +1,77 @@
+:root {
+  --bg: #f7fafc;
+  --fg: #0f172a;
+  --muted: #475569;
+  --card: #ffffff;
+  --accent: #0ea5e9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at top right, #dbeafe, var(--bg));
+  color: var(--fg);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: #ffffffdd;
+  border-bottom: 1px solid #e2e8f0;
+  backdrop-filter: blur(4px);
+}
+
+.topbar nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.topbar a {
+  text-decoration: none;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.topbar a:hover {
+  color: var(--accent);
+}
+
+main {
+  padding: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.cards article {
+  padding: 1rem;
+  background: var(--card);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card);
+}
+
+th,
+td {
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  padding: 0.75rem;
+}

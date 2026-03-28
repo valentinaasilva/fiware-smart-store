@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Store Detail</h2>
+<dl>
+  <dt>ID</dt><dd>{{ store.id }}</dd>
+  <dt>Name</dt><dd>{{ store.name }}</dd>
+  <dt>Country</dt><dd>{{ store.countryCode }}</dd>
+  <dt>Type</dt><dd>{{ store.type }}</dd>
+</dl>
+{% endblock %}

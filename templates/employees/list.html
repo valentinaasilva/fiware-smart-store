@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Employees</h2>
+<table>
+  <thead>
+    <tr><th>ID</th><th>Name</th><th>Category</th></tr>
+  </thead>
+  <tbody>
+  {% for employee in employees %}
+    <tr>
+      <td>{{ employee.id }}</td>
+      <td><a href="{{ url_for('employees.get_employee', entity_id=employee.id) }}">{{ employee.name }}</a></td>
+      <td>{{ employee.category }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
