@@ -657,7 +657,7 @@ Recommended query models:
 ## 18. Implementation alignment progress (Issue #6)
 
 ### ES
-- Estado: Alineacion inicial implementada para consumo UI de ubicacion e imagenes.
+- Estado: Alineacion implementada y cerrada para consumo UI de ubicacion e imagenes.
 - Alineacion de modelo aplicada:
   - `Store.location` (GeoJSON Point) se consume en detalle de tienda para renderizar mapa Leaflet con marcador.
   - Se mantiene el contrato NGSIv2 original de `location`; la transformacion a lat/lng se realiza en capa de presentacion.
@@ -667,7 +667,7 @@ Recommended query models:
   - Render de contenedor de mapa en detalle de Store validado por smoke tests.
 
 ### EN
-- Status: Initial alignment implemented for UI consumption of location and image attributes.
+- Status: Alignment implemented and closed for UI consumption of location and image attributes.
 - Applied model alignment:
   - `Store.location` (GeoJSON Point) is consumed in Store detail to render a Leaflet map marker.
   - Original NGSIv2 contract for `location` remains unchanged; lat/lng adaptation is handled in the presentation layer.

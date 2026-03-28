@@ -551,7 +551,7 @@ Test levels:
 ## 20. Implementation progress (Issue #6)
 
 ### ES
-- Estado: Implementacion inicial completada para mejoras estructurales de UI.
+- Estado: Implementacion completada y cerrada para mejoras estructurales de UI.
 - Cambios aplicados:
   - `templates/base.html` incorpora assets Leaflet y refuerza enlaces de navegacion principal con `url_for`.
   - `templates/stores/detail.html` incorpora bloque de mapa interactivo con coordenadas de `Store.location`.
@@ -563,7 +563,7 @@ Test levels:
   - Ejecucion de suite completa con 103 tests en verde.
 
 ### EN
-- Status: Initial implementation completed for structural UI improvements.
+- Status: Implementation completed and closed for structural UI improvements.
 - Applied changes:
   - `templates/base.html` now includes Leaflet assets and strengthens main navigation links with `url_for`.
   - `templates/stores/detail.html` now includes an interactive map block powered by `Store.location` coordinates.

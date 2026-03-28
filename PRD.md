@@ -514,7 +514,7 @@ Assumptions:
 ## 18. Implementation progress (Issue #6)
 
 ### ES
-- Estado: Implementacion inicial completada para robustez UI (mapa, imagenes y navegacion).
+- Estado: Implementacion completada y cerrada para robustez UI (mapa, imagenes y navegacion).
 - Resultado de validacion:
 	- Suite ejecutada con exito: 103 passed.
 - Alcance implementado en esta iteracion:
@@ -529,7 +529,7 @@ Assumptions:
 	- FR-042: visualizacion basada en mapa en interfaz operativa de tienda.
 
 ### EN
-- Status: Initial implementation completed for UI hardening (map, images, and navigation).
+- Status: Implementation completed and closed for UI hardening (map, images, and navigation).
 - Validation result:
 	- Test suite executed successfully: 103 passed.
 - Implemented scope in this iteration:
