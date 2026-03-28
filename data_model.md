@@ -495,3 +495,35 @@ Recommended query models:
 1. Should tweets be normalized as structured objects (id, author, text, createdAt) or is string array enough?
 2. Does Store capacity represent total physical volume or configurable operational capacity?
 3. Is temporal history for price and stock (timeseries) required in a future phase?
+
+## 13. Implementation alignment progress (Issue #1)
+
+### ES
+- Estado actual:
+  - Se implemento un repositorio generico de entidades JSON para acelerar la primera iteracion.
+  - Se mantiene la nomenclatura `id` + `type` compatible con NGSIv2 en operaciones base.
+- Alineado ya en codigo:
+  - Entidades operativas base: Store, Product, Employee, InventoryItem.
+  - Flujo CRUD uniforme create/list/get/update/delete.
+  - Contratos de subscription iniciales para cambios de `price` y bajo stock.
+- Pendiente para convergencia completa del modelo:
+  - Validaciones campo a campo (rangos, regex, enums obligatorios).
+  - Enforcement estricto de relaciones y reglas IR-001..IR-007.
+  - Soporte completo de atributos complejos (`PostalAddress`, `geo:json`, `Array`) en UI y validacion server-side.
+  - Modelado formal de Shelf en vistas y operaciones vinculadas por Store.
+
+### EN
+- Current state:
+  - A generic JSON-entity repository was implemented to accelerate the first iteration.
+  - `id` + `type` naming compatible with NGSIv2 is preserved in baseline operations.
+- Already aligned in code:
+  - Baseline operational entities: Store, Product, Employee, InventoryItem.
+  - Uniform CRUD flow create/list/get/update/delete.
+  - Initial subscription contracts for `price` changes and low stock.
+- Pending for full model convergence:
+  - Field-level validations (ranges, regex, required enums).
+  - Strict relationship enforcement and IR-001..IR-007 rules.
+  - Full support for complex attributes (`PostalAddress`, `geo:json`, `Array`) in UI and server-side validation.
+  - Formal Shelf modeling in views and linked Store operations.
+- Persistence note:
+  - SQLite fallback storage path is now `instance/fiware.db`, preventing path collisions with non-directory entries in the project root.

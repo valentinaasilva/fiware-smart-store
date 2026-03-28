@@ -327,3 +327,43 @@ Assumptions:
 1. Will authentication stay demo-only, or require persisted role-based users?
 2. Is change versioning required for inventory and price auditing?
 3. Should the 3D walkthrough reflect actual shelf geometry or a symbolic representation?
+
+## 13. Implementation progress (Issue #1)
+
+### ES
+- Estado: En progreso (iteracion 1 completada).
+- Alcance implementado en esta iteracion:
+	- Estructura base Flask y app factory.
+	- Blueprints iniciales para Stores, Products, Employees, Inventory y Notifications.
+	- Capa de seleccion de fuente de datos con estrategia Orion-first y fallback SQLite.
+	- Plantillas base de dashboard y listados/detalles minimos.
+	- Smoke tests iniciales para dashboard y endpoint de stores.
+- Cobertura parcial de requisitos:
+	- FR-001, FR-002, FR-003: base implementada.
+	- FR-005, FR-060, FR-061: base de webhooks y emision realtime implementada.
+	- FR-010, FR-020, FR-030, FR-040: vistas iniciales implementadas (version minima).
+- Ajuste tecnico aplicado:
+	- Ruta SQLite por defecto movida a `instance/fiware.db` para evitar conflicto con el script existente `services`.
+- Pendiente para siguientes iteraciones:
+	- Validaciones completas NGSIv2 por atributo y reglas IR-001..IR-007.
+	- UI avanzada (Leaflet, Three.js, Mermaid, map interactions, notificaciones visuales).
+	- i18n ES/EN completo y toggle dark/light persistente.
+	- Bateria de tests de integracion por entidad.
+
+### EN
+- Status: In progress (iteration 1 completed).
+- Scope implemented in this iteration:
+	- Flask base structure and app factory.
+	- Initial blueprints for Stores, Products, Employees, Inventory, and Notifications.
+	- Data source selector layer with Orion-first strategy and SQLite fallback.
+	- Base dashboard templates and minimal list/detail pages.
+	- Initial smoke tests for dashboard and stores endpoint.
+- Partial requirement coverage:
+	- FR-001, FR-002, FR-003: baseline implemented.
+	- FR-005, FR-060, FR-061: webhook + realtime emission baseline implemented.
+	- FR-010, FR-020, FR-030, FR-040: initial views implemented (minimal version).
+- Pending for next iterations:
+	- Full NGSIv2 attribute-level validations and IR-001..IR-007 rules.
+	- Advanced UI (Leaflet, Three.js, Mermaid, map interactions, visual notifications).
+	- Full ES/EN i18n and persistent dark/light toggle.
+	- Integration test suite per entity.

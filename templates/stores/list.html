@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Stores</h2>
+<table>
+  <thead>
+    <tr><th>ID</th><th>Name</th><th>Country</th></tr>
+  </thead>
+  <tbody>
+  {% for store in stores %}
+    <tr>
+      <td>{{ store.id }}</td>
+      <td><a href="{{ url_for('stores.get_store', entity_id=store.id) }}">{{ store.name }}</a></td>
+      <td>{{ store.countryCode }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

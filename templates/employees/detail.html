@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Employee Detail</h2>
+<dl>
+  <dt>ID</dt><dd>{{ employee.id }}</dd>
+  <dt>Name</dt><dd>{{ employee.name }}</dd>
+  <dt>Category</dt><dd>{{ employee.category }}</dd>
+  <dt>Type</dt><dd>{{ employee.type }}</dd>
+</dl>
+{% endblock %}

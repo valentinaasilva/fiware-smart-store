@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section>
+  <h2>Dashboard</h2>
+  <p>Active source mode: <strong>{{ source_mode }}</strong></p>
+  <div class="cards">
+    <article><h3>Stores</h3><p>{{ stats.stores }}</p></article>
+    <article><h3>Products</h3><p>{{ stats.products }}</p></article>
+    <article><h3>Employees</h3><p>{{ stats.employees }}</p></article>
+    <article><h3>Inventory Items</h3><p>{{ stats.inventory_items }}</p></article>
+  </div>
+</section>
+{% endblock %}
