@@ -24,6 +24,10 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "Type": "Type",
         "Price": "Price",
         "Category": "Category",
+        "Image": "Image",
+        "Role": "Role",
+        "Salary": "Salary",
+        "Ref Store": "Ref Store",
     },
     "es": {
         "Home": "Inicio",
@@ -43,6 +47,10 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "Type": "Tipo",
         "Price": "Precio",
         "Category": "Categoria",
+        "Image": "Imagen",
+        "Role": "Rol",
+        "Salary": "Salario",
+        "Ref Store": "Ref Tienda",
     },
 }
 

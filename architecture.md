@@ -523,3 +523,27 @@ Test levels:
   - Fixtures and integration/unit tests were updated to cover the new contract.
 - Verification:
   - Full suite execution with 95 passing tests.
+
+## 19. Implementation progress (Issue #5)
+
+### ES
+- Estado: Implementacion completada y cerrada para normalizacion/validacion Employee en flujo CRUD.
+- Cambios aplicados:
+  - `routes/utils.py` incorpora mapeo NGSIv2 de Employee y validacion de atributos obligatorios (`name`, `image`, `salary`, `role`, `refStore`).
+  - `routes/employees.py` aplica normalizacion y validacion tambien en `update` (partial=True) para mantener consistencia de contrato.
+  - `templates/employees/list.html` y `templates/employees/detail.html` se alinean con atributos obligatorios y mantienen visualizacion de campos opcionales.
+  - `scripts/load_test_data.py` incorpora `image` en employees semilla y mantiene salida NGSIv2 tipada para salary/role/refStore.
+  - `tests/conftest.py`, `tests/unit/test_utils.py` y `tests/integration/test_routes_crud.py` se actualizan para cubrir reglas de validacion y casos invalidos de Employee.
+- Verificacion:
+  - Ejecucion de suite completa con 101 tests en verde.
+
+### EN
+- Status: Implementation completed and closed for Employee normalization/validation in CRUD flow.
+- Applied changes:
+  - `routes/utils.py` now includes Employee NGSIv2 mapping and required-attribute validation (`name`, `image`, `salary`, `role`, `refStore`).
+  - `routes/employees.py` now applies normalization/validation on `update` as well (`partial=True`) to keep contract consistency.
+  - `templates/employees/list.html` and `templates/employees/detail.html` were aligned with required attributes while preserving optional fields.
+  - `scripts/load_test_data.py` now includes Employee `image` in seed data and preserves typed NGSIv2 output for salary/role/refStore.
+  - `tests/conftest.py`, `tests/unit/test_utils.py`, and `tests/integration/test_routes_crud.py` were updated to cover Employee validation rules and invalid cases.
+- Verification:
+  - Full suite execution with 101 passing tests.

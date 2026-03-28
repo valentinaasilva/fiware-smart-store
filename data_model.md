@@ -625,3 +625,31 @@ Recommended query models:
   - `Product.color` regex `#RRGGBB`.
   - `Product.price >= 0`.
   - Store/Product `image` must be a valid `http/https` URL.
+
+## 17. Implementation alignment progress (Issue #5)
+
+### ES
+- Estado: Alineacion implementada y cerrada para contrato CRUD de Employee bajo NGSIv2.
+- Alineacion de modelo aplicada:
+  - Employee se normaliza a estructura NGSIv2 (`type` + `value`) para `name`, `image`, `salary`, `role` y `refStore`.
+  - `refStore` se tipa como `Relationship` y se valida con URN de Store (`urn:ngsi-ld:Store:*`).
+  - Se mantienen como opcionales los campos de compatibilidad (`category`, `email`, `skills`, `dateOfContract`, `username`, `password`).
+  - Dataset de referencia de Employee incorpora `image` para soporte visual end-to-end.
+- Reglas/validaciones con evidencia de test:
+  - `Employee.image` URL valida `http/https`.
+  - `Employee.salary` numerico y `>= 0`.
+  - `Employee.role` no vacio.
+  - `Employee.refStore` con URN valida de Store.
+
+### EN
+- Status: Alignment implemented and closed for Employee CRUD contract under NGSIv2.
+- Applied model alignment:
+  - Employee is normalized to NGSIv2 structure (`type` + `value`) for `name`, `image`, `salary`, `role`, and `refStore`.
+  - `refStore` is typed as `Relationship` and validated against Store URN format (`urn:ngsi-ld:Store:*`).
+  - Compatibility fields remain optional (`category`, `email`, `skills`, `dateOfContract`, `username`, `password`).
+  - Employee reference dataset now includes `image` for end-to-end visual support.
+- Validation rules with test evidence:
+  - `Employee.image` must be a valid `http/https` URL.
+  - `Employee.salary` must be numeric and `>= 0`.
+  - `Employee.role` must be non-empty.
+  - `Employee.refStore` must contain a valid Store URN.

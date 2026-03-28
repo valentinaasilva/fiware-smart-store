@@ -115,3 +115,74 @@ def test_denormalize_ngsi_entity_unwraps_attributes():
     denormalized = denormalize_ngsi_entity(entity)
     assert denormalized["name"] == "Product 1"
     assert denormalized["price"] == 2.5
+
+
+def test_normalize_employee_payload_wraps_required_attributes():
+    payload = normalize_ngsi_payload(
+        {
+            "id": "urn:ngsi-ld:Employee:001",
+            "name": "Employee 1",
+            "image": "https://example.com/employee.png",
+            "salary": 2000,
+            "role": "Cashier",
+            "refStore": "urn:ngsi-ld:Store:001",
+        },
+        "Employee",
+    )
+    assert payload["image"]["type"] == "Text"
+    assert payload["salary"]["type"] == "Float"
+    assert payload["refStore"]["type"] == "Relationship"
+
+
+def test_normalize_employee_payload_rejects_invalid_ref_store():
+    try:
+        normalize_ngsi_payload(
+            {
+                "id": "urn:ngsi-ld:Employee:001",
+                "name": "Employee 1",
+                "image": "https://example.com/employee.png",
+                "salary": 2000,
+                "role": "Cashier",
+                "refStore": "Store:001",
+            },
+            "Employee",
+        )
+        assert False, "Expected ValueError"
+    except ValueError as exc:
+        assert "refStore" in str(exc)
+
+
+def test_normalize_employee_payload_rejects_negative_salary():
+    try:
+        normalize_ngsi_payload(
+            {
+                "id": "urn:ngsi-ld:Employee:001",
+                "name": "Employee 1",
+                "image": "https://example.com/employee.png",
+                "salary": -1,
+                "role": "Cashier",
+                "refStore": "urn:ngsi-ld:Store:001",
+            },
+            "Employee",
+        )
+        assert False, "Expected ValueError"
+    except ValueError as exc:
+        assert "salary" in str(exc)
+
+
+def test_normalize_employee_payload_rejects_invalid_image():
+    try:
+        normalize_ngsi_payload(
+            {
+                "id": "urn:ngsi-ld:Employee:001",
+                "name": "Employee 1",
+                "image": "image.png",
+                "salary": 1000,
+                "role": "Cashier",
+                "refStore": "urn:ngsi-ld:Store:001",
+            },
+            "Employee",
+        )
+        assert False, "Expected ValueError"
+    except ValueError as exc:
+        assert "image" in str(exc)
