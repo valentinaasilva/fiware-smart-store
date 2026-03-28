@@ -20,10 +20,19 @@
   </article>
   <article class="detail-card">
     <h3>{{ store.name }}</h3>
+    {% set addr = store.address if store.address is mapping else none %}
     <dl>
       <dt>{{ _('ID') }}</dt><dd class="mono">{{ store.id }}</dd>
       <dt>{{ _('Country') }}</dt><dd>{{ store.countryCode }}</dd>
       <dt>{{ _('Type') }}</dt><dd>{{ store.type }}</dd>
+      <dt>{{ _('Address') }}</dt>
+      <dd>
+        {% if addr %}
+          {{ addr.streetAddress }}{% if addr.addressLocality %}, {{ addr.addressLocality }}{% endif %}{% if addr.addressRegion %}, {{ addr.addressRegion }}{% endif %}
+        {% else %}
+          -
+        {% endif %}
+      </dd>
     </dl>
   </article>
 </section>
