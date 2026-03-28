@@ -1,0 +1,397 @@
+# Architecture - fiware-smart-store
+
+## 1. Document control
+
+### ES
+- Version: 1.0
+- Fecha: 2026-03-28
+- Estado: Baseline tecnico
+- Alcance: Arquitectura objetivo para implementacion Flask + FIWARE
+
+### EN
+- Version: 1.0
+- Date: 2026-03-28
+- Status: Technical baseline
+- Scope: Target architecture for Flask + FIWARE implementation
+
+## 2. Architectural goals
+
+### ES
+1. Separar claramente capas de presentacion, aplicacion e integracion.
+2. Minimizar acoplamiento entre UI y backend mediante API estable.
+3. Priorizar Orion NGSIv2 como verdad principal de negocio.
+4. Garantizar continuidad operativa con fallback SQLite.
+5. Propagar eventos de negocio en tiempo real usando SocketIO.
+
+### EN
+1. Clearly separate presentation, application, and integration layers.
+2. Minimize coupling between UI and backend through a stable API.
+3. Prioritize Orion NGSIv2 as business source of truth.
+4. Ensure operational continuity with SQLite fallback.
+5. Propagate business events in real time through SocketIO.
+
+## 3. System context
+
+### ES
+El sistema opera como una app Flask conectada a Orion Context Broker y MongoDB en Docker. Tambien consume providers externos del contenedor tutorial para enriquecer Stores con temperature, relativeHumidity y tweets.
+
+Actores externos:
+- Navegador web del operador/supervisor.
+- Orion Context Broker (API NGSIv2).
+- MongoDB (persistencia de Orion).
+- Tutorial Context Provider.
+
+### EN
+The system runs as a Flask app connected to Orion Context Broker and MongoDB in Docker. It also consumes external providers from the tutorial container to enrich Stores with temperature, relativeHumidity, and tweets.
+
+External actors:
+- Operator/supervisor web browser.
+- Orion Context Broker (NGSIv2 API).
+- MongoDB (Orion persistence).
+- Tutorial Context Provider.
+
+## 4. Logical architecture
+
+### ES
+Capas y componentes:
+1. Presentation layer
+- Plantillas Jinja2 para vistas y formularios.
+- Assets estaticos CSS/JS.
+- Socket.IO client para actualizaciones real-time.
+- Librerias visuales Leaflet, Three.js, Mermaid y Font Awesome.
+
+2. Application layer
+- app.py como punto de entrada Flask y configuracion SocketIO.
+- Blueprints por dominio:
+  - routes/stores.py
+  - routes/products.py
+  - routes/employees.py
+  - routes/inventory.py
+  - routes/notifications.py
+- Servicio de i18n para ES/EN.
+- Servicio de tema para dark/light mode.
+
+3. Data access layer
+- Adapter OrionClient (NGSIv2 CRUD y subscriptions).
+- Adapter SQLiteRepository (fallback local).
+- DataSourceSelector (estrategia Orion first + fallback).
+
+4. Integration layer
+- Client HTTP hacia Orion /v2/entities, /v2/subscriptions, /v2/registrations.
+- Endpoint webhook para notificaciones Orion -> Flask.
+- Emision de eventos SocketIO hacia clientes conectados.
+
+### EN
+Layers and components:
+1. Presentation layer
+- Jinja2 templates for views and forms.
+- Static CSS/JS assets.
+- Socket.IO client for real-time updates.
+- Visual libraries Leaflet, Three.js, Mermaid, and Font Awesome.
+
+2. Application layer
+- app.py as Flask entrypoint and SocketIO bootstrap.
+- Domain blueprints:
+  - routes/stores.py
+  - routes/products.py
+  - routes/employees.py
+  - routes/inventory.py
+  - routes/notifications.py
+- i18n service for ES/EN.
+- Theme service for dark/light mode.
+
+3. Data access layer
+- OrionClient adapter (NGSIv2 CRUD and subscriptions).
+- SQLiteRepository adapter (local fallback).
+- DataSourceSelector (Orion-first + fallback strategy).
+
+4. Integration layer
+- HTTP client to Orion /v2/entities, /v2/subscriptions, /v2/registrations.
+- Webhook endpoint for Orion -> Flask notifications.
+- SocketIO event emission to connected clients.
+
+## 5. Deployment architecture
+
+### ES
+Topologia de desarrollo local:
+- Contenedor Orion CB (puerto 1026).
+- Contenedor MongoDB (puerto 27017 interno).
+- Contenedor tutorial/provider (segun compose).
+- Servicio Flask ejecutado en host o contenedor app.
+
+Regla de conectividad clave:
+- Las subscriptions de Orion deben usar callback hacia host.docker.internal, no localhost.
+
+### EN
+Local development topology:
+- Orion CB container (port 1026).
+- MongoDB container (internal port 27017).
+- Tutorial/provider container (as defined in compose).
+- Flask service running on host or app container.
+
+Critical connectivity rule:
+- Orion subscriptions must use callback URL with host.docker.internal, not localhost.
+
+## 6. Startup sequence
+
+### ES
+1. Cargar configuracion (.env) y levantar Flask + SocketIO.
+2. Ejecutar health-check Orion.
+3. Seleccionar fuente activa:
+- Orion disponible -> modo ORION
+- Orion no disponible -> modo SQLITE
+4. Si modo ORION:
+- Registrar context providers externos (temperature, relativeHumidity, tweets).
+- Crear/validar subscriptions:
+  - Price change on Product
+  - Low stock on InventoryItem por Store
+5. Inicializar cache ligera para catalogos (stores, products, shelves) si aplica.
+6. Exponer endpoints web y API interna para formularios dinamicos.
+
+### EN
+1. Load configuration (.env) and start Flask + SocketIO.
+2. Execute Orion health-check.
+3. Select active source:
+- Orion reachable -> ORION mode
+- Orion unreachable -> SQLITE mode
+4. If ORION mode:
+- Register external context providers (temperature, relativeHumidity, tweets).
+- Create/validate subscriptions:
+  - Price change on Product
+  - Low stock on InventoryItem per Store
+5. Initialize lightweight cache for catalogs (stores, products, shelves) if applicable.
+6. Expose web endpoints and internal API for dynamic forms.
+
+## 7. Runtime data flows
+
+### ES
+
+#### 7.1 CRUD flow (normal)
+1. Usuario interactua con formulario en UI.
+2. Blueprint valida payload y aplica reglas de dominio.
+3. DataSourceSelector enruta a OrionClient o SQLiteRepository.
+4. Persistencia en origen activo.
+5. Respuesta a UI y refresco de atributos visibles.
+
+#### 7.2 Price-change event flow
+1. Cambio de price en Product ocurre via CRUD.
+2. Orion detecta condicion de subscription y emite notificacion HTTP.
+3. routes/notifications.py recibe evento y lo normaliza.
+4. SocketIO emite evento product_price_changed.
+5. JS cliente actualiza atributo de precio en vistas activas (sin regenerar HTML).
+
+#### 7.3 Low-stock event flow
+1. stockCount/shelfCount desciende por debajo de umbral definido.
+2. Orion emite notificacion low_stock.
+3. Backend registra evento y lo publica por SocketIO.
+4. UI Store detail actualiza panel de alertas en tiempo real.
+
+### EN
+
+#### 7.1 CRUD flow (normal)
+1. User interacts with UI form.
+2. Blueprint validates payload and applies domain rules.
+3. DataSourceSelector routes to OrionClient or SQLiteRepository.
+4. Persistence in active source.
+5. Response to UI and refresh of visible attributes.
+
+#### 7.2 Price-change event flow
+1. Product price change occurs through CRUD.
+2. Orion matches subscription condition and sends HTTP notification.
+3. routes/notifications.py receives and normalizes the event.
+4. SocketIO emits product_price_changed event.
+5. Client JS updates price attribute in active views (no HTML regeneration).
+
+#### 7.3 Low-stock event flow
+1. stockCount/shelfCount drops below configured threshold.
+2. Orion emits low_stock notification.
+3. Backend stores event and publishes via SocketIO.
+4. Store detail UI updates alerts panel in real time.
+
+## 8. Module decomposition
+
+### ES
+- app.py
+  - Inicializa Flask, SocketIO, registro de blueprints y startup hooks.
+
+- routes/stores.py
+  - Listado, detalle, alta, edicion y borrado de Store.
+  - CRUD de Shelf e InventoryItem asociados.
+
+- routes/products.py
+  - CRUD Product.
+  - Vista detalle product con agregacion de inventario por tienda/estanteria.
+
+- routes/employees.py
+  - CRUD Employee con validaciones de email, salary, contract date.
+
+- routes/inventory.py
+  - Operaciones transversales de InventoryItem.
+  - Endpoint para carga dinamica de shelves por store.
+
+- routes/notifications.py
+  - Webhook de Orion subscriptions.
+  - Historial en memoria o persistencia ligera de eventos para Store detail.
+
+- models/database.py
+  - Modelos SQLAlchemy para fallback SQLite.
+
+- models/orion_client.py
+  - Cliente NGSIv2 (entities, subscriptions, registrations).
+  - Normalizacion payload NGSIv2 <-> DTO internos.
+
+### EN
+- app.py
+  - Initializes Flask, SocketIO, blueprint registration, startup hooks.
+
+- routes/stores.py
+  - Store list/detail/create/update/delete.
+  - CRUD for related Shelf and InventoryItem.
+
+- routes/products.py
+  - Product CRUD.
+  - Product detail with inventory aggregation by store/shelf.
+
+- routes/employees.py
+  - Employee CRUD with validation for email, salary, contract date.
+
+- routes/inventory.py
+  - Cross-entity InventoryItem operations.
+  - Endpoint for dynamic shelf loading by store.
+
+- routes/notifications.py
+  - Orion subscription webhook.
+  - In-memory or lightweight event persistence for Store detail.
+
+- models/database.py
+  - SQLAlchemy models for SQLite fallback.
+
+- models/orion_client.py
+  - NGSIv2 client (entities, subscriptions, registrations).
+  - NGSIv2 payload normalization <-> internal DTOs.
+
+## 9. API design principles
+
+### ES
+- API interna REST orientada a recursos por entidad.
+- DTO de entrada y salida con convencion estable y validacion server-side.
+- Manejo de errores explicito con codigos HTTP coherentes:
+  - 200/201 operaciones exitosas
+  - 400 validacion
+  - 404 recurso no encontrado
+  - 409 conflicto de integridad
+  - 502 errores de Orion no recuperables en modo ORION
+- Tiempos de timeout y retry para llamadas a Orion configurables por entorno.
+
+### EN
+- Internal REST API resource-oriented by entity.
+- Stable input/output DTOs with server-side validation.
+- Explicit error handling with coherent HTTP codes:
+  - 200/201 success
+  - 400 validation
+  - 404 not found
+  - 409 integrity conflict
+  - 502 non-recoverable Orion errors in ORION mode
+- Configurable timeout and retry for Orion calls per environment.
+
+## 10. Security and compliance baseline
+
+### ES
+- Password en Employee debe almacenarse como hash fuerte (ejemplo: bcrypt).
+- Validacion de entrada para prevenir inyeccion y payloads inconsistentes.
+- Escapado de salida en plantillas para prevenir XSS reflejado.
+- Secretos en variables de entorno, no hardcode.
+- Limitar CORS a origenes esperados en desarrollo.
+
+### EN
+- Employee password must be stored as strong hash (example: bcrypt).
+- Input validation to prevent injection and inconsistent payloads.
+- Output escaping in templates to prevent reflected XSS.
+- Secrets in environment variables, no hardcoding.
+- Restrict CORS to expected origins in development.
+
+## 11. Observability and operations
+
+### ES
+- Logging estructurado por modulo (app, routes, orion, socketio).
+- Correlation id por request para trazabilidad.
+- Eventos criticos a log:
+  - cambio de fuente ORION/SQLITE
+  - alta/baja de subscriptions
+  - error de callback realtime
+- Comandos operativos:
+  - start.sh para reiniciar entorno y app
+  - stop.sh para apagar contenedores
+
+### EN
+- Structured logging by module (app, routes, orion, socketio).
+- Correlation id per request for traceability.
+- Critical events to log:
+  - ORION/SQLITE source switch
+  - subscription registration/removal
+  - realtime callback errors
+- Operational commands:
+  - start.sh to restart environment and app
+  - stop.sh to stop containers
+
+## 12. Testing architecture
+
+### ES
+Niveles de test:
+1. Unit tests
+- Validaciones de modelos y mapeos NGSIv2.
+- Reglas de dominio (stock, capacity, formatos).
+
+2. Integration tests
+- CRUD por entidad en endpoints Flask.
+- Flujos de fallback Orion->SQLite.
+- Recepcion de webhooks Orion y emision SocketIO.
+
+3. UI smoke tests
+- Navegacion basica por secciones.
+- Toggle idioma y tema.
+- Render de mapa y dashboard.
+
+### EN
+Test levels:
+1. Unit tests
+- Model validations and NGSIv2 mappings.
+- Domain rules (stock, capacity, formats).
+
+2. Integration tests
+- CRUD per entity on Flask endpoints.
+- Orion->SQLite fallback flows.
+- Orion webhook intake and SocketIO emission.
+
+3. UI smoke tests
+- Basic section navigation.
+- Language and theme toggle.
+- Map and dashboard rendering.
+
+## 13. Architecture decision records (summary)
+
+### ES
+- ADR-001: Orion-first con SQLite fallback para resiliencia en entorno academico.
+- ADR-002: Blueprints por dominio para escalabilidad de mantenimiento.
+- ADR-003: CSS-first y restriccion de no generar HTML desde JS.
+- ADR-004: Real-time con SocketIO para minimizar refresh manual.
+- ADR-005: host.docker.internal obligatorio en callbacks de subscriptions Orion.
+
+### EN
+- ADR-001: Orion-first with SQLite fallback for resilience in academic environment.
+- ADR-002: Domain-based blueprints for maintainability scaling.
+- ADR-003: CSS-first and no-HTML-generation rule from JS.
+- ADR-004: Real-time via SocketIO to minimize manual refresh.
+- ADR-005: host.docker.internal mandatory for Orion subscription callbacks.
+
+## 14. Open questions
+
+### ES
+1. Se requiere cache distribuida o basta cache local en memoria?
+2. Los eventos de notificacion deben persistirse mas alla de una sesion de servidor?
+3. El modo SQLite debe soportar todas las consultas agregadas del dashboard o solo subset?
+
+### EN
+1. Is distributed caching needed, or is local in-memory cache enough?
+2. Should notification events persist beyond one server session?
+3. Must SQLite mode support full dashboard aggregations or only a subset?
