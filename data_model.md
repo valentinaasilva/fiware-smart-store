@@ -506,11 +506,17 @@ Recommended query models:
   - Entidades operativas base: Store, Product, Employee, InventoryItem.
   - Flujo CRUD uniforme create/list/get/update/delete.
   - Contratos de subscription iniciales para cambios de `price` y bajo stock.
+- Alineado y completado para cierre de Issue #1:
+  - Dataset de prueba implementado y verificable con 4 stores, 10 products, 10 employees, 12 shelves y 55+ inventory items.
+  - Script de carga dedicado `scripts/load_test_data.py` para provisionar entidades NGSIv2 de forma repetible.
+  - Validaciones aplicadas en datos de prueba para enums, formatos, cardinalidades y relaciones esenciales.
 - Pendiente para convergencia completa del modelo:
   - Validaciones campo a campo (rangos, regex, enums obligatorios).
   - Enforcement estricto de relaciones y reglas IR-001..IR-007.
   - Soporte completo de atributos complejos (`PostalAddress`, `geo:json`, `Array`) en UI y validacion server-side.
   - Modelado formal de Shelf en vistas y operaciones vinculadas por Store.
+- Nota de estado:
+  - El cierre de Issue #1 cubre el objetivo de aplicacion base y carga inicial de cadena de supermercados; la convergencia completa del modelo se mantiene como trabajo incremental.
 
 ### EN
 - Current state:
@@ -520,6 +526,10 @@ Recommended query models:
   - Baseline operational entities: Store, Product, Employee, InventoryItem.
   - Uniform CRUD flow create/list/get/update/delete.
   - Initial subscription contracts for `price` changes and low stock.
+- Aligned and completed for Issue #1 closure:
+  - Test dataset implemented and verifiable with 4 stores, 10 products, 10 employees, 12 shelves, and 55+ inventory items.
+  - Dedicated loader script `scripts/load_test_data.py` to provision NGSIv2 entities in a repeatable way.
+  - Validation applied in test data for enums, formats, cardinalities, and essential relationships.
 - Pending for full model convergence:
   - Field-level validations (ranges, regex, required enums).
   - Strict relationship enforcement and IR-001..IR-007 rules.
@@ -527,3 +537,5 @@ Recommended query models:
   - Formal Shelf modeling in views and linked Store operations.
 - Persistence note:
   - SQLite fallback storage path is now `instance/fiware.db`, preventing path collisions with non-directory entries in the project root.
+- Status note:
+  - Issue #1 closure covers the baseline app objective and supermarket-chain initial load; full model convergence remains incremental follow-up work.

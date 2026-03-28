@@ -331,39 +331,45 @@ Assumptions:
 ## 13. Implementation progress (Issue #1)
 
 ### ES
-- Estado: En progreso (iteracion 1 completada).
-- Alcance implementado en esta iteracion:
-	- Estructura base Flask y app factory.
-	- Blueprints iniciales para Stores, Products, Employees, Inventory y Notifications.
-	- Capa de seleccion de fuente de datos con estrategia Orion-first y fallback SQLite.
-	- Plantillas base de dashboard y listados/detalles minimos.
-	- Smoke tests iniciales para dashboard y endpoint de stores.
-- Cobertura parcial de requisitos:
-	- FR-001, FR-002, FR-003: base implementada.
-	- FR-005, FR-060, FR-061: base de webhooks y emision realtime implementada.
-	- FR-010, FR-020, FR-030, FR-040: vistas iniciales implementadas (version minima).
-- Ajuste tecnico aplicado:
-	- Ruta SQLite por defecto movida a `instance/fiware.db` para evitar conflicto con el script existente `services`.
+- Estado: Completado para Issue #1.
+- Alcance implementado y validado:
+	- Estructura base Flask y app factory operativa.
+	- Blueprints CRUD para Stores, Products, Employees, Inventory y Notifications.
+	- Capa de seleccion de fuente de datos Orion-first con fallback SQLite.
+	- Script de carga de datos de prueba `scripts/load_test_data.py` con opciones `--clean`, `--dry-run` y `--verbose`.
+	- Carga objetivo cumplida: 4 stores, 10 products, 10 employees, 12 shelves y 55+ inventory items.
+	- Suites de tests agregadas para stores, products, employees, inventory y data loading.
+- Cobertura de requisitos lograda en Issue #1:
+	- FR-001, FR-002, FR-003: implementados y operativos.
+	- FR-005, FR-060, FR-061: baseline de webhooks y emision realtime implementado.
+	- FR-010, FR-020, FR-030, FR-040: version funcional inicial completada.
+	- AC de datos base cumplidos: cadena de supermercados inicial cargable y verificable.
+- Ajustes tecnicos aplicados:
+	- Ruta SQLite por defecto movida a `instance/fiware.db` para evitar conflicto con la entrada `services`.
+	- Normalizacion defensiva de rutas SQLite en el repositorio local.
 - Pendiente para siguientes iteraciones:
-	- Validaciones completas NGSIv2 por atributo y reglas IR-001..IR-007.
-	- UI avanzada (Leaflet, Three.js, Mermaid, map interactions, notificaciones visuales).
+	- UI avanzada (Leaflet, Three.js, Mermaid y mejoras de experiencia visual).
 	- i18n ES/EN completo y toggle dark/light persistente.
-	- Bateria de tests de integracion por entidad.
+	- Endurecimiento de validaciones avanzadas y pruebas E2E.
 
 ### EN
-- Status: In progress (iteration 1 completed).
-- Scope implemented in this iteration:
-	- Flask base structure and app factory.
-	- Initial blueprints for Stores, Products, Employees, Inventory, and Notifications.
-	- Data source selector layer with Orion-first strategy and SQLite fallback.
-	- Base dashboard templates and minimal list/detail pages.
-	- Initial smoke tests for dashboard and stores endpoint.
-- Partial requirement coverage:
-	- FR-001, FR-002, FR-003: baseline implemented.
-	- FR-005, FR-060, FR-061: webhook + realtime emission baseline implemented.
-	- FR-010, FR-020, FR-030, FR-040: initial views implemented (minimal version).
+- Status: Completed for Issue #1.
+- Implemented and validated scope:
+	- Operational Flask base structure and app factory.
+	- CRUD blueprints for Stores, Products, Employees, Inventory, and Notifications.
+	- Orion-first data source selector with SQLite fallback.
+	- Test data loader script `scripts/load_test_data.py` with `--clean`, `--dry-run`, and `--verbose`.
+	- Target dataset delivered: 4 stores, 10 products, 10 employees, 12 shelves, and 55+ inventory items.
+	- Test suites added for stores, products, employees, inventory, and data loading.
+- Requirement coverage achieved in Issue #1:
+	- FR-001, FR-002, FR-003: implemented and working.
+	- FR-005, FR-060, FR-061: webhook and realtime emission baseline implemented.
+	- FR-010, FR-020, FR-030, FR-040: initial functional version completed.
+	- Base-data acceptance for supermarket chain startup is satisfied.
+- Technical adjustments applied:
+	- Default SQLite path moved to `instance/fiware.db` to avoid collisions with existing `services` entry.
+	- Defensive SQLite path normalization added to local repository.
 - Pending for next iterations:
-	- Full NGSIv2 attribute-level validations and IR-001..IR-007 rules.
-	- Advanced UI (Leaflet, Three.js, Mermaid, map interactions, visual notifications).
+	- Advanced UI (Leaflet, Three.js, Mermaid, and richer visual behavior).
 	- Full ES/EN i18n and persistent dark/light toggle.
-	- Integration test suite per entity.
+	- Advanced validation hardening and end-to-end testing.
