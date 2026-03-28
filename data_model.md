@@ -761,3 +761,23 @@ Recommended query models:
     - shelf deletion is blocked with `409` when dependent InventoryItems exist.
 - Validation evidence:
   - Integration and smoke tests extend coverage for nested CRUD in Store/Product detail contexts.
+
+## 22. Closure status (Issue #7)
+
+### ES
+- Estado de alineacion:
+  - La alineacion de `Shelf` e `InventoryItem` para CRUD contextual queda consolidada en `main`.
+  - Reglas IR aplicadas en runtime para consistencia relacional y capacidad.
+- Estado de sincronizacion:
+  - Sin diferencias entre rama de trabajo de Issue #7 y `main` tras merge/sync.
+- Estado de ticket:
+  - El recurso `issues/7` no esta disponible por API publica en el momento de cierre tecnico.
+
+### EN
+- Alignment status:
+  - `Shelf` and `InventoryItem` alignment for context-scoped CRUD is consolidated on `main`.
+  - IR rules are enforced at runtime for relationship and capacity consistency.
+- Synchronization status:
+  - No diffs remain between Issue #7 branch and `main` after merge/sync.
+- Ticket status:
+  - `issues/7` resource is not available via public API at technical closure time.

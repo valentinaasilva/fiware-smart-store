@@ -630,3 +630,17 @@ Assumptions:
 	- FR-022: product detail availability grouped by store.
 	- FR-023: inventory-item CRUD from product detail.
 	- FR-024: shelf/store selection support in inventory forms.
+
+## 22. Closure status (Issue #7)
+
+### ES
+- Estado de fusion: `feature/issue-7-crud` fusionada en `main` (sin diferencias pendientes; `main` ya contenia el commit de Issue #7).
+- Estado de sincronizacion: rama local y remoto `origin/main` sincronizados.
+- Estado funcional: alcance CRUD de Issue #7 validado por pruebas (suite en verde).
+- Estado de ticket GitHub: no se encuentra el recurso `issues/7` via API publica al momento del cierre tecnico.
+
+### EN
+- Merge status: `feature/issue-7-crud` merged into `main` (no pending diffs; `main` already contained Issue #7 commit).
+- Sync status: local branch and `origin/main` are synchronized.
+- Functional status: Issue #7 CRUD scope validated by tests (full suite green).
+- GitHub ticket status: `issues/7` is not available through the public API at technical closure time.

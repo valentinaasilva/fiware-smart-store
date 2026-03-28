@@ -657,3 +657,25 @@ Test levels:
 - Technical traceability:
   - Affected layers: Presentation, Application, and Data access.
   - Key files: `routes/stores.py`, `routes/products.py`, `routes/inventory.py`, `routes/utils.py`, `models/data_source.py`, `templates/stores/detail.html`, `templates/products/detail.html`.
+
+## 24. Closure status (Issue #7)
+
+### ES
+- Estado de despliegue en ramas:
+  - `main` y `feature/issue-7-crud` convergen en el mismo commit funcional de Issue #7.
+  - Sin cambios pendientes tras flujo de merge/sync.
+- Estado tecnico:
+  - Arquitectura objetivo para CRUD contextual (Store/Product detail) consolidada en `main`.
+  - Contratos de errores y reglas de integridad operativos en capas Application/Data access/Presentation.
+- Estado de ticket:
+  - No se detecta `issues/7` por API publica al momento de cierre tecnico.
+
+### EN
+- Branch deployment status:
+  - `main` and `feature/issue-7-crud` converge on the same functional Issue #7 commit.
+  - No pending changes after merge/sync flow.
+- Technical status:
+  - Target architecture for context-scoped CRUD (Store/Product detail) is consolidated on `main`.
+  - Error contracts and integrity rules are operational across Application/Data access/Presentation layers.
+- Ticket status:
+  - `issues/7` is not detected via public API at technical closure time.
