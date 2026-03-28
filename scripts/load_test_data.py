@@ -15,16 +15,22 @@ Examples:
 """
 
 import argparse
-import json
 import logging
 import os
 import sys
-import time
 from datetime import datetime
+from pathlib import Path
 from typing import List, Tuple, Dict, Any
 
 import requests
 from requests.exceptions import RequestException
+
+# Ensure project root is importable when running as: python scripts/load_test_data.py
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from models.database import SQLiteRepository
 
 
 # ============================================================================
@@ -219,12 +225,25 @@ INVENTORY_DISTRIBUTION = {
 # ============================================================================
 
 class OrionDataLoader:
-    """Load test data into Orion Context Broker with full NGSIv2 validation."""
+    """Load test data into Orion or SQLite with NGSIv2-compatible entities."""
 
-    def __init__(self, orion_url: str, timeout: int = 5, verbose: bool = False):
+    def __init__(
+        self,
+        orion_url: str,
+        timeout: int = 5,
+        verbose: bool = False,
+        target: str = "sqlite",
+        sqlite_path: str | None = None,
+        include_employees: bool = False,
+    ):
         self.orion_url = orion_url.rstrip("/")
         self.timeout = timeout
         self.verbose = verbose
+        self.target = target.lower()
+        default_sqlite_path = os.path.join(os.getcwd(), "instance", "fiware.db")
+        self.sqlite_path = sqlite_path or os.getenv("SQLITE_PATH", default_sqlite_path)
+        self.sqlite_repo = SQLiteRepository(self.sqlite_path)
+        self.include_employees = include_employees
         self.created_entities = {
             "stores": [],
             "products": [],
@@ -241,7 +260,11 @@ class OrionDataLoader:
         getattr(logger, level.lower())(message)
 
     def health_check(self) -> bool:
-        """Verify Orion connectivity."""
+        """Verify data target connectivity."""
+        if self.target == "sqlite":
+            logger.info(f"✓ SQLite target selected ({self.sqlite_repo.sqlite_path})")
+            return True
+
         try:
             resp = requests.get(f"{self.orion_url}/version", timeout=self.timeout)
             if resp.status_code == 200:
@@ -256,7 +279,19 @@ class OrionDataLoader:
             return False
 
     def _create_entity(self, entity: Dict[str, Any]) -> bool:
-        """Create entity in Orion via NGSIv2 POST."""
+        """Create entity in selected target backend."""
+        if self.target == "sqlite":
+            try:
+                existing = self.sqlite_repo.get_entity(entity["id"])
+                if existing:
+                    self.sqlite_repo.update_entity(entity["id"], entity)
+                else:
+                    self.sqlite_repo.create_entity(entity)
+                return True
+            except Exception as e:
+                self._log("DEBUG", f"  -> SQLite exception: {e}")
+                return False
+
         try:
             resp = requests.post(
                 f"{self.orion_url}/v2/entities",
@@ -276,6 +311,9 @@ class OrionDataLoader:
 
     def _list_entities_by_type(self, entity_type: str) -> List[Dict[str, Any]]:
         """Query entities by type."""
+        if self.target == "sqlite":
+            return self.sqlite_repo.list_entities(entity_type)
+
         try:
             resp = requests.get(
                 f"{self.orion_url}/v2/entities?type={entity_type}",
@@ -453,7 +491,7 @@ class OrionDataLoader:
         return len(shelf_urns) == len(STORES_DATA) * SHELVES_PER_STORE
 
     def load_inventory(self) -> bool:
-        """Create 50-60 InventoryItem entities."""
+        """Create InventoryItem entities ensuring minimum product coverage per store."""
         logger.info("START: Creating inventory items...")
         inventory_urns = []
         store_urns = self._get_store_urns()
@@ -508,8 +546,12 @@ class OrionDataLoader:
                         self.errors.append(f"InventoryItem {inventory_id} creation failed")
 
         self.created_entities["inventory"] = inventory_urns
-        logger.info(f"SUCCESS: Created {len(inventory_urns)} inventory items (target: 50-60)")
-        return len(inventory_urns) >= 50
+        min_required_items = len(STORES_DATA) * 5
+        logger.info(
+            f"SUCCESS: Created {len(inventory_urns)} inventory items "
+            f"(minimum required by rule: {min_required_items})"
+        )
+        return len(inventory_urns) >= min_required_items
 
     def validate_integrity(self) -> Tuple[bool, List[str]]:
         """Validate cross-entity integrity rules (IR-001..IR-007)."""
@@ -617,6 +659,15 @@ class OrionDataLoader:
         """Delete all entities created by previous loads."""
         logger.info("START: Cleaning old data...")
         deleted = 0
+
+        if self.target == "sqlite":
+            for entity_type in ["InventoryItem", "Shelf", "Employee", "Product", "Store"]:
+                entities = self.sqlite_repo.list_entities(entity_type)
+                for entity in entities:
+                    if self.sqlite_repo.delete_entity(entity.get("id", "")):
+                        deleted += 1
+            logger.info(f"SUCCESS: Deleted {deleted} entities")
+            return True
         
         for entity_type in ["InventoryItem", "Shelf", "Employee", "Product", "Store"]:
             entities = self._list_entities_by_type(entity_type)
@@ -638,7 +689,12 @@ class OrionDataLoader:
         """Execute full data load workflow."""
         logger.info("=" * 70)
         logger.info(f"FIWARE Smart Store - Test Data Loader")
-        logger.info(f"Orion URL: {self.orion_url} | Started: {datetime.now()}")
+        logger.info(
+            f"Target: {self.target.upper()} | "
+            f"Orion URL: {self.orion_url} | "
+            f"SQLite: {self.sqlite_repo.sqlite_path} | "
+            f"Started: {datetime.now()}"
+        )
         logger.info("=" * 70)
 
         if not self.health_check():
@@ -662,13 +718,14 @@ class OrionDataLoader:
                 logger.error("Failed to load products")
                 return False
 
-            if not self.load_employees():
-                logger.error("Failed to load employees")
-                return False
-
             if not self.load_shelves():
                 logger.error("Failed to load shelves")
                 return False
+
+            if self.include_employees:
+                if not self.load_employees():
+                    logger.error("Failed to load employees")
+                    return False
 
             if not self.load_inventory():
                 logger.error("Failed to load inventory")
@@ -685,7 +742,7 @@ class OrionDataLoader:
                 logger.error("Minimum requirements not satisfied")
                 return False
         else:
-            logger.info("[DRY_RUN] Would create 4 stores, 10 products, 10 employees, 12 shelves, 50+ inventory items")
+            logger.info("[DRY_RUN] Would create 4 stores, 10 products, shelves and inventory coverage (employees optional)")
 
         logger.info("=" * 70)
         logger.info(f"✓ DATA LOAD COMPLETED SUCCESSFULLY")
@@ -705,16 +762,28 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  %(prog)s                                    # Default to localhost:1026
+    %(prog)s                                    # Default target=sqlite
+    %(prog)s --target sqlite --clean --verbose  # Rebuild local SQLite dataset
   %(prog)s --clean --verbose                  # Clean and show details
   %(prog)s --dry-run                          # Validate without creating
-  %(prog)s --orion-url http://orion.example   # Custom Orion URL
+    %(prog)s --target orion --orion-url http://orion.example  # Load into Orion
         """
     )
     parser.add_argument(
         "--orion-url",
         default=os.getenv("ORION_URL", "http://localhost:1026"),
         help="Orion Context Broker URL (default: %(default)s)"
+    )
+    parser.add_argument(
+        "--target",
+        choices=["sqlite", "orion"],
+        default="sqlite",
+        help="Data target backend (default: %(default)s)"
+    )
+    parser.add_argument(
+        "--sqlite-path",
+        default=os.getenv("SQLITE_PATH", os.path.join(os.getcwd(), "instance", "fiware.db")),
+        help="SQLite database path when target=sqlite"
     )
     parser.add_argument(
         "--clean",
@@ -731,10 +800,21 @@ Examples:
         action="store_true",
         help="Show detailed operation logs"
     )
+    parser.add_argument(
+        "--include-employees",
+        action="store_true",
+        help="Also load employee entities (optional; not required by base statement)"
+    )
 
     args = parser.parse_args()
 
-    loader = OrionDataLoader(args.orion_url, verbose=args.verbose)
+    loader = OrionDataLoader(
+        args.orion_url,
+        verbose=args.verbose,
+        target=args.target,
+        sqlite_path=args.sqlite_path,
+        include_employees=args.include_employees,
+    )
     success = loader.run(clean_first=args.clean, dry_run=args.dry_run)
     
     sys.exit(0 if success else 1)

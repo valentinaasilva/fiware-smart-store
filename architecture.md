@@ -410,6 +410,8 @@ Test levels:
   - Script de carga de datos `scripts/load_test_data.py` integrado al flujo de desarrollo local.
   - Inicializacion de dataset funcional para cadena de supermercados (4 stores, 10 products, 10 employees, 12 shelves, 55+ inventory items).
   - Suites de pruebas para validacion estructural de entidades y reglas de integridad.
+  - Correccion posterior: el script ahora permite target `sqlite` por defecto para carga local efectiva del dashboard.
+  - Correccion de navegacion: barra superior usa rutas estables y blueprints de listado aceptan URL con y sin slash final.
 - Desviaciones temporales respecto a arquitectura objetivo:
   - Persistencia fallback implementada con `sqlite3` generico en vez de SQLAlchemy tipado.
   - Validacion de dominio en capa inicial minima; se ampliara por entidad.
@@ -430,6 +432,8 @@ Test levels:
   - Test data loading script `scripts/load_test_data.py` integrated into local development workflow.
   - Functional supermarket bootstrap dataset (4 stores, 10 products, 10 employees, 12 shelves, 55+ inventory items).
   - Test suites for entity-structure validation and integrity rule checks.
+  - Post-fix: the script now supports `sqlite` as default target to ensure effective local dashboard seeding.
+  - Navigation fix: topbar uses stable route links and list blueprints accept URLs both with and without trailing slash.
 - Temporary deviations from target architecture:
   - Fallback persistence currently implemented with generic `sqlite3` instead of typed SQLAlchemy models.
   - Domain validation currently minimal and to be expanded per entity.

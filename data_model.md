@@ -510,6 +510,8 @@ Recommended query models:
   - Dataset de prueba implementado y verificable con 4 stores, 10 products, 10 employees, 12 shelves y 55+ inventory items.
   - Script de carga dedicado `scripts/load_test_data.py` para provisionar entidades NGSIv2 de forma repetible.
   - Validaciones aplicadas en datos de prueba para enums, formatos, cardinalidades y relaciones esenciales.
+  - Ajuste operativo: el script permite carga directa en SQLite para garantizar datos visibles en dashboard cuando Orion no es la fuente activa.
+  - Ajuste de alcance minimo aplicado en ejecucion por defecto: 4 stores, 10 products y cobertura de al menos 5 productos por tienda.
 - Pendiente para convergencia completa del modelo:
   - Validaciones campo a campo (rangos, regex, enums obligatorios).
   - Enforcement estricto de relaciones y reglas IR-001..IR-007.
@@ -530,6 +532,8 @@ Recommended query models:
   - Test dataset implemented and verifiable with 4 stores, 10 products, 10 employees, 12 shelves, and 55+ inventory items.
   - Dedicated loader script `scripts/load_test_data.py` to provision NGSIv2 entities in a repeatable way.
   - Validation applied in test data for enums, formats, cardinalities, and essential relationships.
+  - Operational adjustment: the script supports direct SQLite loading to guarantee visible dashboard data when Orion is not the active source.
+  - Minimum-scope adjustment applied in default execution: 4 stores, 10 products, and at least 5 products per store coverage.
 - Pending for full model convergence:
   - Field-level validations (ranges, regex, required enums).
   - Strict relationship enforcement and IR-001..IR-007 rules.

@@ -13,6 +13,11 @@ def list_employees():
     return render_template("employees/list.html", employees=employees)
 
 
+@employees_bp.get("")
+def list_employees_no_slash():
+    return list_employees()
+
+
 @employees_bp.get("/<path:entity_id>")
 def get_employee(entity_id: str):
     employee = current_app.extensions["data_selector"].get_entity(entity_id)
