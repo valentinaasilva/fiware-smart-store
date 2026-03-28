@@ -675,3 +675,25 @@ Recommended query models:
 - Validation rules with test evidence:
   - Main navigation integrity validated by smoke tests (4 operational sections).
   - Store detail map-container rendering validated by smoke tests.
+
+## 19. Implementation alignment progress (Store detail normalization)
+
+### ES
+- Estado: Alineacion aplicada en capa de vista sin cambios de esquema NGSIv2.
+- Alineacion de modelo aplicada:
+  - El atributo `Store.id` conserva formato URN en persistencia/API; la UI muestra solo el sufijo operativo (`S001`).
+  - El atributo `Store.countryCode` conserva ISO alpha-2 en datos; la UI lo transforma a nombre completo de pais para lectura humana.
+  - El atributo `Store.address` (PostalAddress) se expone completo en detalle con `streetAddress`, `addressLocality`, `addressRegion`.
+  - El atributo `Store.type` permanece en contrato NGSIv2 pero deja de mostrarse en la ficha de detalle por redundancia.
+- Evidencia de validacion:
+  - Smoke test de detalle de tienda verifica ID simplificado, pais expandido, direccion visible y ausencia de campo `Type`.
+
+### EN
+- Status: Alignment applied at view layer with no NGSIv2 schema changes.
+- Applied model alignment:
+  - `Store.id` remains URN-formatted in persistence/API; UI renders only the operational suffix (`S001`).
+  - `Store.countryCode` remains ISO alpha-2 in data; UI transforms it into full country name for human readability.
+  - `Store.address` (PostalAddress) is fully exposed in detail view with `streetAddress`, `addressLocality`, `addressRegion`.
+  - `Store.type` remains part of NGSIv2 contract but is no longer displayed in detail UI due to redundancy.
+- Validation evidence:
+  - Store-detail smoke test validates simplified ID, expanded country name, visible full address, and `Type` field removal.

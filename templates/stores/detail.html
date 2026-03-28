@@ -20,11 +20,17 @@
   </article>
   <article class="detail-card">
     <h3>{{ store.name }}</h3>
+    {% set simplified_id = store.id.split(':')[-1] if store.id is string else store.id %}
+    {% set country_code = store.countryCode if store.countryCode is string else '' %}
+    {% set country_names = {
+      'ES': 'Spain',
+      'DE': 'Germany',
+      'FR': 'France'
+    } %}
     {% set addr = store.address if store.address is mapping else none %}
     <dl>
-      <dt>{{ _('ID') }}</dt><dd class="mono">{{ store.id }}</dd>
-      <dt>{{ _('Country') }}</dt><dd>{{ store.countryCode }}</dd>
-      <dt>{{ _('Type') }}</dt><dd>{{ store.type }}</dd>
+      <dt>{{ _('ID') }}</dt><dd class="mono">{{ simplified_id }}</dd>
+      <dt>{{ _('Country') }}</dt><dd>{{ _(country_names.get(country_code, country_code if country_code else '-')) }}</dd>
       <dt>{{ _('Address') }}</dt>
       <dd>
         {% if addr %}

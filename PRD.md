@@ -542,3 +542,27 @@ Assumptions:
 	- FR-012: geolocation map integrated into Store detail via Leaflet.
 	- FR-030/FR-031: Employee listing/detail routes remain functional in UI.
 	- FR-042: map-driven Store location representation available in operational UI.
+
+## 19. Implementation progress (Store detail normalization)
+
+### ES
+- Estado: Implementacion completada para normalizacion de datos visibles en detalle de tienda.
+- Alcance implementado:
+	- El ID de tienda se muestra simplificado (segmento final del URN, por ejemplo `S001`).
+	- El pais se muestra por nombre completo en UI (mapeo de `countryCode` para ES/DE/FR).
+	- La direccion completa se muestra en ficha con `streetAddress`, `addressLocality` y `addressRegion`.
+	- Se elimina el campo `Tipo` en detalle de tienda por redundancia funcional.
+- Trazabilidad de requisitos:
+	- FR-010: la presentacion de atributos de Store en detalle mejora legibilidad y semantica.
+	- FR-050: el nombre de pais queda integrado en flujo bilingue de etiquetas.
+
+### EN
+- Status: Completed implementation for visible-data normalization on Store detail.
+- Implemented scope:
+	- Store ID is rendered in simplified format (URN trailing segment, e.g. `S001`).
+	- Country is rendered as full name in UI (`countryCode` mapping for ES/DE/FR).
+	- Full address is shown using `streetAddress`, `addressLocality`, and `addressRegion`.
+	- `Type` field was removed from Store detail due to functional redundancy.
+- Requirement traceability:
+	- FR-010: Store detail attribute rendering is clearer and more semantic.
+	- FR-050: country-name rendering is integrated with bilingual label flow.

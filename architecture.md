@@ -573,3 +573,27 @@ Test levels:
   - `tests/test_smoke.py` now extends link integrity and Store detail map-container checks.
 - Verification:
   - Full suite execution with 103 passing tests.
+
+## 21. Implementation progress (Store detail normalization)
+
+### ES
+- Estado: Implementacion completada para ajuste de representacion semantica en capa de presentacion.
+- Cambios arquitectonicos aplicados:
+  - La simplificacion de identificador (`urn:...` -> segmento final) se resuelve en template Jinja sin modificar contrato de datos.
+  - El mapeo de `countryCode` a nombre visible de pais se mantiene en capa de presentacion con soporte i18n.
+  - La direccion postal completa se consolida en la ficha de detalle usando atributos existentes del modelo `address`.
+  - Se elimina el campo `type` de la vista detalle para reducir ruido de interfaz sin alterar API.
+- Trazabilidad tecnica:
+  - Capa afectada: Presentation (`templates/stores/detail.html`, `models/i18n.py`).
+  - Capas no afectadas: Application, Data access e Integration.
+
+### EN
+- Status: Completed implementation for semantic rendering adjustments in the presentation layer.
+- Applied architectural changes:
+  - Identifier simplification (`urn:...` -> trailing segment) is handled in Jinja template logic without changing data contracts.
+  - `countryCode` to country-name mapping remains presentation-layer logic with i18n support.
+  - Full postal address is consolidated in Store detail using existing `address` model attributes.
+  - `type` field was removed from detail view to reduce UI noise without API changes.
+- Technical traceability:
+  - Affected layer: Presentation (`templates/stores/detail.html`, `models/i18n.py`).
+  - Unaffected layers: Application, Data access, and Integration.
