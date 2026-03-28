@@ -2,14 +2,17 @@
 
 {% block content %}
 <section class="detail-header">
-  <a class="back-link" href="/products">&larr; {{ _('Products') }}</a>
+  <a class="back-link" href="{{ url_for('products.list_products') }}">&larr; {{ _('Products') }}</a>
   <h2>{{ _('Product Detail') }}</h2>
 </section>
 
 <section class="detail-grid">
   <article class="detail-media">
     {% if product.image %}
-      <img src="{{ product.image }}" alt="{{ product.name }}" width="420" height="420" loading="lazy">
+      <div class="media-frame media-frame-large">
+        <img src="{{ product.image }}" alt="{{ product.name }}" width="420" height="420" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
+        <div class="img-fallback large is-hidden">No image</div>
+      </div>
     {% else %}
       <div class="img-fallback large">No image</div>
     {% endif %}

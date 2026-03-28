@@ -281,6 +281,20 @@ tr:last-child td {
   min-height: 220px;
 }
 
+.is-hidden {
+  display: none !important;
+}
+
+.media-frame {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-frame-large {
+  display: block;
+}
+
 .detail-header {
   display: flex;
   align-items: center;
@@ -325,6 +339,27 @@ tr:last-child td {
 
 .detail-card {
   padding: 1rem;
+}
+
+.map-shell {
+  margin-top: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  padding: 1rem;
+}
+
+.map-shell h3 {
+  margin: 0 0 0.8rem;
+  font-size: 1.1rem;
+}
+
+.store-map {
+  width: 100%;
+  min-height: 320px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
 }
 
 .detail-card h3 {

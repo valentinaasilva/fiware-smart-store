@@ -653,3 +653,25 @@ Recommended query models:
   - `Employee.salary` must be numeric and `>= 0`.
   - `Employee.role` must be non-empty.
   - `Employee.refStore` must contain a valid Store URN.
+
+## 18. Implementation alignment progress (Issue #6)
+
+### ES
+- Estado: Alineacion inicial implementada para consumo UI de ubicacion e imagenes.
+- Alineacion de modelo aplicada:
+  - `Store.location` (GeoJSON Point) se consume en detalle de tienda para renderizar mapa Leaflet con marcador.
+  - Se mantiene el contrato NGSIv2 original de `location`; la transformacion a lat/lng se realiza en capa de presentacion.
+  - Atributos `image` de Store/Product/Employee conservan contrato `Text` y fallback visual uniforme en templates.
+- Reglas/validaciones con evidencia de test:
+  - Integridad de navegacion principal validada por smoke tests (4 secciones operativas).
+  - Render de contenedor de mapa en detalle de Store validado por smoke tests.
+
+### EN
+- Status: Initial alignment implemented for UI consumption of location and image attributes.
+- Applied model alignment:
+  - `Store.location` (GeoJSON Point) is consumed in Store detail to render a Leaflet map marker.
+  - Original NGSIv2 contract for `location` remains unchanged; lat/lng adaptation is handled in the presentation layer.
+  - Store/Product/Employee `image` attributes keep the `Text` contract with unified visual fallback behavior in templates.
+- Validation rules with test evidence:
+  - Main navigation integrity validated by smoke tests (4 operational sections).
+  - Store detail map-container rendering validated by smoke tests.

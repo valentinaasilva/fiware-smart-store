@@ -16,7 +16,10 @@
       <tr>
         <td>
           {% if store.image %}
-            <img class="table-thumb" src="{{ store.image }}" alt="{{ store.name }}" width="96" height="64" loading="lazy">
+            <div class="media-frame">
+              <img class="table-thumb" src="{{ store.image }}" alt="{{ store.name }}" width="96" height="64" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
+              <span class="img-fallback is-hidden">No image</span>
+            </div>
           {% else %}
             <span class="img-fallback">No image</span>
           {% endif %}

@@ -510,3 +510,35 @@ Assumptions:
 - Requirement traceability:
 	- FR-031: employee CRUD strengthened with required-attribute validation.
 	- FR-030: employee list/detail enriched with `image`, `role`, `salary`, and store reference.
+
+## 18. Implementation progress (Issue #6)
+
+### ES
+- Estado: Implementacion inicial completada para robustez UI (mapa, imagenes y navegacion).
+- Resultado de validacion:
+	- Suite ejecutada con exito: 103 passed.
+- Alcance implementado en esta iteracion:
+	- Integracion de Leaflet JS en detalle de tienda para representar ubicacion real desde `Store.location`.
+	- Estandarizacion de visualizacion de imagenes en Stores/Products/Employees con fallback consistente ante carga fallida.
+	- Refuerzo de navegacion y enlaces con `url_for` en elementos principales para evitar rutas fragiles.
+	- Dashboard actualizado con acceso directo a Employees desde boton de accion.
+	- Smoke tests ampliados para verificar enlaces primarios y presencia del contenedor de mapa en detalle de tienda.
+- Trazabilidad de requisitos:
+	- FR-012: mapa de geolocalizacion integrado en detalle de Store mediante Leaflet.
+	- FR-030/FR-031: visualizacion de employees mantenida con rutas funcionales de listado y detalle.
+	- FR-042: visualizacion basada en mapa en interfaz operativa de tienda.
+
+### EN
+- Status: Initial implementation completed for UI hardening (map, images, and navigation).
+- Validation result:
+	- Test suite executed successfully: 103 passed.
+- Implemented scope in this iteration:
+	- Leaflet JS integrated into Store detail view to render real location from `Store.location`.
+	- Image rendering standardized across Stores/Products/Employees with consistent fallback on load failures.
+	- Navigation/link reliability improved by replacing fragile hardcoded paths with `url_for` in key UI elements.
+	- Dashboard updated with direct Employees access button.
+	- Smoke tests expanded to validate primary links and Store detail map container rendering.
+- Requirement traceability:
+	- FR-012: geolocation map integrated into Store detail via Leaflet.
+	- FR-030/FR-031: Employee listing/detail routes remain functional in UI.
+	- FR-042: map-driven Store location representation available in operational UI.
