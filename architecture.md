@@ -527,7 +527,7 @@ Test levels:
 ## 19. Implementation progress (Issue #5)
 
 ### ES
-- Estado: Implementacion inicial completada para normalizacion/validacion Employee en flujo CRUD.
+- Estado: Implementacion completada y cerrada para normalizacion/validacion Employee en flujo CRUD.
 - Cambios aplicados:
   - `routes/utils.py` incorpora mapeo NGSIv2 de Employee y validacion de atributos obligatorios (`name`, `image`, `salary`, `role`, `refStore`).
   - `routes/employees.py` aplica normalizacion y validacion tambien en `update` (partial=True) para mantener consistencia de contrato.
@@ -538,7 +538,7 @@ Test levels:
   - Ejecucion de suite completa con 101 tests en verde.
 
 ### EN
-- Status: Initial implementation completed for Employee normalization/validation in CRUD flow.
+- Status: Implementation completed and closed for Employee normalization/validation in CRUD flow.
 - Applied changes:
   - `routes/utils.py` now includes Employee NGSIv2 mapping and required-attribute validation (`name`, `image`, `salary`, `role`, `refStore`).
   - `routes/employees.py` now applies normalization/validation on `update` as well (`partial=True`) to keep contract consistency.

@@ -629,7 +629,7 @@ Recommended query models:
 ## 17. Implementation alignment progress (Issue #5)
 
 ### ES
-- Estado: Alineacion inicial implementada para contrato CRUD de Employee bajo NGSIv2.
+- Estado: Alineacion implementada y cerrada para contrato CRUD de Employee bajo NGSIv2.
 - Alineacion de modelo aplicada:
   - Employee se normaliza a estructura NGSIv2 (`type` + `value`) para `name`, `image`, `salary`, `role` y `refStore`.
   - `refStore` se tipa como `Relationship` y se valida con URN de Store (`urn:ngsi-ld:Store:*`).
@@ -642,7 +642,7 @@ Recommended query models:
   - `Employee.refStore` con URN valida de Store.
 
 ### EN
-- Status: Initial alignment implemented for Employee CRUD contract under NGSIv2.
+- Status: Alignment implemented and closed for Employee CRUD contract under NGSIv2.
 - Applied model alignment:
   - Employee is normalized to NGSIv2 structure (`type` + `value`) for `name`, `image`, `salary`, `role`, and `refStore`.
   - `refStore` is typed as `Relationship` and validated against Store URN format (`urn:ngsi-ld:Store:*`).

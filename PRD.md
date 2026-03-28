@@ -484,7 +484,7 @@ Assumptions:
 ## 17. Implementation progress (Issue #5)
 
 ### ES
-- Estado: Implementacion inicial completada para contrato Employee con atributos obligatorios.
+- Estado: Implementacion completada y cerrada para contrato Employee con atributos obligatorios.
 - Resultado de validacion:
 	- Suite ejecutada con exito: 101 passed.
 - Alcance implementado en esta iteracion:
@@ -498,7 +498,7 @@ Assumptions:
 	- FR-030: listado/detalle de employees enriquecido con `image`, `role`, `salary` y referencia de tienda.
 
 ### EN
-- Status: Initial implementation completed for Employee required-attribute contract.
+- Status: Implementation completed and closed for Employee required-attribute contract.
 - Validation result:
 	- Test suite executed successfully: 101 passed.
 - Implemented scope in this iteration:
