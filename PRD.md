@@ -347,6 +347,9 @@ Assumptions:
 - Ajustes tecnicos aplicados:
 	- Ruta SQLite por defecto movida a `instance/fiware.db` para evitar conflicto con la entrada `services`.
 	- Normalizacion defensiva de rutas SQLite en el repositorio local.
+	- Script de carga actualizado para soportar destino `sqlite` (por defecto), permitiendo inicializacion local sin dependencia de Orion.
+	- Enlaces de navegacion principales ajustados a rutas directas (`/stores`, `/products`, `/employees`) y rutas Flask tolerantes con/sin slash final.
+	- Carga inicial alineada al enunciado minimo: 4 stores, 10 products y al menos 5 productos por tienda.
 - Pendiente para siguientes iteraciones:
 	- UI avanzada (Leaflet, Three.js, Mermaid y mejoras de experiencia visual).
 	- i18n ES/EN completo y toggle dark/light persistente.
@@ -369,6 +372,9 @@ Assumptions:
 - Technical adjustments applied:
 	- Default SQLite path moved to `instance/fiware.db` to avoid collisions with existing `services` entry.
 	- Defensive SQLite path normalization added to local repository.
+	- Loader script updated to support `sqlite` target (default), enabling local bootstrap without Orion dependency.
+	- Main navigation links adjusted to direct routes (`/stores`, `/products`, `/employees`) and Flask routes now accept with/without trailing slash.
+	- Initial load aligned with minimum statement scope: 4 stores, 10 products, and at least 5 products per store.
 - Pending for next iterations:
 	- Advanced UI (Leaflet, Three.js, Mermaid, and richer visual behavior).
 	- Full ES/EN i18n and persistent dark/light toggle.

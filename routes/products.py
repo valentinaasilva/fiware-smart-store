@@ -13,6 +13,11 @@ def list_products():
     return render_template("products/list.html", products=products)
 
 
+@products_bp.get("")
+def list_products_no_slash():
+    return list_products()
+
+
 @products_bp.get("/<path:entity_id>")
 def get_product(entity_id: str):
     product = current_app.extensions["data_selector"].get_entity(entity_id)
