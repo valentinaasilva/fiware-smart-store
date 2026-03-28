@@ -25,7 +25,10 @@ def create_inventory_item():
 
 @inventory_bp.put("/<path:entity_id>")
 def update_inventory_item(entity_id: str):
-    payload = extract_payload(request)
+    try:
+        payload = normalize_ngsi_payload(extract_payload(request), "InventoryItem", partial=True)
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
     item = current_app.extensions["data_selector"].update_entity(entity_id, payload)
     if not item:
         return jsonify({"error": "Inventory item not found"}), 404

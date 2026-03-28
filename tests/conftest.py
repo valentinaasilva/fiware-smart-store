@@ -77,3 +77,14 @@ def sample_inventory_item() -> dict:
         "stockCount": {"type": "Integer", "value": 10},
         "shelfCount": {"type": "Integer", "value": 5},
     }
+
+
+@pytest.fixture
+def sample_shelf() -> dict:
+    return {
+        "id": "urn:ngsi-ld:Shelf:TEST001",
+        "type": "Shelf",
+        "name": "Test Shelf",
+        "maxCapacity": 50,
+        "refStore": {"type": "Relationship", "value": "urn:ngsi-ld:Store:TEST001"},
+    }

@@ -39,6 +39,19 @@ NGSI_ATTR_TYPES: dict[str, dict[str, str]] = {
         "username": "Text",
         "password": "Text",
     },
+    "Shelf": {
+        "name": "Text",
+        "location": "geo:json",
+        "maxCapacity": "Integer",
+        "refStore": "Relationship",
+    },
+    "InventoryItem": {
+        "refStore": "Relationship",
+        "refShelf": "Relationship",
+        "refProduct": "Relationship",
+        "stockCount": "Integer",
+        "shelfCount": "Integer",
+    },
 }
 
 PRODUCT_SIZES = {"S", "M", "L", "XL"}
@@ -164,6 +177,72 @@ def _validate_employee(payload: dict, partial: bool) -> None:
             raise ValueError("Employee.refStore must point to a Store URN")
 
 
+def _extract_relationship_urn(value: object, field_name: str, expected_prefix: str) -> str | None:
+    if value is None:
+        return None
+    if _is_ngsi_attr(value):
+        if value.get("type") != "Relationship":
+            raise ValueError(f"{field_name} must be a Relationship")
+        rel_value = value.get("value")
+    else:
+        rel_value = value
+    if not isinstance(rel_value, str) or not rel_value.startswith(expected_prefix):
+        raise ValueError(f"{field_name} must point to a valid URN")
+    return rel_value
+
+
+def _validate_shelf(payload: dict, partial: bool) -> None:
+    if not partial and "refStore" not in payload:
+        raise ValueError("Shelf.refStore is required")
+
+    _extract_relationship_urn(payload.get("refStore"), "Shelf.refStore", "urn:ngsi-ld:Store:")
+
+    max_capacity = _unwrap_value(payload.get("maxCapacity"))
+    if max_capacity is not None:
+        try:
+            parsed = int(max_capacity)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("Shelf.maxCapacity must be an integer") from exc
+        if parsed <= 0:
+            raise ValueError("Shelf.maxCapacity must be > 0")
+
+
+def _validate_inventory_item(payload: dict, partial: bool) -> None:
+    required_fields = ("refStore", "refShelf", "refProduct", "stockCount", "shelfCount")
+    if not partial:
+        missing = [field for field in required_fields if field not in payload]
+        if missing:
+            raise ValueError(f"InventoryItem missing required fields: {', '.join(missing)}")
+
+    _extract_relationship_urn(payload.get("refStore"), "InventoryItem.refStore", "urn:ngsi-ld:Store:")
+    _extract_relationship_urn(payload.get("refShelf"), "InventoryItem.refShelf", "urn:ngsi-ld:Shelf:")
+    _extract_relationship_urn(payload.get("refProduct"), "InventoryItem.refProduct", "urn:ngsi-ld:Product:")
+
+    stock_count = _unwrap_value(payload.get("stockCount"))
+    shelf_count = _unwrap_value(payload.get("shelfCount"))
+
+    parsed_stock = None
+    parsed_shelf = None
+    if stock_count is not None:
+        try:
+            parsed_stock = int(stock_count)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("InventoryItem.stockCount must be an integer") from exc
+        if parsed_stock < 0:
+            raise ValueError("InventoryItem.stockCount must be >= 0")
+
+    if shelf_count is not None:
+        try:
+            parsed_shelf = int(shelf_count)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("InventoryItem.shelfCount must be an integer") from exc
+        if parsed_shelf < 0:
+            raise ValueError("InventoryItem.shelfCount must be >= 0")
+
+    if parsed_stock is not None and parsed_shelf is not None and parsed_shelf > parsed_stock:
+        raise ValueError("InventoryItem.shelfCount must be <= InventoryItem.stockCount")
+
+
 def normalize_ngsi_payload(data: dict, entity_type: str, partial: bool = False) -> dict:
     payload = data.copy()
     if not partial:
@@ -195,6 +274,10 @@ def normalize_ngsi_payload(data: dict, entity_type: str, partial: bool = False) 
         _validate_product(normalized, partial)
     elif entity_type == "Employee":
         _validate_employee(normalized, partial)
+    elif entity_type == "Shelf":
+        _validate_shelf(normalized, partial)
+    elif entity_type == "InventoryItem":
+        _validate_inventory_item(normalized, partial)
 
     if not partial:
         normalized.setdefault("type", entity_type)

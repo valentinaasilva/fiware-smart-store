@@ -621,3 +621,39 @@ Test levels:
 - Technical traceability:
   - Affected layer: Presentation (`templates/stores/*`, `templates/products/*`, `templates/employees/*`, `models/i18n.py`, `tests/test_smoke.py`).
   - Unaffected layers: Application, Data access, Integration.
+
+## 23. Implementation progress (Issue #7 CRUD in detail views)
+
+### ES
+- Estado: Implementacion completada para CRUD contextual en detalles de Store/Product.
+- Cambios arquitectonicos aplicados:
+  - Se adoptan endpoints anidados por contexto para operaciones en detalle:
+    - `stores/<id>/shelves`, `stores/<id>/inventory`
+    - `products/<id>/inventory`
+  - Se incorporan validaciones de dominio para `Shelf` e `InventoryItem` en capa de rutas/utilidades.
+  - Se agrega logica de integridad cruzada:
+    - coherencia `refShelf` con `refStore`.
+    - no duplicados por tripleta (`refStore`, `refShelf`, `refProduct`).
+    - bloqueo de borrado de shelf con dependencias (409).
+  - Las vistas server-rendered de detalle incorporan formularios CRUD y tablas operativas.
+  - La capa de acceso a datos agrega consulta filtrada por atributo para resolver contextos sin romper fallback Orion/SQLite.
+- Trazabilidad tecnica:
+  - Capa afectada: Presentation, Application y Data access.
+  - Archivos clave: `routes/stores.py`, `routes/products.py`, `routes/inventory.py`, `routes/utils.py`, `models/data_source.py`, `templates/stores/detail.html`, `templates/products/detail.html`.
+
+### EN
+- Status: Implementation completed for context-scoped CRUD in Store/Product detail views.
+- Applied architectural changes:
+  - Context-nested endpoints were adopted for detail operations:
+    - `stores/<id>/shelves`, `stores/<id>/inventory`
+    - `products/<id>/inventory`
+  - Domain validations for `Shelf` and `InventoryItem` were added in route/utils layer.
+  - Cross-entity integrity rules were introduced:
+    - `refShelf` and `refStore` consistency.
+    - duplicate prevention for (`refStore`, `refShelf`, `refProduct`) tuples.
+    - shelf delete blocking when dependencies exist (409).
+  - Server-rendered detail views now include operational CRUD forms/tables.
+  - Data-access layer now supports attribute-filtered queries to build contextual views while preserving Orion/SQLite fallback behavior.
+- Technical traceability:
+  - Affected layers: Presentation, Application, and Data access.
+  - Key files: `routes/stores.py`, `routes/products.py`, `routes/inventory.py`, `routes/utils.py`, `models/data_source.py`, `templates/stores/detail.html`, `templates/products/detail.html`.

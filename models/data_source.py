@@ -66,6 +66,20 @@ class DataSourceSelector:
             self.mode = "SQLITE"
             return self.sqlite.list_entities(entity_type)
 
+    @staticmethod
+    def _extract_attr_value(value: Any) -> Any:
+        if isinstance(value, dict) and "value" in value:
+            return value.get("value")
+        return value
+
+    def list_entities_filtered(self, entity_type: str, field: str, expected_value: Any) -> list[dict[str, Any]]:
+        entities = self.list_entities(entity_type)
+        return [
+            entity
+            for entity in entities
+            if self._extract_attr_value(entity.get(field)) == expected_value
+        ]
+
     def get_entity(self, entity_id: str) -> dict[str, Any] | None:
         try:
             return self._active().get_entity(entity_id)

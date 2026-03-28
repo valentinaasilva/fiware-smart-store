@@ -719,3 +719,45 @@ Recommended query models:
   - `type` remains part of NGSIv2 entity contracts but is no longer shown in Store/Product/Employee detail views.
 - Validation evidence:
   - Cross-view smoke test validates simplified ID/reference formatting, country-name expansion, and `Type` removal in detail pages.
+
+## 21. Implementation alignment progress (Issue #7 CRUD in detail views)
+
+### ES
+- Estado: Alineacion implementada para operaciones CRUD de `Shelf` e `InventoryItem` desde vistas de detalle.
+- Alineacion de modelo aplicada:
+  - `Shelf` incorporado en normalizacion/validacion NGSIv2 con campos:
+    - `name` (Text)
+    - `location` (geo:json)
+    - `maxCapacity` (Integer)
+    - `refStore` (Relationship)
+  - `InventoryItem` reforzado en normalizacion/validacion NGSIv2 con campos:
+    - `refStore`, `refShelf`, `refProduct` (Relationship)
+    - `stockCount`, `shelfCount` (Integer)
+  - Reglas de integridad aplicadas en operaciones:
+    - `refShelf` debe pertenecer a `refStore`.
+    - no duplicar tripleta (`refStore`, `refShelf`, `refProduct`).
+    - `shelfCount <= stockCount`.
+    - suma de `shelfCount` por shelf no supera `maxCapacity`.
+    - borrado de shelf bloqueado con `409` si existen InventoryItems dependientes.
+- Evidencia de validacion:
+  - Pruebas de integracion y smoke amplian cobertura para CRUD anidado en Store/Product detail.
+
+### EN
+- Status: Alignment implemented for `Shelf` and `InventoryItem` CRUD operations from detail views.
+- Applied model alignment:
+  - `Shelf` added to NGSIv2 normalization/validation with fields:
+    - `name` (Text)
+    - `location` (geo:json)
+    - `maxCapacity` (Integer)
+    - `refStore` (Relationship)
+  - `InventoryItem` validation reinforced in NGSIv2 normalization with fields:
+    - `refStore`, `refShelf`, `refProduct` (Relationship)
+    - `stockCount`, `shelfCount` (Integer)
+  - Integrity rules enforced in operations:
+    - `refShelf` must belong to `refStore`.
+    - duplicate (`refStore`, `refShelf`, `refProduct`) tuples are rejected.
+    - `shelfCount <= stockCount`.
+    - per-shelf `shelfCount` sum cannot exceed `maxCapacity`.
+    - shelf deletion is blocked with `409` when dependent InventoryItems exist.
+- Validation evidence:
+  - Integration and smoke tests extend coverage for nested CRUD in Store/Product detail contexts.

@@ -594,3 +594,39 @@ Assumptions:
 	- FR-010/FR-020/FR-030: list/detail views now provide more legible operational rendering.
 	- FR-050: country-name mapping is integrated into the ES/EN bilingual flow.
 	- NFR-003: improved readability consistency across main views.
+
+## 21. Implementation progress (Issue #7)
+
+### ES
+- Estado: Implementacion iniciada y completada para operaciones CRUD en detalle de tienda y detalle de producto.
+- Alcance implementado:
+	- Detalle de tienda muestra productos almacenados en la tienda (agregacion por inventario).
+	- Detalle de tienda incorpora CRUD de estanterias (alta, edicion y borrado con control de dependencias).
+	- Detalle de tienda incorpora CRUD de items de inventario vinculados al contexto de la tienda.
+	- Detalle de producto muestra tiendas donde el producto esta disponible.
+	- Detalle de producto incorpora CRUD de items de inventario vinculados al contexto del producto.
+	- Se implementa politica de integridad para borrado de estanterias: bloqueo con `409 Conflict` cuando existen items asociados.
+- Trazabilidad de requisitos:
+	- FR-014: vista de detalle store con tabla de InventoryItems (por store con referencia de shelf/product).
+	- FR-017: CRUD de shelves desde detalle store.
+	- FR-018: CRUD de inventory items desde detalle store.
+	- FR-022: vista detalle product con disponibilidad por tienda.
+	- FR-023: CRUD de inventory items desde detalle product.
+	- FR-024: soporte de seleccion de shelf/store en formularios de inventario.
+
+### EN
+- Status: Implementation started and completed for CRUD operations in store detail and product detail.
+- Implemented scope:
+	- Store detail now shows products stored in the store (inventory-based aggregation).
+	- Store detail now includes shelf CRUD (create, update, delete with dependency control).
+	- Store detail now includes inventory-item CRUD scoped to the store context.
+	- Product detail now shows stores where the product is available.
+	- Product detail now includes inventory-item CRUD scoped to the product context.
+	- Shelf deletion integrity policy implemented: `409 Conflict` when linked inventory items exist.
+- Requirement traceability:
+	- FR-014: store detail with InventoryItems table (store-scoped with shelf/product references).
+	- FR-017: shelf CRUD from store detail.
+	- FR-018: inventory-item CRUD from store detail.
+	- FR-022: product detail availability grouped by store.
+	- FR-023: inventory-item CRUD from product detail.
+	- FR-024: shelf/store selection support in inventory forms.

@@ -119,3 +119,73 @@ def test_employees_create_rejects_invalid_image(client, sample_employee):
     invalid["image"] = "ftp://example.com/employee.png"
     resp = client.post("/employees/", json=invalid)
     assert resp.status_code == 400
+
+
+def test_store_nested_shelf_and_inventory_crud(client, sample_store, sample_product, sample_shelf):
+    client.post("/stores/", json=sample_store)
+    client.post("/products/", json=sample_product)
+
+    shelf_create = client.post(f"/stores/{sample_store['id']}/shelves", json=sample_shelf)
+    assert shelf_create.status_code == 201
+
+    shelf_update = client.put(
+        f"/stores/{sample_store['id']}/shelves/{sample_shelf['id']}",
+        json={"name": "Shelf Updated", "maxCapacity": 60},
+    )
+    assert shelf_update.status_code == 200
+
+    inv_payload = {
+        "id": "urn:ngsi-ld:InventoryItem:TESTSTORE001",
+        "type": "InventoryItem",
+        "refProduct": {"type": "Relationship", "value": sample_product["id"]},
+        "refShelf": {"type": "Relationship", "value": sample_shelf["id"]},
+        "stockCount": {"type": "Integer", "value": 20},
+        "shelfCount": {"type": "Integer", "value": 10},
+    }
+    inv_create = client.post(f"/stores/{sample_store['id']}/inventory", json=inv_payload)
+    assert inv_create.status_code == 201
+
+    inv_update = client.put(
+        f"/stores/{sample_store['id']}/inventory/{inv_payload['id']}",
+        json={"stockCount": {"type": "Integer", "value": 25}, "shelfCount": {"type": "Integer", "value": 12}},
+    )
+    assert inv_update.status_code == 200
+
+    blocked_delete = client.delete(f"/stores/{sample_store['id']}/shelves/{sample_shelf['id']}")
+    assert blocked_delete.status_code == 409
+
+    inv_delete = client.delete(f"/stores/{sample_store['id']}/inventory/{inv_payload['id']}")
+    assert inv_delete.status_code == 204
+
+    shelf_delete = client.delete(f"/stores/{sample_store['id']}/shelves/{sample_shelf['id']}")
+    assert shelf_delete.status_code == 204
+
+
+def test_product_nested_inventory_crud(client, sample_store, sample_product, sample_shelf):
+    client.post("/stores/", json=sample_store)
+    client.post("/products/", json=sample_product)
+    client.post(f"/stores/{sample_store['id']}/shelves", json=sample_shelf)
+
+    inv_payload = {
+        "id": "urn:ngsi-ld:InventoryItem:TESTPROD001",
+        "type": "InventoryItem",
+        "refStore": {"type": "Relationship", "value": sample_store["id"]},
+        "refShelf": {"type": "Relationship", "value": sample_shelf["id"]},
+        "stockCount": {"type": "Integer", "value": 18},
+        "shelfCount": {"type": "Integer", "value": 8},
+    }
+    created = client.post(f"/products/{sample_product['id']}/inventory", json=inv_payload)
+    assert created.status_code == 201
+
+    listed = client.get(f"/products/{sample_product['id']}/inventory")
+    assert listed.status_code == 200
+    assert any(item["id"] == inv_payload["id"] for item in listed.get_json())
+
+    updated = client.put(
+        f"/products/{sample_product['id']}/inventory/{inv_payload['id']}",
+        json={"stockCount": {"type": "Integer", "value": 30}, "shelfCount": {"type": "Integer", "value": 9}},
+    )
+    assert updated.status_code == 200
+
+    deleted = client.delete(f"/products/{sample_product['id']}/inventory/{inv_payload['id']}")
+    assert deleted.status_code == 204

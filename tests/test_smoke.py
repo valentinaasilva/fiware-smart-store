@@ -174,3 +174,34 @@ def test_list_and_detail_views_show_simplified_ids_refstore_and_country_names():
     assert "urn:ngsi-ld:Store:" not in employees_body
     assert "urn:ngsi-ld:Store:" not in employee_detail_body
     assert "<dt>Type</dt>" not in employee_detail_body
+
+
+def test_store_and_product_detail_render_crud_sections():
+    app = create_app()
+    client = app.test_client()
+
+    stores_json = client.get("/stores?format=json")
+    products_json = client.get("/products?format=json")
+    assert stores_json.status_code == 200
+    assert products_json.status_code == 200
+
+    store_id = (stores_json.get_json() or [])[0]["id"]
+    product_id = (products_json.get_json() or [])[0]["id"]
+
+    store_detail = client.get(f"/stores/{store_id}")
+    product_detail = client.get(f"/products/{product_id}")
+
+    assert store_detail.status_code == 200
+    assert product_detail.status_code == 200
+
+    store_body = store_detail.data.decode("utf-8")
+    product_body = product_detail.data.decode("utf-8")
+
+    assert "Products in Store" in store_body
+    assert "Shelves" in store_body
+    assert "Add Shelf" in store_body
+    assert "Add Inventory Item" in store_body
+
+    assert "Available in Stores" in product_body
+    assert "Inventory" in product_body
+    assert "Add Inventory Item" in product_body

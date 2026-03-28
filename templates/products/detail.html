@@ -33,4 +33,99 @@
     </dl>
   </article>
 </section>
+
+<section class="table-shell">
+  <h3>{{ _('Available in Stores') }}</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>{{ _('ID') }}</th>
+        <th>{{ _('Name') }}</th>
+        <th>{{ _('Stock Count') }}</th>
+        <th>{{ _('Shelf Count') }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for store in available_stores %}
+      <tr>
+        <td class="mono">{{ store.id.split(':')[-1] if store.id is string else store.id }}</td>
+        <td>{{ store.name }}</td>
+        <td>{{ store.stockCount }}</td>
+        <td>{{ store.shelfCount }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4">{{ _('No records') }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="table-shell">
+  <h3>{{ _('Inventory') }}</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>{{ _('ID') }}</th>
+        <th>{{ _('Ref Store') }}</th>
+        <th>{{ _('Shelf') }}</th>
+        <th>{{ _('Stock Count') }}</th>
+        <th>{{ _('Shelf Count') }}</th>
+        <th>{{ _('Actions') }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in inventory_items %}
+      <tr>
+        <td class="mono">{{ item.id.split(':')[-1] if item.id is string else item.id }}</td>
+        <td>{{ item.storeName }}</td>
+        <td>{{ item.shelfName }}</td>
+        <td>{{ item.stockCount }}</td>
+        <td>{{ item.shelfCount }}</td>
+        <td>
+          <form method="post" action="{{ url_for('products.update_product_inventory_form', product_id=product.id, inventory_id=item.id) }}" style="display:inline-flex; gap:0.25rem;">
+            <select name="refStore" required>
+              {% for store in all_stores %}
+              <option value="{{ store.id }}" {% if store.id == item.refStore %}selected{% endif %}>{{ store.name }}</option>
+              {% endfor %}
+            </select>
+            <select name="refShelf" required>
+              {% for shelf in all_shelves %}
+              <option value="{{ shelf.id }}" {% if shelf.id == item.refShelf %}selected{% endif %}>{{ shelf.name }}</option>
+              {% endfor %}
+            </select>
+            <input type="number" name="stockCount" value="{{ item.stockCount }}" min="0" required>
+            <input type="number" name="shelfCount" value="{{ item.shelfCount }}" min="0" required>
+            <button type="submit">{{ _('Update') }}</button>
+          </form>
+          <form method="post" action="{{ url_for('products.delete_product_inventory_form', product_id=product.id, inventory_id=item.id) }}" style="display:inline;">
+            <button type="submit">{{ _('Delete') }}</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">{{ _('No records') }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h4>{{ _('Add Inventory Item') }}</h4>
+  <form method="post" action="{{ url_for('products.create_product_inventory', product_id=product.id) }}" class="inline-form">
+    <input type="text" name="id" placeholder="urn:ngsi-ld:InventoryItem:NEW001" required>
+    <select name="refStore" required>
+      <option value="">{{ _('Ref Store') }}</option>
+      {% for store in all_stores %}
+      <option value="{{ store.id }}">{{ store.name }}</option>
+      {% endfor %}
+    </select>
+    <select name="refShelf" required>
+      <option value="">{{ _('Shelf') }}</option>
+      {% for shelf in all_shelves %}
+      <option value="{{ shelf.id }}">{{ shelf.name }}</option>
+      {% endfor %}
+    </select>
+    <input type="number" name="stockCount" min="0" placeholder="20" required>
+    <input type="number" name="shelfCount" min="0" placeholder="5" required>
+    <button type="submit">{{ _('Add Inventory Item') }}</button>
+  </form>
+</section>
 {% endblock %}

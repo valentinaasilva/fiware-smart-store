@@ -58,4 +58,144 @@
     <div class="img-fallback large">{{ _('Location unavailable') }}</div>
   {% endif %}
 </section>
+
+<section class="table-shell">
+  <h3>{{ _('Products in Store') }}</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>{{ _('ID') }}</th>
+        <th>{{ _('Name') }}</th>
+        <th>{{ _('Stock Count') }}</th>
+        <th>{{ _('Shelf Count') }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in products_in_store %}
+      <tr>
+        <td class="mono">{{ product.id.split(':')[-1] if product.id is string else product.id }}</td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.stockCount }}</td>
+        <td>{{ product.shelfCount }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4">{{ _('No records') }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="table-shell">
+  <h3>{{ _('Shelves') }}</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>{{ _('ID') }}</th>
+        <th>{{ _('Name') }}</th>
+        <th>{{ _('Max Capacity') }}</th>
+        <th>{{ _('Current Load') }}</th>
+        <th>{{ _('Actions') }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for shelf in shelves %}
+      <tr>
+        <td class="mono">{{ shelf.id.split(':')[-1] if shelf.id is string else shelf.id }}</td>
+        <td>{{ shelf.name }}</td>
+        <td>{{ shelf.maxCapacity }}</td>
+        <td>{{ shelf.currentLoad }} ({{ shelf.fillPercent }}%)</td>
+        <td>
+          <form method="post" action="{{ url_for('stores.update_store_shelf_form', store_id=store.id, shelf_id=shelf.id) }}" style="display:inline-flex; gap:0.25rem;">
+            <input type="text" name="name" value="{{ shelf.name }}" required>
+            <input type="number" name="maxCapacity" value="{{ shelf.maxCapacity }}" min="1" required>
+            <button type="submit">{{ _('Update') }}</button>
+          </form>
+          <form method="post" action="{{ url_for('stores.delete_store_shelf_form', store_id=store.id, shelf_id=shelf.id) }}" style="display:inline;">
+            <button type="submit">{{ _('Delete') }}</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5">{{ _('No records') }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h4>{{ _('Add Shelf') }}</h4>
+  <form method="post" action="{{ url_for('stores.create_store_shelf', store_id=store.id) }}" class="inline-form">
+    <input type="text" name="id" placeholder="urn:ngsi-ld:Shelf:NEW001" required>
+    <input type="text" name="name" placeholder="Shelf A1" required>
+    <input type="number" name="maxCapacity" min="1" placeholder="50" required>
+    <button type="submit">{{ _('Add Shelf') }}</button>
+  </form>
+</section>
+
+<section class="table-shell">
+  <h3>{{ _('Inventory') }}</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>{{ _('ID') }}</th>
+        <th>{{ _('Product') }}</th>
+        <th>{{ _('Shelf') }}</th>
+        <th>{{ _('Stock Count') }}</th>
+        <th>{{ _('Shelf Count') }}</th>
+        <th>{{ _('Actions') }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in inventory_items %}
+      <tr>
+        <td class="mono">{{ item.id.split(':')[-1] if item.id is string else item.id }}</td>
+        <td>{{ item.productName }}</td>
+        <td>{{ item.shelfName }}</td>
+        <td>{{ item.stockCount }}</td>
+        <td>{{ item.shelfCount }}</td>
+        <td>
+          <form method="post" action="{{ url_for('stores.update_store_inventory_form', store_id=store.id, inventory_id=item.id) }}" style="display:inline-flex; gap:0.25rem;">
+            <select name="refProduct" required>
+              {% for product in all_products %}
+              <option value="{{ product.id }}" {% if product.id == item.refProduct %}selected{% endif %}>{{ product.name }}</option>
+              {% endfor %}
+            </select>
+            <select name="refShelf" required>
+              {% for shelf in shelves %}
+              <option value="{{ shelf.id }}" {% if shelf.id == item.refShelf %}selected{% endif %}>{{ shelf.name }}</option>
+              {% endfor %}
+            </select>
+            <input type="number" name="stockCount" value="{{ item.stockCount }}" min="0" required>
+            <input type="number" name="shelfCount" value="{{ item.shelfCount }}" min="0" required>
+            <button type="submit">{{ _('Update') }}</button>
+          </form>
+          <form method="post" action="{{ url_for('stores.delete_store_inventory_form', store_id=store.id, inventory_id=item.id) }}" style="display:inline;">
+            <button type="submit">{{ _('Delete') }}</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">{{ _('No records') }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h4>{{ _('Add Inventory Item') }}</h4>
+  <form method="post" action="{{ url_for('stores.create_store_inventory', store_id=store.id) }}" class="inline-form">
+    <input type="text" name="id" placeholder="urn:ngsi-ld:InventoryItem:NEW001" required>
+    <select name="refProduct" required>
+      <option value="">{{ _('Product') }}</option>
+      {% for product in all_products %}
+      <option value="{{ product.id }}">{{ product.name }}</option>
+      {% endfor %}
+    </select>
+    <select name="refShelf" required>
+      <option value="">{{ _('Shelf') }}</option>
+      {% for shelf in shelves %}
+      <option value="{{ shelf.id }}">{{ shelf.name }}</option>
+      {% endfor %}
+    </select>
+    <input type="number" name="stockCount" min="0" placeholder="20" required>
+    <input type="number" name="shelfCount" min="0" placeholder="5" required>
+    <button type="submit">{{ _('Add Inventory Item') }}</button>
+  </form>
+</section>
 {% endblock %}
