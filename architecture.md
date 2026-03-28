@@ -443,3 +443,83 @@ Test levels:
   - Completed and stable for baseline platform scope and test-data provisioning.
 - Current decision:
   - Keep a common repository interface to allow SQLite implementation migration without route changes.
+
+## 16. Implementation progress (Issue #2)
+
+### ES
+- Implementado en iteracion inicial de i18n:
+  - Modulo de traducciones lightweight en `models/i18n.py`.
+  - Seleccion de locale en `before_request` y persistencia en `session`.
+  - Context processor para inyeccion de helper `_()` y `current_lang` en plantillas.
+  - Endpoint `/language/<lang>` para cambiar idioma y redirigir a la ruta actual.
+  - Toggle ES/EN en navbar y traduccion de vistas principales.
+- Impacto arquitectonico:
+  - No se altera la capa de datos ni contratos NGSIv2.
+  - i18n se mantiene en capa de presentacion y contexto de peticion.
+
+### EN
+- Implemented in initial i18n iteration:
+  - Lightweight translation module in `models/i18n.py`.
+  - Locale selection in `before_request` with session persistence.
+  - Context processor injecting `_()` helper and `current_lang` in templates.
+  - `/language/<lang>` endpoint to switch language and redirect to current route.
+  - ES/EN toggle in navbar and translation of main views.
+- Architectural impact:
+  - No changes to data layer or NGSIv2 contracts.
+  - i18n remains in presentation layer and request context.
+
+## 17. Implementation progress (Issue #3)
+
+### ES
+- Estado: Bateria de pruebas ampliada y estable para la arquitectura actual.
+- Cambios aplicados:
+  - Estructura de tests separada por capas (`tests/unit`, `tests/integration`) para mantener coherencia con la arquitectura logica.
+  - Cobertura unitaria dedicada para `OrionClient` (health-check, CRUD y registro de integrations NGSIv2).
+  - Fixtures compartidas en `tests/conftest.py` para aislar SQLite temporal y forzar escenarios Orion no disponible.
+  - Pruebas de integracion para blueprints CRUD y webhooks de notificaciones.
+  - Pruebas `tests/e2e` para flujo operativo completo y resiliencia ante caida de Orion con fallback a SQLite.
+  - Correccion de compatibilidad en rutas de inventario para aceptar URL con y sin slash final, evitando redirecciones 308 en clientes API.
+- Verificacion:
+  - Ejecucion de suite completa con 87 tests en verde.
+
+### EN
+- Status: Expanded test battery is stable for the current architecture.
+- Applied changes:
+  - Layered test structure (`tests/unit`, `tests/integration`) aligned with logical architecture boundaries.
+  - Dedicated unit coverage for `OrionClient` (health-check, CRUD, and NGSIv2 integration registration).
+  - Shared fixtures in `tests/conftest.py` to isolate temporary SQLite and force Orion-unavailable scenarios.
+  - Integration tests for CRUD blueprints and notification webhooks.
+  - `tests/e2e` coverage for full operational flow and resilience when Orion fails and SQLite fallback takes over.
+  - Inventory route compatibility fix to accept both trailing-slash and non-trailing-slash URLs, preventing 308 redirects for API clients.
+- Verification:
+  - Full suite execution with 87 passing tests.
+
+## 18. Implementation progress (Issue #4)
+
+### ES
+- Estado: Iteracion de refuerzo de contrato NGSIv2 completada y cerrada en Store/Product.
+- Cambios aplicados:
+  - `routes/utils.py` centraliza normalizacion NGSIv2, denormalizacion para vistas HTML y validaciones de dominio para Store/Product.
+  - `routes/stores.py` y `routes/products.py` aplican normalizacion/validacion en create/update y mantienen respuestas JSON para consumidores API.
+  - Vistas de `stores` y `products` muestran `image`; vistas de productos muestran adicionalmente `originCountry`.
+  - Navegacion principal en `templates/base.html` queda enfocada en dashboard, stores y products.
+  - Etiqueta de entrada principal ajustada a `Dashboard` (EN) y `Panel` (ES) para consistencia de UX.
+  - `static/css/main.css` se rediseña como sistema visual de panel administrativo (tokens, jerarquia tipografica, tablas/cards, responsive).
+  - Datos semilla de imagenes en `scripts/load_test_data.py` migran a URLs fijas curadas para coherencia por entidad, incluyendo mapeo final de Stores a URLs especificas con nomenclatura Xantadis (Norte/Sur/Este/Oeste) y ajuste explicito de productos clave (manzana roja, leche).
+  - Fixtures y pruebas de integracion/unit se actualizan para cubrir el nuevo contrato.
+- Verificacion:
+  - Ejecucion de suite completa con 95 tests en verde.
+
+### EN
+- Status: NGSIv2 contract-hardening iteration completed and closed for Store/Product.
+- Applied changes:
+  - `routes/utils.py` now centralizes NGSIv2 normalization, HTML-view denormalization, and Store/Product domain validations.
+  - `routes/stores.py` and `routes/products.py` apply normalization/validation on create/update while preserving JSON API responses.
+  - `stores` and `products` views now expose `image`; product views additionally expose `originCountry`.
+  - Main navigation in `templates/base.html` is focused on dashboard, stores, and products.
+  - Primary entry label was refined to `Dashboard` (EN) and `Panel` (ES) for UX consistency.
+  - `static/css/main.css` was redesigned as an admin-panel visual system (tokens, typography hierarchy, improved tables/cards, responsive behavior).
+  - Seed image data in `scripts/load_test_data.py` now uses curated fixed URLs for entity-level semantic coherence, including final Store URL mapping with Xantadis naming (North/South/East/West) and explicit key-product adjustments (red apple, milk).
+  - Fixtures and integration/unit tests were updated to cover the new contract.
+- Verification:
+  - Full suite execution with 95 passing tests.

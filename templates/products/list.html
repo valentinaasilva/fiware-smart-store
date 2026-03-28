@@ -1,19 +1,33 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Products</h2>
-<table>
-  <thead>
-    <tr><th>ID</th><th>Name</th><th>Price</th></tr>
-  </thead>
-  <tbody>
-  {% for product in products %}
-    <tr>
-      <td>{{ product.id }}</td>
-      <td><a href="{{ url_for('products.get_product', entity_id=product.id) }}">{{ product.name }}</a></td>
-      <td>{{ product.price }}</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
+<section class="page-header">
+  <p class="eyebrow">Catalog management</p>
+  <h2>{{ _('Products') }}</h2>
+</section>
+
+<section class="table-shell">
+  <table>
+    <thead>
+      <tr><th>{{ _('Image') }}</th><th>{{ _('ID') }}</th><th>{{ _('Name') }}</th><th>{{ _('Origin Country') }}</th><th>{{ _('Price') }}</th></tr>
+    </thead>
+    <tbody>
+    {% for product in products %}
+      <tr>
+        <td>
+          {% if product.image %}
+            <img class="table-thumb product-thumb" src="{{ product.image }}" alt="{{ product.name }}" width="72" height="72" loading="lazy">
+          {% else %}
+            <span class="img-fallback">No image</span>
+          {% endif %}
+        </td>
+        <td class="mono">{{ product.id }}</td>
+        <td><a class="entity-link" href="{{ url_for('products.get_product', entity_id=product.id) }}">{{ product.name }}</a></td>
+        <td>{{ product.originCountry or '-' }}</td>
+        <td class="price-cell">{{ product.price }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
 {% endblock %}

@@ -1,14 +1,38 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section>
-  <h2>Dashboard</h2>
-  <p>Active source mode: <strong>{{ source_mode }}</strong></p>
-  <div class="cards">
-    <article><h3>Stores</h3><p>{{ stats.stores }}</p></article>
-    <article><h3>Products</h3><p>{{ stats.products }}</p></article>
-    <article><h3>Employees</h3><p>{{ stats.employees }}</p></article>
-    <article><h3>Inventory Items</h3><p>{{ stats.inventory_items }}</p></article>
+<section class="hero-panel">
+  <div>
+    <p class="eyebrow">{{ _('Dashboard') }}</p>
+    <h2>{{ _('Dashboard') }}</h2>
+    <p class="hero-subtitle">{{ _('Active source mode') }}: <strong>{{ source_mode }}</strong></p>
   </div>
+  <div class="hero-links">
+    <a class="button-link" href="/stores">{{ _('Stores') }}</a>
+    <a class="button-link" href="/products">{{ _('Products') }}</a>
+  </div>
+</section>
+
+<section class="cards-grid">
+  <article class="metric-card">
+    <h3>{{ _('Stores') }}</h3>
+    <p class="metric-value">{{ stats.stores }}</p>
+    <p class="metric-note">Physical locations registered</p>
+  </article>
+  <article class="metric-card">
+    <h3>{{ _('Products') }}</h3>
+    <p class="metric-value">{{ stats.products }}</p>
+    <p class="metric-note">Active catalog entries</p>
+  </article>
+  <article class="metric-card">
+    <h3>{{ _('Employees') }}</h3>
+    <p class="metric-value">{{ stats.employees }}</p>
+    <p class="metric-note">Staff records tracked</p>
+  </article>
+  <article class="metric-card">
+    <h3>{{ _('Inventory Items') }}</h3>
+    <p class="metric-value">{{ stats.inventory_items }}</p>
+    <p class="metric-note">Stock positions monitored</p>
+  </article>
 </section>
 {% endblock %}

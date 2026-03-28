@@ -543,3 +543,85 @@ Recommended query models:
   - SQLite fallback storage path is now `instance/fiware.db`, preventing path collisions with non-directory entries in the project root.
 - Status note:
   - Issue #1 closure covers the baseline app objective and supermarket-chain initial load; full model convergence remains incremental follow-up work.
+
+## 14. Implementation alignment progress (Issue #2)
+
+### ES
+- Estado: Alineado e implementado para capa de presentacion.
+- Cambios relevantes:
+  - Se incorpora soporte ES/EN en UI sin modificar entidades NGSIv2 ni atributos de dominio.
+  - El cambio de idioma afecta solo labels, titulos y textos de interfaz.
+  - La persistencia del idioma se realiza en sesion HTTP.
+- Impacto en modelo de datos:
+  - Sin cambios de esquema para Store, Product, Employee, Shelf o InventoryItem.
+  - Sin cambios en reglas IR-001..IR-007.
+
+### EN
+- Status: Aligned and implemented at presentation layer.
+- Relevant changes:
+  - ES/EN UI support is added without modifying NGSIv2 entities or domain attributes.
+  - Language switch affects only labels, titles, and interface text.
+  - Language persistence is handled through HTTP session.
+- Data model impact:
+  - No schema changes for Store, Product, Employee, Shelf, or InventoryItem.
+  - No changes to IR-001..IR-007 rules.
+
+## 15. Implementation alignment progress (Issue #3)
+
+### ES
+- Estado: Avance implementado y validado por pruebas automatizadas.
+- Alineacion de modelo validada en esta iteracion:
+  - Validaciones de payload y normalizacion NGSIv2 para entidades CRUD principales.
+  - Reglas base de inventario verificadas en tests (conteos no negativos y consistencia de relaciones esperadas).
+  - Cobertura de respuestas de endpoints para operaciones create/update/delete y manejo de errores de entrada.
+  - Pruebas de integridad de distribucion minima en datos de prueba (productos por tienda y stock minimo agregado).
+  - Escenario e2e validado para conmutacion Orion -> SQLite sin romper contratos de datos CRUD.
+- Reglas de integridad con evidencia de test en esta iteracion:
+  - IR-001: consistencia esperada entre `refShelf` y `refStore` cubierta por tests de integridad.
+  - IR-002: no duplicidad por tripleta (store, shelf, product) cubierta por tests de integridad.
+  - IR-003: capacidad de shelf no excedida cubierta por tests de integridad.
+
+### EN
+- Status: Implemented progress validated through automated tests.
+- Model alignment validated in this iteration:
+  - Payload validation and NGSIv2 normalization checks for core CRUD entities.
+  - Baseline inventory rules verified by tests (non-negative counters and expected relationship consistency).
+  - Endpoint response coverage for create/update/delete operations and input-error handling.
+  - Minimum distribution integrity checks in seed data (products per store and minimum aggregate stock).
+  - End-to-end scenario validated for Orion -> SQLite switch without breaking CRUD data contracts.
+- Integrity rules with test evidence in this iteration:
+  - IR-001: expected consistency between `refShelf` and `refStore` covered by integrity tests.
+  - IR-002: no duplicate tuple (store, shelf, product) covered by integrity tests.
+  - IR-003: shelf capacity not exceeded covered by integrity tests.
+
+## 16. Implementation alignment progress (Issue #4)
+
+### ES
+- Estado: Alineacion implementada y cerrada para operaciones CRUD Store/Product bajo contrato NGSIv2.
+- Alineacion de modelo aplicada:
+  - Atributos de Store/Product se normalizan a estructura NGSIv2 (`type` + `value`) en create/update.
+  - `Store.image` y `Product.image` quedan soportados de extremo a extremo (API, persistencia y vistas).
+  - `Product.originCountry` queda soportado de extremo a extremo con validacion ISO alpha-2.
+  - Se mantiene compatibilidad de entrada para `origin` legacy, mapeandolo a `originCountry`.
+  - Dataset de referencia actualizado para usar URLs fijas curadas (Unsplash/Picsum) coherentes con la entidad representada.
+  - Ajuste final aplicado en dataset: Stores alineadas a URLs concretas provistas con naming final Xantadis (Norte/Sur/Este/Oeste) y productos clave con URL explicita (manzana roja, leche).
+- Reglas/validaciones con evidencia de test:
+  - `Product.size` en enum `S|M|L|XL`.
+  - `Product.color` con regex `#RRGGBB`.
+  - `Product.price >= 0`.
+  - `image` de Store/Product como URL valida `http/https`.
+
+### EN
+- Status: Alignment implemented and closed for Store/Product CRUD operations under NGSIv2 contract.
+- Applied model alignment:
+  - Store/Product attributes are normalized to NGSIv2 structure (`type` + `value`) on create/update.
+  - `Store.image` and `Product.image` are supported end-to-end (API, persistence, and views).
+  - `Product.originCountry` is supported end-to-end with ISO alpha-2 validation.
+  - Backward-compatible input is preserved for legacy `origin`, mapped to `originCountry`.
+  - Reference seed dataset now uses curated fixed image URLs (Unsplash/Picsum) that match the represented entity.
+  - Final dataset refinement applied: Stores aligned to specific provided URLs with final Xantadis naming (North/South/East/West) and key products with explicit URLs (red apple, milk).
+- Validation rules with test evidence:
+  - `Product.size` in enum `S|M|L|XL`.
+  - `Product.color` regex `#RRGGBB`.
+  - `Product.price >= 0`.
+  - Store/Product `image` must be a valid `http/https` URL.

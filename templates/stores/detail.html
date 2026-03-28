@@ -1,11 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Store Detail</h2>
-<dl>
-  <dt>ID</dt><dd>{{ store.id }}</dd>
-  <dt>Name</dt><dd>{{ store.name }}</dd>
-  <dt>Country</dt><dd>{{ store.countryCode }}</dd>
-  <dt>Type</dt><dd>{{ store.type }}</dd>
-</dl>
+<section class="detail-header">
+  <a class="back-link" href="/stores">&larr; {{ _('Stores') }}</a>
+  <h2>{{ _('Store Detail') }}</h2>
+</section>
+
+<section class="detail-grid">
+  <article class="detail-media">
+    {% if store.image %}
+      <img src="{{ store.image }}" alt="{{ store.name }}" width="520" height="300" loading="lazy">
+    {% else %}
+      <div class="img-fallback large">No image</div>
+    {% endif %}
+  </article>
+  <article class="detail-card">
+    <h3>{{ store.name }}</h3>
+    <dl>
+      <dt>{{ _('ID') }}</dt><dd class="mono">{{ store.id }}</dd>
+      <dt>{{ _('Country') }}</dt><dd>{{ store.countryCode }}</dd>
+      <dt>{{ _('Type') }}</dt><dd>{{ store.type }}</dd>
+    </dl>
+  </article>
+</section>
 {% endblock %}

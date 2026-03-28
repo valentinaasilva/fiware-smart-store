@@ -5,12 +5,14 @@ from routes.utils import extract_payload, normalize_ngsi_payload
 inventory_bp = Blueprint("inventory", __name__, url_prefix="/inventory")
 
 
+@inventory_bp.get("")
 @inventory_bp.get("/")
 def list_inventory_items():
     inventory = current_app.extensions["data_selector"].list_entities("InventoryItem")
     return jsonify(inventory)
 
 
+@inventory_bp.post("")
 @inventory_bp.post("/")
 def create_inventory_item():
     try:

@@ -1,11 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Product Detail</h2>
-<dl>
-  <dt>ID</dt><dd>{{ product.id }}</dd>
-  <dt>Name</dt><dd>{{ product.name }}</dd>
-  <dt>Price</dt><dd>{{ product.price }}</dd>
-  <dt>Type</dt><dd>{{ product.type }}</dd>
-</dl>
+<section class="detail-header">
+  <a class="back-link" href="/products">&larr; {{ _('Products') }}</a>
+  <h2>{{ _('Product Detail') }}</h2>
+</section>
+
+<section class="detail-grid">
+  <article class="detail-media">
+    {% if product.image %}
+      <img src="{{ product.image }}" alt="{{ product.name }}" width="420" height="420" loading="lazy">
+    {% else %}
+      <div class="img-fallback large">No image</div>
+    {% endif %}
+  </article>
+  <article class="detail-card">
+    <h3>{{ product.name }}</h3>
+    <dl>
+      <dt>{{ _('ID') }}</dt><dd class="mono">{{ product.id }}</dd>
+      <dt>{{ _('Origin Country') }}</dt><dd>{{ product.originCountry or '-' }}</dd>
+      <dt>{{ _('Price') }}</dt><dd class="price-cell">{{ product.price }}</dd>
+      <dt>{{ _('Type') }}</dt><dd>{{ product.type }}</dd>
+    </dl>
+  </article>
+</section>
 {% endblock %}

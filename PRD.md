@@ -377,5 +377,106 @@ Assumptions:
 	- Initial load aligned with minimum statement scope: 4 stores, 10 products, and at least 5 products per store.
 - Pending for next iterations:
 	- Advanced UI (Leaflet, Three.js, Mermaid, and richer visual behavior).
-	- Full ES/EN i18n and persistent dark/light toggle.
+	- Persistent dark/light toggle.
 	- Advanced validation hardening and end-to-end testing.
+
+## 14. Implementation progress (Issue #2)
+
+### ES
+- Estado: Implementado (iteracion inicial de i18n UI).
+- Alcance implementado:
+	- Soporte multi-idioma ES/EN con seleccion en interfaz (navbar).
+	- Persistencia de idioma por sesion de usuario.
+	- Traduccion de textos principales en dashboard, barra de navegacion y vistas stores/products/employees.
+	- Endpoint de cambio de idioma con redireccion segura a la pagina actual.
+- Cobertura de requisitos:
+	- FR-050: soporte bilingue ES/EN implementado en vistas principales.
+	- Flujo de navegacion validado tras cambio de idioma.
+
+### EN
+- Status: Implemented (initial UI i18n iteration).
+- Implemented scope:
+	- ES/EN multi-language support with UI selector in navbar.
+	- Session-based language persistence.
+	- Main text translation in dashboard, navbar, and stores/products/employees views.
+	- Language-switch endpoint with safe redirect back to current page.
+- Requirement coverage:
+	- FR-050: ES/EN bilingual support implemented in core views.
+	- Navigation flow validated after language switch.
+
+## 15. Implementation progress (Issue #3)
+
+### ES
+- Estado: Implementacion de bateria de pruebas completada para la iteracion actual.
+- Resultado de validacion:
+	- Suite ejecutada con exito: 87 passed.
+- Cobertura agregada en esta iteracion:
+	- Tests unitarios para utilidades, `OrionClient` y capa de datos (selector/fallback SQLite).
+	- Tests de integracion para CRUD de stores, products, employees e inventory.
+	- Tests e2e de flujo completo (store -> product -> inventory) y fallback Orion -> SQLite.
+	- Tests de endpoint de notificaciones (price change y low stock).
+	- Correcciones en tests legacy del cargador de datos para reflejar el comportamiento real del modo Orion.
+- Trazabilidad de requisitos:
+	- FR-001, FR-002, FR-003: verificados por pruebas de seleccion de fuente y fallback.
+	- FR-010, FR-020, FR-030 y FR-040: cubiertos por pruebas de rutas y respuestas JSON.
+	- FR-060 y FR-061: cubiertos por pruebas de webhooks de notificaciones.
+	- NFR-008: reforzado con nueva bateria de pruebas unitarias e integracion.
+
+### EN
+- Status: Test battery implementation completed for the current iteration.
+- Validation result:
+	- Test suite executed successfully: 87 passed.
+- Coverage added in this iteration:
+	- Unit tests for utilities, `OrionClient`, and data layer (selector/SQLite fallback).
+	- Integration tests for CRUD across stores, products, employees, and inventory.
+	- End-to-end tests for full flow (store -> product -> inventory) and Orion -> SQLite fallback.
+	- Notification endpoint tests (price change and low stock).
+	- Legacy loader test fixes to reflect actual Orion-mode behavior.
+- Requirement traceability:
+	- FR-001, FR-002, FR-003 verified through source-selection and fallback tests.
+	- FR-010, FR-020, FR-030, and FR-040 covered through route and JSON response tests.
+	- FR-060 and FR-061 covered through notification webhook tests.
+	- NFR-008 strengthened with the new unit and integration test battery.
+
+## 16. Implementation progress (Issue #4)
+
+### ES
+- Estado: Implementacion completada y cerrada para la alineacion NGSIv2 en Store/Product y vistas core.
+- Resultado de validacion:
+	- Suite ejecutada con exito: 95 passed.
+- Alcance implementado en esta iteracion:
+	- Normalizacion y validacion NGSIv2 para CRUD de Store y Product (create/update).
+	- Soporte de atributos `image` en Store y Product y `originCountry` en Product en API, fixtures y vistas.
+	- Compatibilidad con payload legacy de Product (`origin` -> `originCountry`).
+	- Navegacion principal acotada a dashboard, stores y products.
+	- Vistas de detalle de Store/Product actualizadas con nuevos atributos.
+	- Rediseño visual integral con layout de panel administrativo, tipografia consistente, tablas/cards mejor maquetadas y responsive.
+	- URLs de imagen curadas y fijas en datos semilla para coherencia semantica (tiendas reales y productos reales).
+	- Ajuste final de UX en navbar: etiqueta principal visible como Dashboard (EN) y Panel (ES).
+	- Ajuste final de imagenes y branding: Stores alineadas a URLs especificas y nomenclatura final Xantadis (Norte/Sur/Este/Oeste), y Product con ejemplos explicitos para manzana roja y leche.
+- Trazabilidad de requisitos:
+	- FR-010: listado/detalle de tiendas enriquecido con `image`.
+	- FR-020: listado/detalle de productos enriquecido con `image` y `originCountry`.
+	- FR-040: dashboard se mantiene como vista principal operativa.
+	- NFR-008: cobertura ampliada con pruebas de validacion NGSIv2 y contratos de rutas.
+
+### EN
+- Status: Implementation completed and closed for NGSIv2 alignment on Store/Product and core views.
+- Validation result:
+	- Test suite executed successfully: 95 passed.
+- Implemented scope in this iteration:
+	- NGSIv2 normalization and validation for Store/Product CRUD (create/update).
+	- Support for `image` on Store and Product, and `originCountry` on Product across API, fixtures, and views.
+	- Backward compatibility for legacy Product payloads (`origin` -> `originCountry`).
+	- Main navigation focused on dashboard, stores, and products.
+	- Store/Product detail views updated with the new attributes.
+	- Full visual redesign with admin-panel layout, consistent typography, improved cards/tables, and responsive behavior.
+	- Curated fixed image URLs in seed data to keep entity-semantic coherence (real stores and real products).
+	- Final UX refinement in navbar: primary label shown as Dashboard (EN) and Panel (ES).
+	- Final image and branding refinement: Stores aligned to specified URLs and final Xantadis naming (North/South/East/West), and Product with explicit examples for red apple and milk.
+- Requirement traceability:
+	- FR-010: store list/detail enriched with `image`.
+	- FR-020: product list/detail enriched with `image` and `originCountry`.
+	- FR-040: dashboard remains operational as a main view.
+	- FR-050/UX visual: professional and consistent UI style across the three main views.
+	- NFR-008: expanded coverage with NGSIv2 validation and route contract tests.
