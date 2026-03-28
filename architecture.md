@@ -493,3 +493,31 @@ Test levels:
   - Inventory route compatibility fix to accept both trailing-slash and non-trailing-slash URLs, preventing 308 redirects for API clients.
 - Verification:
   - Full suite execution with 87 passing tests.
+
+## 18. Implementation progress (Issue #4)
+
+### ES
+- Estado: Iteracion inicial de refuerzo de contrato NGSIv2 aplicada en Store/Product.
+- Cambios aplicados:
+  - `routes/utils.py` centraliza normalizacion NGSIv2, denormalizacion para vistas HTML y validaciones de dominio para Store/Product.
+  - `routes/stores.py` y `routes/products.py` aplican normalizacion/validacion en create/update y mantienen respuestas JSON para consumidores API.
+  - Vistas de `stores` y `products` muestran `image`; vistas de productos muestran adicionalmente `originCountry`.
+  - Navegacion principal en `templates/base.html` queda enfocada en dashboard, stores y products.
+  - `static/css/main.css` se rediseña como sistema visual de panel administrativo (tokens, jerarquia tipografica, tablas/cards, responsive).
+  - Datos semilla de imagenes en `scripts/load_test_data.py` migran a URLs fijas curadas para coherencia por entidad.
+  - Fixtures y pruebas de integracion/unit se actualizan para cubrir el nuevo contrato.
+- Verificacion:
+  - Ejecucion de suite completa con 94 tests en verde.
+
+### EN
+- Status: Initial NGSIv2 contract-hardening iteration applied to Store/Product.
+- Applied changes:
+  - `routes/utils.py` now centralizes NGSIv2 normalization, HTML-view denormalization, and Store/Product domain validations.
+  - `routes/stores.py` and `routes/products.py` apply normalization/validation on create/update while preserving JSON API responses.
+  - `stores` and `products` views now expose `image`; product views additionally expose `originCountry`.
+  - Main navigation in `templates/base.html` is focused on dashboard, stores, and products.
+  - `static/css/main.css` was redesigned as an admin-panel visual system (tokens, typography hierarchy, improved tables/cards, responsive behavior).
+  - Seed image data in `scripts/load_test_data.py` now uses curated fixed URLs for entity-level semantic coherence.
+  - Fixtures and integration/unit tests were updated to cover the new contract.
+- Verification:
+  - Full suite execution with 94 passing tests.

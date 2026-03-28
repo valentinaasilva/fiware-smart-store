@@ -33,6 +33,7 @@ def sample_store() -> dict:
         "name": "Test Store",
         "countryCode": "ES",
         "capacity": 100,
+        "image": "https://example.com/store.png",
     }
 
 
@@ -45,6 +46,8 @@ def sample_product() -> dict:
         "price": 9.99,
         "size": "M",
         "color": "#FF0000",
+        "originCountry": "ES",
+        "image": "https://example.com/product.png",
     }
 
 

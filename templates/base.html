@@ -8,16 +8,20 @@
 </head>
 <body>
   <header class="topbar">
-    <h1>fiware-smart-store</h1>
-    <nav>
-      <a href="/">{{ _('Home') }}</a>
-      <a href="/stores">{{ _('Stores') }}</a>
-      <a href="/products">{{ _('Products') }}</a>
-      <a href="/employees">{{ _('Employees') }}</a>
+    <div class="brand-block">
+      <p class="brand-kicker">Smart Retail Operations</p>
+      <h1>fiware-smart-store</h1>
+    </div>
+    <nav class="main-nav">
+      <a href="/" class="{% if request.path == '/' %}active{% endif %}">{{ _('Home') }}</a>
+      <a href="/stores" class="{% if request.path.startswith('/stores') %}active{% endif %}">{{ _('Stores') }}</a>
+      <a href="/products" class="{% if request.path.startswith('/products') %}active{% endif %}">{{ _('Products') }}</a>
+    </nav>
+    <div class="lang-switcher">
       <span class="lang-label">{{ _('Language') }}:</span>
       <a class="lang-link{% if current_lang == 'es' %} active{% endif %}" href="{{ url_for('set_language', lang='es', next=request.path) }}">ES</a>
       <a class="lang-link{% if current_lang == 'en' %} active{% endif %}" href="{{ url_for('set_language', lang='en', next=request.path) }}">EN</a>
-    </nav>
+    </div>
   </header>
   <main>
     {% block content %}{% endblock %}

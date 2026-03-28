@@ -11,6 +11,19 @@ def test_dashboard_loads():
     assert b"fiware-smart-store" in response.data
 
 
+def test_main_navigation_has_three_primary_views():
+    app = create_app()
+    client = app.test_client()
+
+    response = client.get("/")
+    assert response.status_code == 200
+    body = response.data
+    assert b'href="/"' in body
+    assert b'href="/stores"' in body
+    assert b'href="/products"' in body
+    assert b'href="/employees"' not in body
+
+
 def test_stores_endpoint_json():
     app = create_app()
     client = app.test_client()

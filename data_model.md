@@ -593,3 +593,33 @@ Recommended query models:
   - IR-001: expected consistency between `refShelf` and `refStore` covered by integrity tests.
   - IR-002: no duplicate tuple (store, shelf, product) covered by integrity tests.
   - IR-003: shelf capacity not exceeded covered by integrity tests.
+
+## 16. Implementation alignment progress (Issue #4)
+
+### ES
+- Estado: Alineacion implementada para operaciones CRUD Store/Product bajo contrato NGSIv2.
+- Alineacion de modelo aplicada:
+  - Atributos de Store/Product se normalizan a estructura NGSIv2 (`type` + `value`) en create/update.
+  - `Store.image` y `Product.image` quedan soportados de extremo a extremo (API, persistencia y vistas).
+  - `Product.originCountry` queda soportado de extremo a extremo con validacion ISO alpha-2.
+  - Se mantiene compatibilidad de entrada para `origin` legacy, mapeandolo a `originCountry`.
+  - Dataset de referencia actualizado para usar URLs fijas curadas (Unsplash/Picsum) coherentes con la entidad representada.
+- Reglas/validaciones con evidencia de test:
+  - `Product.size` en enum `S|M|L|XL`.
+  - `Product.color` con regex `#RRGGBB`.
+  - `Product.price >= 0`.
+  - `image` de Store/Product como URL valida `http/https`.
+
+### EN
+- Status: Alignment implemented for Store/Product CRUD operations under NGSIv2 contract.
+- Applied model alignment:
+  - Store/Product attributes are normalized to NGSIv2 structure (`type` + `value`) on create/update.
+  - `Store.image` and `Product.image` are supported end-to-end (API, persistence, and views).
+  - `Product.originCountry` is supported end-to-end with ISO alpha-2 validation.
+  - Backward-compatible input is preserved for legacy `origin`, mapped to `originCountry`.
+  - Reference seed dataset now uses curated fixed image URLs (Unsplash/Picsum) that match the represented entity.
+- Validation rules with test evidence:
+  - `Product.size` in enum `S|M|L|XL`.
+  - `Product.color` regex `#RRGGBB`.
+  - `Product.price >= 0`.
+  - Store/Product `image` must be a valid `http/https` URL.

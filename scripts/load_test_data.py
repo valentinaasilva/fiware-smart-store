@@ -75,7 +75,7 @@ STORES_DATA = [
         },
         "telephone": "+49-30-123456",
         "url": "https://store.example/berlin-mitte",
-        "image": "https://picsum.photos/600/300?random=1",
+        "image": "https://images.unsplash.com/photo-1534723452862-4c874018d66d?auto=format&fit=crop&w=1200&q=80",
         "description": "Main city branch in Berlin center"
     },
     {
@@ -94,7 +94,7 @@ STORES_DATA = [
         },
         "telephone": "+34-91-234567",
         "url": "https://store.example/madrid-centro",
-        "image": "https://picsum.photos/600/300?random=2",
+        "image": "https://images.unsplash.com/photo-1604719312566-8912e9c8a213?auto=format&fit=crop&w=1200&q=80",
         "description": "Premium location on Gran Vía"
     },
     {
@@ -113,7 +113,7 @@ STORES_DATA = [
         },
         "telephone": "+34-93-345678",
         "url": "https://store.example/barcelona-eixample",
-        "image": "https://picsum.photos/600/300?random=3",
+        "image": "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80",
         "description": "Iconic location in Barcelona"
     },
     {
@@ -132,22 +132,102 @@ STORES_DATA = [
         },
         "telephone": "+33-1-45678901",
         "url": "https://store.example/paris-marais",
-        "image": "https://picsum.photos/600/300?random=4",
+        "image": "https://images.unsplash.com/photo-1601599963565-b7f17f5f14ce?auto=format&fit=crop&w=1200&q=80",
         "description": "Central location near Place des Vosges"
     }
 ]
 
 PRODUCTS_DATA = [
-    {"id": "urn:ngsi-ld:Product:P001", "name": "Banana", "size": "M", "color": "#FFE135", "price": 2.99, "origin": "EC"},
-    {"id": "urn:ngsi-ld:Product:P002", "name": "Red Apple", "size": "M", "color": "#DC143C", "price": 1.49, "origin": "ES"},
-    {"id": "urn:ngsi-ld:Product:P003", "name": "Orange", "size": "L", "color": "#FF8C00", "price": 3.99, "origin": "ES"},
-    {"id": "urn:ngsi-ld:Product:P004", "name": "Lettuce", "size": "L", "color": "#228B22", "price": 1.99, "origin": "DE"},
-    {"id": "urn:ngsi-ld:Product:P005", "name": "Tomato", "size": "M", "color": "#FF4500", "price": 2.49, "origin": "ES"},
-    {"id": "urn:ngsi-ld:Product:P006", "name": "Milk 1L", "size": "S", "color": "#FFFFFF", "price": 1.29, "origin": "FR"},
-    {"id": "urn:ngsi-ld:Product:P007", "name": "Cheese", "size": "S", "color": "#FFD700", "price": 4.99, "origin": "FR"},
-    {"id": "urn:ngsi-ld:Product:P008", "name": "Bread", "size": "M", "color": "#8B4513", "price": 2.49, "origin": "DE"},
-    {"id": "urn:ngsi-ld:Product:P009", "name": "Water 2L", "size": "L", "color": "#87CEEB", "price": 0.99, "origin": "ES"},
-    {"id": "urn:ngsi-ld:Product:P010", "name": "Coffee", "size": "S", "color": "#6F4E37", "price": 5.99, "origin": "BR"}
+    {
+        "id": "urn:ngsi-ld:Product:P001",
+        "name": "Banana",
+        "size": "M",
+        "color": "#FFE135",
+        "price": 2.99,
+        "origin": "EC",
+        "image": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P002",
+        "name": "Red Apple",
+        "size": "M",
+        "color": "#DC143C",
+        "price": 1.49,
+        "origin": "ES",
+        "image": "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P003",
+        "name": "Orange",
+        "size": "L",
+        "color": "#FF8C00",
+        "price": 3.99,
+        "origin": "ES",
+        "image": "https://images.unsplash.com/photo-1580052614034-c55d20bfee3b?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P004",
+        "name": "Lettuce",
+        "size": "L",
+        "color": "#228B22",
+        "price": 1.99,
+        "origin": "DE",
+        "image": "https://images.unsplash.com/photo-1622205313162-be1d5712a43b?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P005",
+        "name": "Tomato",
+        "size": "M",
+        "color": "#FF4500",
+        "price": 2.49,
+        "origin": "ES",
+        "image": "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P006",
+        "name": "Milk 1L",
+        "size": "S",
+        "color": "#FFFFFF",
+        "price": 1.29,
+        "origin": "FR",
+        "image": "https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P007",
+        "name": "Cheese",
+        "size": "S",
+        "color": "#FFD700",
+        "price": 4.99,
+        "origin": "FR",
+        "image": "https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P008",
+        "name": "Bread",
+        "size": "M",
+        "color": "#8B4513",
+        "price": 2.49,
+        "origin": "DE",
+        "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P009",
+        "name": "Water 2L",
+        "size": "L",
+        "color": "#87CEEB",
+        "price": 0.99,
+        "origin": "ES",
+        "image": "https://images.unsplash.com/photo-1564419320461-6870880221ad?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P010",
+        "name": "Coffee",
+        "size": "S",
+        "color": "#6F4E37",
+        "price": 5.99,
+        "origin": "BR",
+        "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80",
+    },
 ]
 
 EMPLOYEES_DATA = [
@@ -391,10 +471,7 @@ class OrionDataLoader:
                 "price": {"type": "Float", "value": product_data["price"]},
                 "color": {"type": "Text", "value": product_data["color"]},
                 "originCountry": {"type": "Text", "value": product_data["origin"]},
-                "image": {
-                    "type": "Text",
-                    "value": f"https://picsum.photos/200/200?random={product_data['id'][-4:]}"
-                }
+                "image": {"type": "Text", "value": product_data["image"]}
             }
 
             if self._create_entity(entity):
