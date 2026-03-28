@@ -1,6 +1,35 @@
 from __future__ import annotations
 
+import re
+from urllib.parse import urlparse
+
 from flask import Request
+
+
+NGSI_ATTR_TYPES: dict[str, dict[str, str]] = {
+    "Store": {
+        "name": "Text",
+        "address": "PostalAddress",
+        "location": "geo:json",
+        "countryCode": "Text",
+        "capacity": "Integer",
+        "telephone": "Text",
+        "url": "Text",
+        "image": "Text",
+        "description": "Text",
+    },
+    "Product": {
+        "name": "Text",
+        "size": "Text",
+        "price": "Float",
+        "color": "Text",
+        "originCountry": "Text",
+        "image": "Text",
+    },
+}
+
+PRODUCT_SIZES = {"S", "M", "L", "XL"}
+HEX_COLOR_RE = re.compile(r"^#[0-9A-F]{6}$")
 
 
 def wants_json(request: Request) -> bool:
@@ -18,9 +47,130 @@ def extract_payload(request: Request) -> dict:
     return data
 
 
-def normalize_ngsi_payload(data: dict, entity_type: str) -> dict:
+def _is_ngsi_attr(value: object) -> bool:
+    return isinstance(value, dict) and "type" in value and "value" in value
+
+
+def _unwrap_value(value: object) -> object:
+    if _is_ngsi_attr(value):
+        return value["value"]
+    return value
+
+
+def _to_ngsi_attr(entity_type: str, field: str, value: object) -> object:
+    if _is_ngsi_attr(value):
+        return value
+    ngsi_type = NGSI_ATTR_TYPES.get(entity_type, {}).get(field)
+    if not ngsi_type:
+        return value
+    return {"type": ngsi_type, "value": value}
+
+
+def _is_valid_url(value: str) -> bool:
+    parsed = urlparse(value)
+    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
+
+
+def _validate_store(payload: dict, partial: bool) -> None:
+    country = _unwrap_value(payload.get("countryCode"))
+    if country is not None and (not isinstance(country, str) or len(country) != 2 or country.upper() != country):
+        raise ValueError("Store.countryCode must be ISO alpha-2")
+
+    image = _unwrap_value(payload.get("image"))
+    if image is not None and (not isinstance(image, str) or not _is_valid_url(image)):
+        raise ValueError("Store.image must be a valid http/https URL")
+
+
+def _validate_product(payload: dict, partial: bool) -> None:
+    size = _unwrap_value(payload.get("size"))
+    if size is not None and size not in PRODUCT_SIZES:
+        raise ValueError("Product.size must be one of S, M, L, XL")
+
+    price = _unwrap_value(payload.get("price"))
+    if price is not None:
+        try:
+            numeric_price = float(price)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("Product.price must be numeric") from exc
+        if numeric_price < 0:
+            raise ValueError("Product.price must be >= 0")
+
+    color = _unwrap_value(payload.get("color"))
+    if color is not None:
+        if not isinstance(color, str) or not HEX_COLOR_RE.match(color):
+            raise ValueError("Product.color must match #RRGGBB")
+
+    origin_country = _unwrap_value(payload.get("originCountry"))
+    if origin_country is not None:
+        if not isinstance(origin_country, str) or len(origin_country) != 2 or origin_country.upper() != origin_country:
+            raise ValueError("Product.originCountry must be ISO alpha-2")
+
+    image = _unwrap_value(payload.get("image"))
+    if image is not None and (not isinstance(image, str) or not _is_valid_url(image)):
+        raise ValueError("Product.image must be a valid http/https URL")
+
+
+def normalize_ngsi_payload(data: dict, entity_type: str, partial: bool = False) -> dict:
     payload = data.copy()
-    payload.setdefault("type", entity_type)
-    if "id" not in payload or not payload["id"]:
+    if not partial:
+        payload.setdefault("type", entity_type)
+
+    if not partial and ("id" not in payload or not payload["id"]):
         raise ValueError("Field 'id' is required")
-    return payload
+
+    if not partial and not str(payload["id"]).startswith(f"urn:ngsi-ld:{entity_type}:"):
+        raise ValueError(f"{entity_type}.id must start with urn:ngsi-ld:{entity_type}:")
+
+    if payload.get("type") and payload["type"] != entity_type:
+        raise ValueError(f"Field 'type' must be '{entity_type}'")
+
+    # Backward compatibility for legacy product payloads.
+    if entity_type == "Product" and "origin" in payload and "originCountry" not in payload:
+        payload["originCountry"] = payload.pop("origin")
+
+    normalized: dict = {}
+    for key, value in payload.items():
+        if key in {"id", "type"}:
+            normalized[key] = value
+            continue
+        normalized[key] = _to_ngsi_attr(entity_type, key, value)
+
+    if entity_type == "Store":
+        _validate_store(normalized, partial)
+    elif entity_type == "Product":
+        _validate_product(normalized, partial)
+
+    if not partial:
+        normalized.setdefault("type", entity_type)
+        normalized.setdefault("id", payload.get("id"))
+
+    return normalized
+
+
+def denormalize_ngsi_entity(entity: dict) -> dict:
+    denormalized = {}
+    for key, value in entity.items():
+        if key in {"id", "type"}:
+            denormalized[key] = value
+        else:
+            denormalized[key] = _unwrap_value(value)
+    return denormalized
+
+
+def denormalize_ngsi_entities(entities: list[dict]) -> list[dict]:
+    return [denormalize_ngsi_entity(entity) for entity in entities]
+
+
+def is_ngsi_entity(entity: dict) -> bool:
+    for key, value in entity.items():
+        if key in {"id", "type"}:
+            continue
+        if _is_ngsi_attr(value):
+            return True
+    return False
+
+
+def maybe_denormalize_for_view(entity: dict) -> dict:
+    if is_ngsi_entity(entity):
+        return denormalize_ngsi_entity(entity)
+    return entity

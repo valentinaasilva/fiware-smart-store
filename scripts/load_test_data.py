@@ -61,7 +61,7 @@ EMPLOYEE_SKILLS = {"MachineryDriving", "WritingReports", "CustomerRelationships"
 STORES_DATA = [
     {
         "id": "urn:ngsi-ld:Store:S001",
-        "name": "Berlin Mitte",
+        "name": "Xantadis Norte",
         "country": "DE",
         "city": "Berlin",
         "coords": [13.405, 52.520],
@@ -75,12 +75,12 @@ STORES_DATA = [
         },
         "telephone": "+49-30-123456",
         "url": "https://store.example/berlin-mitte",
-        "image": "https://picsum.photos/600/300?random=1",
+        "image": "https://images.unsplash.com/photo-1542838132-92c53300491e",
         "description": "Main city branch in Berlin center"
     },
     {
         "id": "urn:ngsi-ld:Store:S002",
-        "name": "Madrid Centro",
+        "name": "Xantadis Sur",
         "country": "ES",
         "city": "Madrid",
         "coords": [-3.703, 40.415],
@@ -94,12 +94,12 @@ STORES_DATA = [
         },
         "telephone": "+34-91-234567",
         "url": "https://store.example/madrid-centro",
-        "image": "https://picsum.photos/600/300?random=2",
+        "image": "https://images.unsplash.com/photo-1534723452862-4c874018d66d",
         "description": "Premium location on Gran Vía"
     },
     {
         "id": "urn:ngsi-ld:Store:S003",
-        "name": "Barcelona Eixample",
+        "name": "Xantadis Este",
         "country": "ES",
         "city": "Barcelona",
         "coords": [2.165, 41.385],
@@ -113,12 +113,12 @@ STORES_DATA = [
         },
         "telephone": "+34-93-345678",
         "url": "https://store.example/barcelona-eixample",
-        "image": "https://picsum.photos/600/300?random=3",
+        "image": "https://images.unsplash.com/photo-1516594798947-e65505dbb29d",
         "description": "Iconic location in Barcelona"
     },
     {
         "id": "urn:ngsi-ld:Store:S004",
-        "name": "Paris Marais",
+        "name": "Xantadis Oeste",
         "country": "FR",
         "city": "Paris",
         "coords": [2.362, 48.859],
@@ -132,22 +132,102 @@ STORES_DATA = [
         },
         "telephone": "+33-1-45678901",
         "url": "https://store.example/paris-marais",
-        "image": "https://picsum.photos/600/300?random=4",
+        "image": "https://images.unsplash.com/photo-1578916171728-46686eac8d58",
         "description": "Central location near Place des Vosges"
     }
 ]
 
 PRODUCTS_DATA = [
-    {"id": "urn:ngsi-ld:Product:P001", "name": "Banana", "size": "M", "color": "#FFE135", "price": 2.99, "origin": "EC"},
-    {"id": "urn:ngsi-ld:Product:P002", "name": "Red Apple", "size": "M", "color": "#DC143C", "price": 1.49, "origin": "ES"},
-    {"id": "urn:ngsi-ld:Product:P003", "name": "Orange", "size": "L", "color": "#FF8C00", "price": 3.99, "origin": "ES"},
-    {"id": "urn:ngsi-ld:Product:P004", "name": "Lettuce", "size": "L", "color": "#228B22", "price": 1.99, "origin": "DE"},
-    {"id": "urn:ngsi-ld:Product:P005", "name": "Tomato", "size": "M", "color": "#FF4500", "price": 2.49, "origin": "ES"},
-    {"id": "urn:ngsi-ld:Product:P006", "name": "Milk 1L", "size": "S", "color": "#FFFFFF", "price": 1.29, "origin": "FR"},
-    {"id": "urn:ngsi-ld:Product:P007", "name": "Cheese", "size": "S", "color": "#FFD700", "price": 4.99, "origin": "FR"},
-    {"id": "urn:ngsi-ld:Product:P008", "name": "Bread", "size": "M", "color": "#8B4513", "price": 2.49, "origin": "DE"},
-    {"id": "urn:ngsi-ld:Product:P009", "name": "Water 2L", "size": "L", "color": "#87CEEB", "price": 0.99, "origin": "ES"},
-    {"id": "urn:ngsi-ld:Product:P010", "name": "Coffee", "size": "S", "color": "#6F4E37", "price": 5.99, "origin": "BR"}
+    {
+        "id": "urn:ngsi-ld:Product:P001",
+        "name": "Banana",
+        "size": "M",
+        "color": "#FFE135",
+        "price": 2.99,
+        "origin": "EC",
+        "image": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P002",
+        "name": "Red Apple",
+        "size": "M",
+        "color": "#DC143C",
+        "price": 1.49,
+        "origin": "ES",
+        "image": "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P003",
+        "name": "Orange",
+        "size": "L",
+        "color": "#FF8C00",
+        "price": 3.99,
+        "origin": "ES",
+        "image": "https://images.unsplash.com/photo-1547514701-42782101795e",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P004",
+        "name": "Lettuce",
+        "size": "L",
+        "color": "#228B22",
+        "price": 1.99,
+        "origin": "DE",
+        "image": "https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P005",
+        "name": "Tomato",
+        "size": "M",
+        "color": "#FF4500",
+        "price": 2.49,
+        "origin": "ES",
+        "image": "https://images.unsplash.com/photo-1582284540020-8acbe03f4924",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P006",
+        "name": "Milk 1L",
+        "size": "S",
+        "color": "#FFFFFF",
+        "price": 1.29,
+        "origin": "FR",
+        "image": "https://images.unsplash.com/photo-1550583724-b2692b85b150",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P007",
+        "name": "Cheese",
+        "size": "S",
+        "color": "#FFD700",
+        "price": 4.99,
+        "origin": "FR",
+        "image": "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P008",
+        "name": "Bread",
+        "size": "M",
+        "color": "#8B4513",
+        "price": 2.49,
+        "origin": "DE",
+        "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P009",
+        "name": "Water 2L",
+        "size": "L",
+        "color": "#87CEEB",
+        "price": 0.99,
+        "origin": "ES",
+        "image": "https://images.unsplash.com/photo-1548839140-29a749e1cf4d",
+    },
+    {
+        "id": "urn:ngsi-ld:Product:P010",
+        "name": "Coffee",
+        "size": "S",
+        "color": "#6F4E37",
+        "price": 5.99,
+        "origin": "BR",
+        "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085",
+    },
 ]
 
 EMPLOYEES_DATA = [
@@ -391,10 +471,7 @@ class OrionDataLoader:
                 "price": {"type": "Float", "value": product_data["price"]},
                 "color": {"type": "Text", "value": product_data["color"]},
                 "originCountry": {"type": "Text", "value": product_data["origin"]},
-                "image": {
-                    "type": "Text",
-                    "value": f"https://picsum.photos/200/200?random={product_data['id'][-4:]}"
-                }
+                "image": {"type": "Text", "value": product_data["image"]}
             }
 
             if self._create_entity(entity):

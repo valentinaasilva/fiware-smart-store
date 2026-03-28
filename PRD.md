@@ -437,3 +437,46 @@ Assumptions:
 	- FR-010, FR-020, FR-030, and FR-040 covered through route and JSON response tests.
 	- FR-060 and FR-061 covered through notification webhook tests.
 	- NFR-008 strengthened with the new unit and integration test battery.
+
+## 16. Implementation progress (Issue #4)
+
+### ES
+- Estado: Implementacion completada y cerrada para la alineacion NGSIv2 en Store/Product y vistas core.
+- Resultado de validacion:
+	- Suite ejecutada con exito: 95 passed.
+- Alcance implementado en esta iteracion:
+	- Normalizacion y validacion NGSIv2 para CRUD de Store y Product (create/update).
+	- Soporte de atributos `image` en Store y Product y `originCountry` en Product en API, fixtures y vistas.
+	- Compatibilidad con payload legacy de Product (`origin` -> `originCountry`).
+	- Navegacion principal acotada a dashboard, stores y products.
+	- Vistas de detalle de Store/Product actualizadas con nuevos atributos.
+	- Rediseño visual integral con layout de panel administrativo, tipografia consistente, tablas/cards mejor maquetadas y responsive.
+	- URLs de imagen curadas y fijas en datos semilla para coherencia semantica (tiendas reales y productos reales).
+	- Ajuste final de UX en navbar: etiqueta principal visible como Dashboard (EN) y Panel (ES).
+	- Ajuste final de imagenes y branding: Stores alineadas a URLs especificas y nomenclatura final Xantadis (Norte/Sur/Este/Oeste), y Product con ejemplos explicitos para manzana roja y leche.
+- Trazabilidad de requisitos:
+	- FR-010: listado/detalle de tiendas enriquecido con `image`.
+	- FR-020: listado/detalle de productos enriquecido con `image` y `originCountry`.
+	- FR-040: dashboard se mantiene como vista principal operativa.
+	- NFR-008: cobertura ampliada con pruebas de validacion NGSIv2 y contratos de rutas.
+
+### EN
+- Status: Implementation completed and closed for NGSIv2 alignment on Store/Product and core views.
+- Validation result:
+	- Test suite executed successfully: 95 passed.
+- Implemented scope in this iteration:
+	- NGSIv2 normalization and validation for Store/Product CRUD (create/update).
+	- Support for `image` on Store and Product, and `originCountry` on Product across API, fixtures, and views.
+	- Backward compatibility for legacy Product payloads (`origin` -> `originCountry`).
+	- Main navigation focused on dashboard, stores, and products.
+	- Store/Product detail views updated with the new attributes.
+	- Full visual redesign with admin-panel layout, consistent typography, improved cards/tables, and responsive behavior.
+	- Curated fixed image URLs in seed data to keep entity-semantic coherence (real stores and real products).
+	- Final UX refinement in navbar: primary label shown as Dashboard (EN) and Panel (ES).
+	- Final image and branding refinement: Stores aligned to specified URLs and final Xantadis naming (North/South/East/West), and Product with explicit examples for red apple and milk.
+- Requirement traceability:
+	- FR-010: store list/detail enriched with `image`.
+	- FR-020: product list/detail enriched with `image` and `originCountry`.
+	- FR-040: dashboard remains operational as a main view.
+	- FR-050/UX visual: professional and consistent UI style across the three main views.
+	- NFR-008: expanded coverage with NGSIv2 validation and route contract tests.

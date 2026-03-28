@@ -1,6 +1,12 @@
 from flask import Blueprint, current_app, jsonify, render_template, request
 
-from routes.utils import extract_payload, normalize_ngsi_payload, wants_json
+from routes.utils import (
+    denormalize_ngsi_entities,
+    maybe_denormalize_for_view,
+    extract_payload,
+    normalize_ngsi_payload,
+    wants_json,
+)
 
 stores_bp = Blueprint("stores", __name__, url_prefix="/stores")
 
@@ -10,7 +16,7 @@ def list_stores():
     stores = current_app.extensions["data_selector"].list_entities("Store")
     if wants_json(request):
         return jsonify(stores)
-    return render_template("stores/list.html", stores=stores)
+    return render_template("stores/list.html", stores=denormalize_ngsi_entities(stores))
 
 
 @stores_bp.get("")
@@ -25,7 +31,7 @@ def get_store(entity_id: str):
         return jsonify({"error": "Store not found"}), 404
     if wants_json(request):
         return jsonify(store)
-    return render_template("stores/detail.html", store=store)
+    return render_template("stores/detail.html", store=maybe_denormalize_for_view(store))
 
 
 @stores_bp.post("/")
@@ -40,7 +46,10 @@ def create_store():
 
 @stores_bp.put("/<path:entity_id>")
 def update_store(entity_id: str):
-    payload = extract_payload(request)
+    try:
+        payload = normalize_ngsi_payload(extract_payload(request), "Store", partial=True)
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
     store = current_app.extensions["data_selector"].update_entity(entity_id, payload)
     if not store:
         return jsonify({"error": "Store not found"}), 404

@@ -1,19 +1,32 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>{{ _('Stores') }}</h2>
-<table>
-  <thead>
-    <tr><th>{{ _('ID') }}</th><th>{{ _('Name') }}</th><th>{{ _('Country') }}</th></tr>
-  </thead>
-  <tbody>
-  {% for store in stores %}
-    <tr>
-      <td>{{ store.id }}</td>
-      <td><a href="{{ url_for('stores.get_store', entity_id=store.id) }}">{{ store.name }}</a></td>
-      <td>{{ store.countryCode }}</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
+<section class="page-header">
+  <p class="eyebrow">Retail network overview</p>
+  <h2>{{ _('Stores') }}</h2>
+</section>
+
+<section class="table-shell">
+  <table>
+    <thead>
+      <tr><th>{{ _('Image') }}</th><th>{{ _('ID') }}</th><th>{{ _('Name') }}</th><th>{{ _('Country') }}</th></tr>
+    </thead>
+    <tbody>
+    {% for store in stores %}
+      <tr>
+        <td>
+          {% if store.image %}
+            <img class="table-thumb" src="{{ store.image }}" alt="{{ store.name }}" width="96" height="64" loading="lazy">
+          {% else %}
+            <span class="img-fallback">No image</span>
+          {% endif %}
+        </td>
+        <td class="mono">{{ store.id }}</td>
+        <td><a class="entity-link" href="{{ url_for('stores.get_store', entity_id=store.id) }}">{{ store.name }}</a></td>
+        <td>{{ store.countryCode }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
 {% endblock %}

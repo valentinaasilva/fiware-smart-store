@@ -1,4 +1,9 @@
-from routes.utils import extract_payload, normalize_ngsi_payload, wants_json
+from routes.utils import (
+    denormalize_ngsi_entity,
+    extract_payload,
+    normalize_ngsi_payload,
+    wants_json,
+)
 
 
 def test_wants_json_from_query(app):
@@ -37,3 +42,76 @@ def test_normalize_ngsi_payload_requires_id():
         assert False, "Expected ValueError"
     except ValueError as exc:
         assert "id" in str(exc)
+
+
+def test_normalize_store_payload_wraps_image():
+    payload = normalize_ngsi_payload(
+        {
+            "id": "urn:ngsi-ld:Store:001",
+            "name": "Store 1",
+            "image": "https://example.com/store.png",
+        },
+        "Store",
+    )
+    assert payload["name"]["type"] == "Text"
+    assert payload["image"]["value"] == "https://example.com/store.png"
+
+
+def test_normalize_product_payload_wraps_origin_country_and_price():
+    payload = normalize_ngsi_payload(
+        {
+            "id": "urn:ngsi-ld:Product:001",
+            "name": "Product 1",
+            "price": 9.99,
+            "size": "M",
+            "color": "#FF00AA",
+            "originCountry": "ES",
+        },
+        "Product",
+    )
+    assert payload["price"]["type"] == "Float"
+    assert payload["originCountry"]["value"] == "ES"
+
+
+def test_normalize_product_payload_accepts_legacy_origin_field():
+    payload = normalize_ngsi_payload(
+        {
+            "id": "urn:ngsi-ld:Product:001",
+            "name": "Product 1",
+            "price": 1.0,
+            "size": "S",
+            "color": "#FFFFFF",
+            "origin": "DE",
+        },
+        "Product",
+    )
+    assert payload["originCountry"]["value"] == "DE"
+
+
+def test_normalize_product_payload_rejects_invalid_color():
+    try:
+        normalize_ngsi_payload(
+            {
+                "id": "urn:ngsi-ld:Product:001",
+                "name": "Product 1",
+                "price": 1.0,
+                "size": "S",
+                "color": "red",
+            },
+            "Product",
+        )
+        assert False, "Expected ValueError"
+    except ValueError as exc:
+        assert "color" in str(exc)
+
+
+def test_denormalize_ngsi_entity_unwraps_attributes():
+    entity = {
+        "id": "urn:ngsi-ld:Product:001",
+        "type": "Product",
+        "name": {"type": "Text", "value": "Product 1"},
+        "price": {"type": "Float", "value": 2.5},
+    }
+    denormalized = denormalize_ngsi_entity(entity)
+    assert denormalized["name"] == "Product 1"
+    assert denormalized["price"] == 2.5
