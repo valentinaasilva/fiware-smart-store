@@ -443,7 +443,7 @@ Assumptions:
 ### ES
 - Estado: Implementacion inicial completada para alineacion NGSIv2 en Store/Product y vistas core.
 - Resultado de validacion:
-	- Suite ejecutada con exito: 94 passed.
+	- Suite ejecutada con exito: 95 passed.
 - Alcance implementado en esta iteracion:
 	- Normalizacion y validacion NGSIv2 para CRUD de Store y Product (create/update).
 	- Soporte de atributos `image` en Store y Product y `originCountry` en Product en API, fixtures y vistas.
@@ -452,6 +452,8 @@ Assumptions:
 	- Vistas de detalle de Store/Product actualizadas con nuevos atributos.
 	- Rediseño visual integral con layout de panel administrativo, tipografia consistente, tablas/cards mejor maquetadas y responsive.
 	- URLs de imagen curadas y fijas en datos semilla para coherencia semantica (tiendas reales y productos reales).
+	- Ajuste final de UX en navbar: etiqueta principal visible como Dashboard (EN) y Panel (ES).
+	- Ajuste final de imagenes: Stores alineadas a URLs especificas (SuperOeste/SuperNorte/SuperEste/SuperSur) y Product con ejemplos explicitos para manzana roja y leche.
 - Trazabilidad de requisitos:
 	- FR-010: listado/detalle de tiendas enriquecido con `image`.
 	- FR-020: listado/detalle de productos enriquecido con `image` y `originCountry`.
@@ -461,7 +463,7 @@ Assumptions:
 ### EN
 - Status: Initial implementation completed for NGSIv2 alignment on Store/Product and core views.
 - Validation result:
-	- Test suite executed successfully: 94 passed.
+	- Test suite executed successfully: 95 passed.
 - Implemented scope in this iteration:
 	- NGSIv2 normalization and validation for Store/Product CRUD (create/update).
 	- Support for `image` on Store and Product, and `originCountry` on Product across API, fixtures, and views.
@@ -470,6 +472,8 @@ Assumptions:
 	- Store/Product detail views updated with the new attributes.
 	- Full visual redesign with admin-panel layout, consistent typography, improved cards/tables, and responsive behavior.
 	- Curated fixed image URLs in seed data to keep entity-semantic coherence (real stores and real products).
+	- Final UX refinement in navbar: primary label shown as Dashboard (EN) and Panel (ES).
+	- Final image refinement: Stores aligned to specified URLs (SuperOeste/SuperNorte/SuperEste/SuperSur) and Product with explicit examples for red apple and milk.
 - Requirement traceability:
 	- FR-010: store list/detail enriched with `image`.
 	- FR-020: product list/detail enriched with `image` and `originCountry`.

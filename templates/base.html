@@ -13,7 +13,7 @@
       <h1>fiware-smart-store</h1>
     </div>
     <nav class="main-nav">
-      <a href="/" class="{% if request.path == '/' %}active{% endif %}">{{ _('Home') }}</a>
+      <a href="/" class="{% if request.path == '/' %}active{% endif %}">{{ _('Dashboard') }}</a>
       <a href="/stores" class="{% if request.path.startswith('/stores') %}active{% endif %}">{{ _('Stores') }}</a>
       <a href="/products" class="{% if request.path.startswith('/products') %}active{% endif %}">{{ _('Products') }}</a>
     </nav>

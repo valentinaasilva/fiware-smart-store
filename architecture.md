@@ -503,11 +503,12 @@ Test levels:
   - `routes/stores.py` y `routes/products.py` aplican normalizacion/validacion en create/update y mantienen respuestas JSON para consumidores API.
   - Vistas de `stores` y `products` muestran `image`; vistas de productos muestran adicionalmente `originCountry`.
   - Navegacion principal en `templates/base.html` queda enfocada en dashboard, stores y products.
+  - Etiqueta de entrada principal ajustada a `Dashboard` (EN) y `Panel` (ES) para consistencia de UX.
   - `static/css/main.css` se rediseña como sistema visual de panel administrativo (tokens, jerarquia tipografica, tablas/cards, responsive).
-  - Datos semilla de imagenes en `scripts/load_test_data.py` migran a URLs fijas curadas para coherencia por entidad.
+  - Datos semilla de imagenes en `scripts/load_test_data.py` migran a URLs fijas curadas para coherencia por entidad, incluyendo mapeo final de Stores a URLs especificas y ajuste explicito de productos clave (manzana roja, leche).
   - Fixtures y pruebas de integracion/unit se actualizan para cubrir el nuevo contrato.
 - Verificacion:
-  - Ejecucion de suite completa con 94 tests en verde.
+  - Ejecucion de suite completa con 95 tests en verde.
 
 ### EN
 - Status: Initial NGSIv2 contract-hardening iteration applied to Store/Product.
@@ -516,8 +517,9 @@ Test levels:
   - `routes/stores.py` and `routes/products.py` apply normalization/validation on create/update while preserving JSON API responses.
   - `stores` and `products` views now expose `image`; product views additionally expose `originCountry`.
   - Main navigation in `templates/base.html` is focused on dashboard, stores, and products.
+  - Primary entry label was refined to `Dashboard` (EN) and `Panel` (ES) for UX consistency.
   - `static/css/main.css` was redesigned as an admin-panel visual system (tokens, typography hierarchy, improved tables/cards, responsive behavior).
-  - Seed image data in `scripts/load_test_data.py` now uses curated fixed URLs for entity-level semantic coherence.
+  - Seed image data in `scripts/load_test_data.py` now uses curated fixed URLs for entity-level semantic coherence, including final Store URL mapping and explicit key-product adjustments (red apple, milk).
   - Fixtures and integration/unit tests were updated to cover the new contract.
 - Verification:
-  - Full suite execution with 94 passing tests.
+  - Full suite execution with 95 passing tests.

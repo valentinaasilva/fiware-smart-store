@@ -604,6 +604,7 @@ Recommended query models:
   - `Product.originCountry` queda soportado de extremo a extremo con validacion ISO alpha-2.
   - Se mantiene compatibilidad de entrada para `origin` legacy, mapeandolo a `originCountry`.
   - Dataset de referencia actualizado para usar URLs fijas curadas (Unsplash/Picsum) coherentes con la entidad representada.
+  - Ajuste final aplicado en dataset: Stores alineadas a URLs concretas provistas para SuperOeste/SuperNorte/SuperEste/SuperSur y productos clave con URL explicita (manzana roja, leche).
 - Reglas/validaciones con evidencia de test:
   - `Product.size` en enum `S|M|L|XL`.
   - `Product.color` con regex `#RRGGBB`.
@@ -618,6 +619,7 @@ Recommended query models:
   - `Product.originCountry` is supported end-to-end with ISO alpha-2 validation.
   - Backward-compatible input is preserved for legacy `origin`, mapped to `originCountry`.
   - Reference seed dataset now uses curated fixed image URLs (Unsplash/Picsum) that match the represented entity.
+  - Final dataset refinement applied: Stores aligned to specific provided URLs (SuperOeste/SuperNorte/SuperEste/SuperSur) and key products with explicit URLs (red apple, milk).
 - Validation rules with test evidence:
   - `Product.size` in enum `S|M|L|XL`.
   - `Product.color` regex `#RRGGBB`.

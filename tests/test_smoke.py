@@ -41,12 +41,12 @@ def test_language_toggle_spanish_persists_in_session():
     response = client.get("/language/es?next=/", follow_redirects=True)
 
     assert response.status_code == 200
-    assert "Inicio".encode("utf-8") in response.data
+    assert "Panel".encode("utf-8") in response.data
     assert "Idioma".encode("utf-8") in response.data
 
     second = client.get("/")
     assert second.status_code == 200
-    assert "Inicio".encode("utf-8") in second.data
+    assert "Panel".encode("utf-8") in second.data
 
 
 def test_language_toggle_back_to_english():
@@ -57,5 +57,5 @@ def test_language_toggle_back_to_english():
     response = client.get("/language/en?next=/", follow_redirects=True)
 
     assert response.status_code == 200
-    assert b"Home" in response.data
+    assert b"Dashboard" in response.data
     assert b"Language" in response.data
