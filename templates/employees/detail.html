@@ -1,11 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>{{ _('Employee Detail') }}</h2>
-<dl>
-  <dt>{{ _('ID') }}</dt><dd>{{ employee.id }}</dd>
-  <dt>{{ _('Name') }}</dt><dd>{{ employee.name }}</dd>
-  <dt>{{ _('Category') }}</dt><dd>{{ employee.category }}</dd>
-  <dt>{{ _('Type') }}</dt><dd>{{ employee.type }}</dd>
-</dl>
+<section class="detail-header">
+  <a class="back-link" href="{{ url_for('employees.list_employees') }}">&larr; {{ _('Employees') }}</a>
+  <h2>{{ _('Employee Detail') }}</h2>
+</section>
+
+<section class="detail-grid">
+  <article class="detail-media">
+    {% if employee.image %}
+      <img src="{{ employee.image }}" alt="{{ employee.name }}" loading="lazy">
+    {% else %}
+      <span class="img-fallback large">No image</span>
+    {% endif %}
+  </article>
+
+  <article class="detail-card">
+    <h3>{{ employee.name }}</h3>
+    <dl>
+      <dt>{{ _('ID') }}</dt><dd class="mono">{{ employee.id }}</dd>
+      <dt>{{ _('Role') }}</dt><dd>{{ employee.role or '-' }}</dd>
+      <dt>{{ _('Salary') }}</dt><dd>{{ employee.salary if employee.salary is not none else '-' }}</dd>
+      <dt>{{ _('Ref Store') }}</dt><dd class="mono">{{ employee.refStore or '-' }}</dd>
+      <dt>{{ _('Category') }}</dt><dd>{{ employee.category or '-' }}</dd>
+      <dt>{{ _('Type') }}</dt><dd>{{ employee.type }}</dd>
+    </dl>
+  </article>
+</section>
 {% endblock %}
