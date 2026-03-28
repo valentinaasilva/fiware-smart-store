@@ -441,7 +441,7 @@ Assumptions:
 ## 16. Implementation progress (Issue #4)
 
 ### ES
-- Estado: Implementacion inicial completada para alineacion NGSIv2 en Store/Product y vistas core.
+- Estado: Implementacion completada y cerrada para la alineacion NGSIv2 en Store/Product y vistas core.
 - Resultado de validacion:
 	- Suite ejecutada con exito: 95 passed.
 - Alcance implementado en esta iteracion:
@@ -453,7 +453,7 @@ Assumptions:
 	- Rediseño visual integral con layout de panel administrativo, tipografia consistente, tablas/cards mejor maquetadas y responsive.
 	- URLs de imagen curadas y fijas en datos semilla para coherencia semantica (tiendas reales y productos reales).
 	- Ajuste final de UX en navbar: etiqueta principal visible como Dashboard (EN) y Panel (ES).
-	- Ajuste final de imagenes: Stores alineadas a URLs especificas (SuperOeste/SuperNorte/SuperEste/SuperSur) y Product con ejemplos explicitos para manzana roja y leche.
+	- Ajuste final de imagenes y branding: Stores alineadas a URLs especificas y nomenclatura final Xantadis (Norte/Sur/Este/Oeste), y Product con ejemplos explicitos para manzana roja y leche.
 - Trazabilidad de requisitos:
 	- FR-010: listado/detalle de tiendas enriquecido con `image`.
 	- FR-020: listado/detalle de productos enriquecido con `image` y `originCountry`.
@@ -461,7 +461,7 @@ Assumptions:
 	- NFR-008: cobertura ampliada con pruebas de validacion NGSIv2 y contratos de rutas.
 
 ### EN
-- Status: Initial implementation completed for NGSIv2 alignment on Store/Product and core views.
+- Status: Implementation completed and closed for NGSIv2 alignment on Store/Product and core views.
 - Validation result:
 	- Test suite executed successfully: 95 passed.
 - Implemented scope in this iteration:
@@ -473,7 +473,7 @@ Assumptions:
 	- Full visual redesign with admin-panel layout, consistent typography, improved cards/tables, and responsive behavior.
 	- Curated fixed image URLs in seed data to keep entity-semantic coherence (real stores and real products).
 	- Final UX refinement in navbar: primary label shown as Dashboard (EN) and Panel (ES).
-	- Final image refinement: Stores aligned to specified URLs (SuperOeste/SuperNorte/SuperEste/SuperSur) and Product with explicit examples for red apple and milk.
+	- Final image and branding refinement: Stores aligned to specified URLs and final Xantadis naming (North/South/East/West), and Product with explicit examples for red apple and milk.
 - Requirement traceability:
 	- FR-010: store list/detail enriched with `image`.
 	- FR-020: product list/detail enriched with `image` and `originCountry`.
