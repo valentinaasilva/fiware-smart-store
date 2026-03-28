@@ -1,19 +1,41 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>{{ _('Employees') }}</h2>
-<table>
-  <thead>
-    <tr><th>{{ _('ID') }}</th><th>{{ _('Name') }}</th><th>{{ _('Category') }}</th></tr>
-  </thead>
-  <tbody>
-  {% for employee in employees %}
-    <tr>
-      <td>{{ employee.id }}</td>
-      <td><a href="{{ url_for('employees.get_employee', entity_id=employee.id) }}">{{ employee.name }}</a></td>
-      <td>{{ employee.category }}</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
+<section class="page-header">
+  <p class="eyebrow">Workforce management</p>
+  <h2>{{ _('Employees') }}</h2>
+</section>
+
+<section class="table-shell">
+  <table>
+    <thead>
+      <tr>
+        <th>{{ _('Image') }}</th>
+        <th>{{ _('ID') }}</th>
+        <th>{{ _('Name') }}</th>
+        <th>{{ _('Role') }}</th>
+        <th>{{ _('Salary') }}</th>
+        <th>{{ _('Ref Store') }}</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for employee in employees %}
+      <tr>
+        <td>
+          {% if employee.image %}
+            <img class="table-thumb product-thumb" src="{{ employee.image }}" alt="{{ employee.name }}" width="72" height="72" loading="lazy">
+          {% else %}
+            <span class="img-fallback">No image</span>
+          {% endif %}
+        </td>
+        <td class="mono">{{ employee.id }}</td>
+        <td><a class="entity-link" href="{{ url_for('employees.get_employee', entity_id=employee.id) }}">{{ employee.name }}</a></td>
+        <td>{{ employee.role or '-' }}</td>
+        <td class="price-cell">{{ employee.salary if employee.salary is not none else '-' }}</td>
+        <td class="mono">{{ employee.refStore or '-' }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
 {% endblock %}

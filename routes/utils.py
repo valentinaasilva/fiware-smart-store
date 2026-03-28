@@ -26,6 +26,19 @@ NGSI_ATTR_TYPES: dict[str, dict[str, str]] = {
         "originCountry": "Text",
         "image": "Text",
     },
+    "Employee": {
+        "name": "Text",
+        "image": "Text",
+        "salary": "Float",
+        "role": "Text",
+        "refStore": "Relationship",
+        "category": "Text",
+        "email": "Text",
+        "skills": "Array",
+        "dateOfContract": "DateTime",
+        "username": "Text",
+        "password": "Text",
+    },
 }
 
 PRODUCT_SIZES = {"S", "M", "L", "XL"}
@@ -110,6 +123,47 @@ def _validate_product(payload: dict, partial: bool) -> None:
         raise ValueError("Product.image must be a valid http/https URL")
 
 
+def _validate_employee(payload: dict, partial: bool) -> None:
+    required_fields = ("name", "image", "salary", "role", "refStore")
+    if not partial:
+        missing = [field for field in required_fields if field not in payload]
+        if missing:
+            raise ValueError(f"Employee missing required fields: {', '.join(missing)}")
+
+    name = _unwrap_value(payload.get("name"))
+    if name is not None and (not isinstance(name, str) or not name.strip()):
+        raise ValueError("Employee.name must be a non-empty string")
+
+    image = _unwrap_value(payload.get("image"))
+    if image is not None and (not isinstance(image, str) or not _is_valid_url(image)):
+        raise ValueError("Employee.image must be a valid http/https URL")
+
+    salary = _unwrap_value(payload.get("salary"))
+    if salary is not None:
+        try:
+            numeric_salary = float(salary)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("Employee.salary must be numeric") from exc
+        if numeric_salary < 0:
+            raise ValueError("Employee.salary must be >= 0")
+
+    role = _unwrap_value(payload.get("role"))
+    if role is not None and (not isinstance(role, str) or not role.strip()):
+        raise ValueError("Employee.role must be a non-empty string")
+
+    ref_store = payload.get("refStore")
+    if ref_store is not None:
+        if _is_ngsi_attr(ref_store):
+            if ref_store.get("type") != "Relationship":
+                raise ValueError("Employee.refStore must be a Relationship")
+            ref_store_value = ref_store.get("value")
+        else:
+            ref_store_value = ref_store
+
+        if not isinstance(ref_store_value, str) or not ref_store_value.startswith("urn:ngsi-ld:Store:"):
+            raise ValueError("Employee.refStore must point to a Store URN")
+
+
 def normalize_ngsi_payload(data: dict, entity_type: str, partial: bool = False) -> dict:
     payload = data.copy()
     if not partial:
@@ -139,6 +193,8 @@ def normalize_ngsi_payload(data: dict, entity_type: str, partial: bool = False) 
         _validate_store(normalized, partial)
     elif entity_type == "Product":
         _validate_product(normalized, partial)
+    elif entity_type == "Employee":
+        _validate_employee(normalized, partial)
 
     if not partial:
         normalized.setdefault("type", entity_type)

@@ -231,16 +231,16 @@ PRODUCTS_DATA = [
 ]
 
 EMPLOYEES_DATA = [
-    {"id": "urn:ngsi-ld:Employee:E001", "name": "Ada Lovelace", "store_id": "urn:ngsi-ld:Store:S001", "category": "Senior", "role": "Store Manager", "salary": 2800.00, "email": "ada@store.com", "skills": ["WritingReports"]},
-    {"id": "urn:ngsi-ld:Employee:E002", "name": "Alan Turing", "store_id": "urn:ngsi-ld:Store:S001", "category": "Junior", "role": "Cashier", "salary": 1800.00, "email": "alan@store.com", "skills": ["CustomerRelationships"]},
-    {"id": "urn:ngsi-ld:Employee:E003", "name": "Grace Hopper", "store_id": "urn:ngsi-ld:Store:S001", "category": "Manager", "role": "Supervisor", "salary": 2500.00, "email": "grace@store.com", "skills": ["WritingReports", "CustomerRelationships"]},
-    {"id": "urn:ngsi-ld:Employee:E004", "name": "Donald Knuth", "store_id": "urn:ngsi-ld:Store:S002", "category": "Senior", "role": "Store Manager", "salary": 2900.00, "email": "donald@store.com", "skills": ["WritingReports"]},
-    {"id": "urn:ngsi-ld:Employee:E005", "name": "Vera Rubin", "store_id": "urn:ngsi-ld:Store:S002", "category": "Junior", "role": "Stock Clerk", "salary": 1700.00, "email": "vera@store.com", "skills": ["MachineryDriving"]},
-    {"id": "urn:ngsi-ld:Employee:E006", "name": "Richard Stallman", "store_id": "urn:ngsi-ld:Store:S002", "category": "Specialist", "role": "IT Support", "salary": 3200.00, "email": "richard@store.com", "skills": ["WritingReports"]},
-    {"id": "urn:ngsi-ld:Employee:E007", "name": "Hedy Lamarr", "store_id": "urn:ngsi-ld:Store:S003", "category": "Manager", "role": "Supervisor", "salary": 2400.00, "email": "hedy@store.com", "skills": ["CustomerRelationships"]},
-    {"id": "urn:ngsi-ld:Employee:E008", "name": "John Backus", "store_id": "urn:ngsi-ld:Store:S004", "category": "Senior", "role": "Store Manager", "salary": 2700.00, "email": "john@store.com", "skills": ["WritingReports"]},
-    {"id": "urn:ngsi-ld:Employee:E009", "name": "Barbara Liskov", "store_id": "urn:ngsi-ld:Store:S003", "category": "Junior", "role": "Cashier", "salary": 1900.00, "email": "barbara@store.com", "skills": ["CustomerRelationships"]},
-    {"id": "urn:ngsi-ld:Employee:E010", "name": "Blaise Pascal", "store_id": "urn:ngsi-ld:Store:S004", "category": "Junior", "role": "Stock Clerk", "salary": 1600.00, "email": "blaise@store.com", "skills": ["MachineryDriving"]}
+    {"id": "urn:ngsi-ld:Employee:E001", "name": "Ada Lovelace", "store_id": "urn:ngsi-ld:Store:S001", "category": "Senior", "role": "Store Manager", "salary": 2800.00, "email": "ada@store.com", "skills": ["WritingReports"], "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2"},
+    {"id": "urn:ngsi-ld:Employee:E002", "name": "Alan Turing", "store_id": "urn:ngsi-ld:Store:S001", "category": "Junior", "role": "Cashier", "salary": 1800.00, "email": "alan@store.com", "skills": ["CustomerRelationships"], "image": "https://images.unsplash.com/photo-1521119989659-a83eee488004"},
+    {"id": "urn:ngsi-ld:Employee:E003", "name": "Grace Hopper", "store_id": "urn:ngsi-ld:Store:S001", "category": "Manager", "role": "Supervisor", "salary": 2500.00, "email": "grace@store.com", "skills": ["WritingReports", "CustomerRelationships"], "image": "https://images.unsplash.com/photo-1544005313-94ddf0286df2"},
+    {"id": "urn:ngsi-ld:Employee:E004", "name": "Donald Knuth", "store_id": "urn:ngsi-ld:Store:S002", "category": "Senior", "role": "Store Manager", "salary": 2900.00, "email": "donald@store.com", "skills": ["WritingReports"], "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e"},
+    {"id": "urn:ngsi-ld:Employee:E005", "name": "Vera Rubin", "store_id": "urn:ngsi-ld:Store:S002", "category": "Junior", "role": "Stock Clerk", "salary": 1700.00, "email": "vera@store.com", "skills": ["MachineryDriving"], "image": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f"},
+    {"id": "urn:ngsi-ld:Employee:E006", "name": "Richard Stallman", "store_id": "urn:ngsi-ld:Store:S002", "category": "Specialist", "role": "IT Support", "salary": 3200.00, "email": "richard@store.com", "skills": ["WritingReports"], "image": "https://images.unsplash.com/photo-1560250097-0b93528c311a"},
+    {"id": "urn:ngsi-ld:Employee:E007", "name": "Hedy Lamarr", "store_id": "urn:ngsi-ld:Store:S003", "category": "Manager", "role": "Supervisor", "salary": 2400.00, "email": "hedy@store.com", "skills": ["CustomerRelationships"], "image": "https://images.unsplash.com/photo-1554151228-14d9def656e4"},
+    {"id": "urn:ngsi-ld:Employee:E008", "name": "John Backus", "store_id": "urn:ngsi-ld:Store:S004", "category": "Senior", "role": "Store Manager", "salary": 2700.00, "email": "john@store.com", "skills": ["WritingReports"], "image": "https://images.unsplash.com/photo-1599566150163-29194dcaad36"},
+    {"id": "urn:ngsi-ld:Employee:E009", "name": "Barbara Liskov", "store_id": "urn:ngsi-ld:Store:S003", "category": "Junior", "role": "Cashier", "salary": 1900.00, "email": "barbara@store.com", "skills": ["CustomerRelationships"], "image": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1"},
+    {"id": "urn:ngsi-ld:Employee:E010", "name": "Blaise Pascal", "store_id": "urn:ngsi-ld:Store:S004", "category": "Junior", "role": "Stock Clerk", "salary": 1600.00, "email": "blaise@store.com", "skills": ["MachineryDriving"], "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d"}
 ]
 
 # Shelves: 3 per store (12 total)
@@ -496,6 +496,7 @@ class OrionDataLoader:
                 "id": employee_data["id"],
                 "type": "Employee",
                 "name": {"type": "Text", "value": employee_data["name"]},
+                "image": {"type": "Text", "value": employee_data["image"]},
                 "category": {"type": "Text", "value": employee_data["category"]},
                 "role": {"type": "Text", "value": employee_data["role"]},
                 "salary": {"type": "Float", "value": employee_data["salary"]},

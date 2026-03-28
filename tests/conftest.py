@@ -57,6 +57,10 @@ def sample_employee() -> dict:
         "id": "urn:ngsi-ld:Employee:TEST001",
         "type": "Employee",
         "name": "Test Employee",
+        "image": "https://example.com/employee.png",
+        "salary": 2300.0,
+        "role": "Cashier",
+        "refStore": "urn:ngsi-ld:Store:TEST001",
         "category": "Senior",
         "email": "test@example.com",
     }

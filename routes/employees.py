@@ -1,6 +1,12 @@
 from flask import Blueprint, current_app, jsonify, render_template, request
 
-from routes.utils import extract_payload, normalize_ngsi_payload, wants_json
+from routes.utils import (
+    denormalize_ngsi_entities,
+    maybe_denormalize_for_view,
+    extract_payload,
+    normalize_ngsi_payload,
+    wants_json,
+)
 
 employees_bp = Blueprint("employees", __name__, url_prefix="/employees")
 
@@ -10,7 +16,7 @@ def list_employees():
     employees = current_app.extensions["data_selector"].list_entities("Employee")
     if wants_json(request):
         return jsonify(employees)
-    return render_template("employees/list.html", employees=employees)
+    return render_template("employees/list.html", employees=denormalize_ngsi_entities(employees))
 
 
 @employees_bp.get("")
@@ -25,7 +31,7 @@ def get_employee(entity_id: str):
         return jsonify({"error": "Employee not found"}), 404
     if wants_json(request):
         return jsonify(employee)
-    return render_template("employees/detail.html", employee=employee)
+    return render_template("employees/detail.html", employee=maybe_denormalize_for_view(employee))
 
 
 @employees_bp.post("/")
@@ -40,7 +46,10 @@ def create_employee():
 
 @employees_bp.put("/<path:entity_id>")
 def update_employee(entity_id: str):
-    payload = extract_payload(request)
+    try:
+        payload = normalize_ngsi_payload(extract_payload(request), "Employee", partial=True)
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
     employee = current_app.extensions["data_selector"].update_entity(entity_id, payload)
     if not employee:
         return jsonify({"error": "Employee not found"}), 404

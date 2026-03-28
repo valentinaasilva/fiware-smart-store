@@ -480,3 +480,33 @@ Assumptions:
 	- FR-040: dashboard remains operational as a main view.
 	- FR-050/UX visual: professional and consistent UI style across the three main views.
 	- NFR-008: expanded coverage with NGSIv2 validation and route contract tests.
+
+## 17. Implementation progress (Issue #5)
+
+### ES
+- Estado: Implementacion inicial completada para contrato Employee con atributos obligatorios.
+- Resultado de validacion:
+	- Suite ejecutada con exito: 101 passed.
+- Alcance implementado en esta iteracion:
+	- Employee queda alineado con atributos obligatorios `id`, `name`, `image`, `salary`, `role`, `refStore` en create/update.
+	- Se mantiene compatibilidad con atributos legacy/extensibles de Employee (`category`, `email`, `skills`, `dateOfContract`, `username`, `password`).
+	- Vistas de Employees (listado/detalle) muestran atributos obligatorios y conservan visualizacion de campos opcionales.
+	- Datos semilla de Employee incorporan `image` y mantienen `salary`, `role` y `refStore` en formato NGSIv2.
+	- Cobertura de pruebas ampliada en unit/integration para validaciones de Employee (URL de image, salario, role, refStore).
+- Trazabilidad de requisitos:
+	- FR-031: CRUD de employees reforzado con validacion de atributos obligatorios.
+	- FR-030: listado/detalle de employees enriquecido con `image`, `role`, `salary` y referencia de tienda.
+
+### EN
+- Status: Initial implementation completed for Employee required-attribute contract.
+- Validation result:
+	- Test suite executed successfully: 101 passed.
+- Implemented scope in this iteration:
+	- Employee is aligned with required attributes `id`, `name`, `image`, `salary`, `role`, `refStore` on create/update.
+	- Backward compatibility is preserved for legacy/extensible Employee attributes (`category`, `email`, `skills`, `dateOfContract`, `username`, `password`).
+	- Employee views (list/detail) now expose required attributes while keeping optional fields visible.
+	- Employee seed data now includes `image` and keeps `salary`, `role`, and `refStore` in NGSIv2 format.
+	- Test coverage was expanded in unit/integration for Employee validations (image URL, salary, role, refStore).
+- Requirement traceability:
+	- FR-031: employee CRUD strengthened with required-attribute validation.
+	- FR-030: employee list/detail enriched with `image`, `role`, `salary`, and store reference.
