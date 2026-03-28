@@ -403,3 +403,37 @@ Assumptions:
 - Requirement coverage:
 	- FR-050: ES/EN bilingual support implemented in core views.
 	- Navigation flow validated after language switch.
+
+## 15. Implementation progress (Issue #3)
+
+### ES
+- Estado: Implementacion de bateria de pruebas completada para la iteracion actual.
+- Resultado de validacion:
+	- Suite ejecutada con exito: 87 passed.
+- Cobertura agregada en esta iteracion:
+	- Tests unitarios para utilidades, `OrionClient` y capa de datos (selector/fallback SQLite).
+	- Tests de integracion para CRUD de stores, products, employees e inventory.
+	- Tests e2e de flujo completo (store -> product -> inventory) y fallback Orion -> SQLite.
+	- Tests de endpoint de notificaciones (price change y low stock).
+	- Correcciones en tests legacy del cargador de datos para reflejar el comportamiento real del modo Orion.
+- Trazabilidad de requisitos:
+	- FR-001, FR-002, FR-003: verificados por pruebas de seleccion de fuente y fallback.
+	- FR-010, FR-020, FR-030 y FR-040: cubiertos por pruebas de rutas y respuestas JSON.
+	- FR-060 y FR-061: cubiertos por pruebas de webhooks de notificaciones.
+	- NFR-008: reforzado con nueva bateria de pruebas unitarias e integracion.
+
+### EN
+- Status: Test battery implementation completed for the current iteration.
+- Validation result:
+	- Test suite executed successfully: 87 passed.
+- Coverage added in this iteration:
+	- Unit tests for utilities, `OrionClient`, and data layer (selector/SQLite fallback).
+	- Integration tests for CRUD across stores, products, employees, and inventory.
+	- End-to-end tests for full flow (store -> product -> inventory) and Orion -> SQLite fallback.
+	- Notification endpoint tests (price change and low stock).
+	- Legacy loader test fixes to reflect actual Orion-mode behavior.
+- Requirement traceability:
+	- FR-001, FR-002, FR-003 verified through source-selection and fallback tests.
+	- FR-010, FR-020, FR-030, and FR-040 covered through route and JSON response tests.
+	- FR-060 and FR-061 covered through notification webhook tests.
+	- NFR-008 strengthened with the new unit and integration test battery.
