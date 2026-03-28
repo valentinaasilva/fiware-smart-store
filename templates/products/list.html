@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Products</h2>
+<h2>{{ _('Products') }}</h2>
 <table>
   <thead>
-    <tr><th>ID</th><th>Name</th><th>Price</th></tr>
+    <tr><th>{{ _('ID') }}</th><th>{{ _('Name') }}</th><th>{{ _('Price') }}</th></tr>
   </thead>
   <tbody>
   {% for product in products %}

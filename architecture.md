@@ -443,3 +443,27 @@ Test levels:
   - Completed and stable for baseline platform scope and test-data provisioning.
 - Current decision:
   - Keep a common repository interface to allow SQLite implementation migration without route changes.
+
+## 16. Implementation progress (Issue #2)
+
+### ES
+- Implementado en iteracion inicial de i18n:
+  - Modulo de traducciones lightweight en `models/i18n.py`.
+  - Seleccion de locale en `before_request` y persistencia en `session`.
+  - Context processor para inyeccion de helper `_()` y `current_lang` en plantillas.
+  - Endpoint `/language/<lang>` para cambiar idioma y redirigir a la ruta actual.
+  - Toggle ES/EN en navbar y traduccion de vistas principales.
+- Impacto arquitectonico:
+  - No se altera la capa de datos ni contratos NGSIv2.
+  - i18n se mantiene en capa de presentacion y contexto de peticion.
+
+### EN
+- Implemented in initial i18n iteration:
+  - Lightweight translation module in `models/i18n.py`.
+  - Locale selection in `before_request` with session persistence.
+  - Context processor injecting `_()` helper and `current_lang` in templates.
+  - `/language/<lang>` endpoint to switch language and redirect to current route.
+  - ES/EN toggle in navbar and translation of main views.
+- Architectural impact:
+  - No changes to data layer or NGSIv2 contracts.
+  - i18n remains in presentation layer and request context.

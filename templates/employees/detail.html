@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Employee Detail</h2>
+<h2>{{ _('Employee Detail') }}</h2>
 <dl>
-  <dt>ID</dt><dd>{{ employee.id }}</dd>
-  <dt>Name</dt><dd>{{ employee.name }}</dd>
-  <dt>Category</dt><dd>{{ employee.category }}</dd>
-  <dt>Type</dt><dd>{{ employee.type }}</dd>
+  <dt>{{ _('ID') }}</dt><dd>{{ employee.id }}</dd>
+  <dt>{{ _('Name') }}</dt><dd>{{ employee.name }}</dd>
+  <dt>{{ _('Category') }}</dt><dd>{{ employee.category }}</dd>
+  <dt>{{ _('Type') }}</dt><dd>{{ employee.type }}</dd>
 </dl>
 {% endblock %}

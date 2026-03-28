@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ current_lang }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,10 +10,13 @@
   <header class="topbar">
     <h1>fiware-smart-store</h1>
     <nav>
-      <a href="/">Home</a>
-      <a href="/stores">Stores</a>
-      <a href="/products">Products</a>
-      <a href="/employees">Employees</a>
+      <a href="/">{{ _('Home') }}</a>
+      <a href="/stores">{{ _('Stores') }}</a>
+      <a href="/products">{{ _('Products') }}</a>
+      <a href="/employees">{{ _('Employees') }}</a>
+      <span class="lang-label">{{ _('Language') }}:</span>
+      <a class="lang-link{% if current_lang == 'es' %} active{% endif %}" href="{{ url_for('set_language', lang='es', next=request.path) }}">ES</a>
+      <a class="lang-link{% if current_lang == 'en' %} active{% endif %}" href="{{ url_for('set_language', lang='en', next=request.path) }}">EN</a>
     </nav>
   </header>
   <main>

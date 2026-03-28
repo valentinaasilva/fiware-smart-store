@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Stores</h2>
+<h2>{{ _('Stores') }}</h2>
 <table>
   <thead>
-    <tr><th>ID</th><th>Name</th><th>Country</th></tr>
+    <tr><th>{{ _('ID') }}</th><th>{{ _('Name') }}</th><th>{{ _('Country') }}</th></tr>
   </thead>
   <tbody>
   {% for store in stores %}

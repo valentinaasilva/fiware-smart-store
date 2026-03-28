@@ -377,5 +377,29 @@ Assumptions:
 	- Initial load aligned with minimum statement scope: 4 stores, 10 products, and at least 5 products per store.
 - Pending for next iterations:
 	- Advanced UI (Leaflet, Three.js, Mermaid, and richer visual behavior).
-	- Full ES/EN i18n and persistent dark/light toggle.
+	- Persistent dark/light toggle.
 	- Advanced validation hardening and end-to-end testing.
+
+## 14. Implementation progress (Issue #2)
+
+### ES
+- Estado: Implementado (iteracion inicial de i18n UI).
+- Alcance implementado:
+	- Soporte multi-idioma ES/EN con seleccion en interfaz (navbar).
+	- Persistencia de idioma por sesion de usuario.
+	- Traduccion de textos principales en dashboard, barra de navegacion y vistas stores/products/employees.
+	- Endpoint de cambio de idioma con redireccion segura a la pagina actual.
+- Cobertura de requisitos:
+	- FR-050: soporte bilingue ES/EN implementado en vistas principales.
+	- Flujo de navegacion validado tras cambio de idioma.
+
+### EN
+- Status: Implemented (initial UI i18n iteration).
+- Implemented scope:
+	- ES/EN multi-language support with UI selector in navbar.
+	- Session-based language persistence.
+	- Main text translation in dashboard, navbar, and stores/products/employees views.
+	- Language-switch endpoint with safe redirect back to current page.
+- Requirement coverage:
+	- FR-050: ES/EN bilingual support implemented in core views.
+	- Navigation flow validated after language switch.
