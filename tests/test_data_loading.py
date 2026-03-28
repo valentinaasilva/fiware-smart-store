@@ -6,6 +6,7 @@ import sys
 import os
 import pytest
 from unittest.mock import Mock, patch, MagicMock
+from requests.exceptions import RequestException
 
 # Add scripts directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'scripts'))
@@ -40,7 +41,7 @@ class TestHealthCheck:
         mock_response.json.return_value = {"version": "3.4.0"}
         mock_get.return_value = mock_response
         
-        loader = OrionDataLoader("http://localhost:1026")
+        loader = OrionDataLoader("http://localhost:1026", target="orion")
         result = loader.health_check()
         
         assert result is True
@@ -51,9 +52,9 @@ class TestHealthCheck:
         """Test failed Orion health check."""
         from load_test_data import OrionDataLoader
         
-        mock_get.side_effect = Exception("Connection refused")
+        mock_get.side_effect = RequestException("Connection refused")
         
-        loader = OrionDataLoader("http://localhost:1026")
+        loader = OrionDataLoader("http://localhost:1026", target="orion")
         result = loader.health_check()
         
         assert result is False
@@ -62,7 +63,7 @@ class TestHealthCheck:
 class TestDataLoading:
     """Test data loading operations."""
     
-    @patch.object('load_test_data.OrionDataLoader', '_create_entity')
+    @patch('load_test_data.OrionDataLoader._create_entity')
     def test_load_stores(self, mock_create):
         """Test store creation."""
         from load_test_data import OrionDataLoader
@@ -75,7 +76,7 @@ class TestDataLoading:
         assert mock_create.call_count >= 1
         assert len(loader.created_entities["stores"]) > 0
     
-    @patch.object('load_test_data.OrionDataLoader', '_create_entity')
+    @patch('load_test_data.OrionDataLoader._create_entity')
     def test_load_products(self, mock_create):
         """Test product creation."""
         from load_test_data import OrionDataLoader
@@ -88,7 +89,7 @@ class TestDataLoading:
         assert mock_create.call_count >= 1
         assert len(loader.created_entities["products"]) > 0
     
-    @patch.object('load_test_data.OrionDataLoader', '_create_entity')
+    @patch('load_test_data.OrionDataLoader._create_entity')
     def test_load_employees(self, mock_create):
         """Test employee creation."""
         from load_test_data import OrionDataLoader
@@ -111,7 +112,7 @@ class TestDataLoading:
 class TestIntegrityValidation:
     """Test integrity rule validation."""
     
-    @patch.object('load_test_data.OrionDataLoader', '_list_entities_by_type')
+    @patch('load_test_data.OrionDataLoader._list_entities_by_type')
     def test_validate_integrity(self, mock_list):
         """Test integrity validation."""
         from load_test_data import OrionDataLoader
@@ -128,7 +129,7 @@ class TestIntegrityValidation:
 class TestMinimumRequirements:
     """Test minimum requirements verification."""
     
-    @patch.object('load_test_data.OrionDataLoader', '_list_entities_by_type')
+    @patch('load_test_data.OrionDataLoader._list_entities_by_type')
     def test_verify_minimum_requirements(self, mock_list):
         """Test minimum requirements check."""
         from load_test_data import OrionDataLoader
@@ -238,7 +239,7 @@ class TestCLI:
     
     @patch('sys.argv', ['load_test_data.py', '--help'])
     @patch('sys.exit')
-    def test_help_flag(self, mock_exit, mock_argv):
+    def test_help_flag(self, mock_exit):
         """Test --help flag."""
         # argparse calls sys.exit(0) on --help
         # This is expected behavior, so we just check the flag exists

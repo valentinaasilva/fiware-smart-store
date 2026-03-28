@@ -467,3 +467,29 @@ Test levels:
 - Architectural impact:
   - No changes to data layer or NGSIv2 contracts.
   - i18n remains in presentation layer and request context.
+
+## 17. Implementation progress (Issue #3)
+
+### ES
+- Estado: Bateria de pruebas ampliada y estable para la arquitectura actual.
+- Cambios aplicados:
+  - Estructura de tests separada por capas (`tests/unit`, `tests/integration`) para mantener coherencia con la arquitectura logica.
+  - Cobertura unitaria dedicada para `OrionClient` (health-check, CRUD y registro de integrations NGSIv2).
+  - Fixtures compartidas en `tests/conftest.py` para aislar SQLite temporal y forzar escenarios Orion no disponible.
+  - Pruebas de integracion para blueprints CRUD y webhooks de notificaciones.
+  - Pruebas `tests/e2e` para flujo operativo completo y resiliencia ante caida de Orion con fallback a SQLite.
+  - Correccion de compatibilidad en rutas de inventario para aceptar URL con y sin slash final, evitando redirecciones 308 en clientes API.
+- Verificacion:
+  - Ejecucion de suite completa con 87 tests en verde.
+
+### EN
+- Status: Expanded test battery is stable for the current architecture.
+- Applied changes:
+  - Layered test structure (`tests/unit`, `tests/integration`) aligned with logical architecture boundaries.
+  - Dedicated unit coverage for `OrionClient` (health-check, CRUD, and NGSIv2 integration registration).
+  - Shared fixtures in `tests/conftest.py` to isolate temporary SQLite and force Orion-unavailable scenarios.
+  - Integration tests for CRUD blueprints and notification webhooks.
+  - `tests/e2e` coverage for full operational flow and resilience when Orion fails and SQLite fallback takes over.
+  - Inventory route compatibility fix to accept both trailing-slash and non-trailing-slash URLs, preventing 308 redirects for API clients.
+- Verification:
+  - Full suite execution with 87 passing tests.

@@ -565,3 +565,31 @@ Recommended query models:
 - Data model impact:
   - No schema changes for Store, Product, Employee, Shelf, or InventoryItem.
   - No changes to IR-001..IR-007 rules.
+
+## 15. Implementation alignment progress (Issue #3)
+
+### ES
+- Estado: Avance implementado y validado por pruebas automatizadas.
+- Alineacion de modelo validada en esta iteracion:
+  - Validaciones de payload y normalizacion NGSIv2 para entidades CRUD principales.
+  - Reglas base de inventario verificadas en tests (conteos no negativos y consistencia de relaciones esperadas).
+  - Cobertura de respuestas de endpoints para operaciones create/update/delete y manejo de errores de entrada.
+  - Pruebas de integridad de distribucion minima en datos de prueba (productos por tienda y stock minimo agregado).
+  - Escenario e2e validado para conmutacion Orion -> SQLite sin romper contratos de datos CRUD.
+- Reglas de integridad con evidencia de test en esta iteracion:
+  - IR-001: consistencia esperada entre `refShelf` y `refStore` cubierta por tests de integridad.
+  - IR-002: no duplicidad por tripleta (store, shelf, product) cubierta por tests de integridad.
+  - IR-003: capacidad de shelf no excedida cubierta por tests de integridad.
+
+### EN
+- Status: Implemented progress validated through automated tests.
+- Model alignment validated in this iteration:
+  - Payload validation and NGSIv2 normalization checks for core CRUD entities.
+  - Baseline inventory rules verified by tests (non-negative counters and expected relationship consistency).
+  - Endpoint response coverage for create/update/delete operations and input-error handling.
+  - Minimum distribution integrity checks in seed data (products per store and minimum aggregate stock).
+  - End-to-end scenario validated for Orion -> SQLite switch without breaking CRUD data contracts.
+- Integrity rules with test evidence in this iteration:
+  - IR-001: expected consistency between `refShelf` and `refStore` covered by integrity tests.
+  - IR-002: no duplicate tuple (store, shelf, product) covered by integrity tests.
+  - IR-003: shelf capacity not exceeded covered by integrity tests.
