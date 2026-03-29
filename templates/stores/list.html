@@ -23,6 +23,7 @@
         <th>{{ _('ID') }}</th>
         <th>{{ _('Name') }}</th>
         <th>{{ _('Country') }}</th>
+        <th>{{ _('Country Code') }}</th>
         <th>{{ _('URL') }}</th>
         <th>{{ _('Telephone') }}</th>
         <th>Capacity (m3)</th>
@@ -48,6 +49,7 @@
         <td><a class="entity-link" href="{{ url_for('stores.get_store', entity_id=store.id) }}">{{ store.name }}</a></td>
         {% set country_code = store.countryCode if store.countryCode is string else '' %}
         <td>{{ _(country_names.get(country_code, country_code if country_code else '-')) }}</td>
+        <td class="mono">{{ country_code if country_code else '-' }}</td>
         <td>
           {% if store.url %}
             <a href="{{ store.url }}" target="_blank" rel="noopener noreferrer">{{ store.url }}</a>
@@ -67,7 +69,7 @@
         </td>
       </tr>
     {% else %}
-      <tr><td colspan="10">{{ _('No records') }}</td></tr>
+      <tr><td colspan="11">{{ _('No records') }}</td></tr>
     {% endfor %}
     </tbody>
   </table>
