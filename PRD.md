@@ -360,6 +360,7 @@ Assumptions:
 	- Capa de seleccion de fuente de datos Orion-first con fallback SQLite.
 	- Script de carga de datos de prueba `scripts/load_test_data.py` con opciones `--clean`, `--dry-run` y `--verbose`.
 	- Carga objetivo cumplida: 4 stores, 10 products, 8 employees, 12 shelves y 55+ inventory items.
+	- IDs de empleados normalizados de forma correlativa en dataset semilla: `E001..E008`.
 	- Suites de tests agregadas para stores, products, employees, inventory y data loading.
 - Cobertura de requisitos lograda en Issue #1:
 	- FR-001, FR-002, FR-003: implementados y operativos.
@@ -385,6 +386,7 @@ Assumptions:
 	- Orion-first data source selector with SQLite fallback.
 	- Test data loader script `scripts/load_test_data.py` with `--clean`, `--dry-run`, and `--verbose`.
 	- Target dataset delivered: 4 stores, 10 products, 8 employees, 12 shelves, and 55+ inventory items.
+	- Employee IDs normalized to a sequential seed range: `E001..E008`.
 	- Test suites added for stores, products, employees, inventory, and data loading.
 - Requirement coverage achieved in Issue #1:
 	- FR-001, FR-002, FR-003: implemented and working.

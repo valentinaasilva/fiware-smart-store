@@ -46,20 +46,18 @@ Implementar la aplicación base con datos de prueba para una cadena de supermerc
 
 ---
 
-### Employees (10 empleados distribuidos en 4 tiendas)
+### Employees (8 empleados distribuidos en 4 tiendas)
 
 | Employee ID | Name | Store | Category | Role | Salary | Email |
 |------------|------|-------|----------|------|--------|-------|
-| urn:ngsi-ld:Employee:E001 | Ada Lovelace | S001 | Senior | Store Manager | €2800 | ada@store.com |
-| urn:ngsi-ld:Employee:E002 | Alan Turing | S001 | Junior | Cashier | €1800 | alan@store.com |
-| urn:ngsi-ld:Employee:E003 | Grace Hopper | S001 | Manager | Supervisor | €2500 | grace@store.com |
-| urn:ngsi-ld:Employee:E004 | Donald Knuth | S002 | Senior | Store Manager | €2900 | donald@store.com |
-| urn:ngsi-ld:Employee:E005 | Vera Rubin | S002 | Junior | Stock Clerk | €1700 | vera@store.com |
-| urn:ngsi-ld:Employee:E006 | Richard Stallman | S002 | Specialist | IT Support | €3200 | richard@store.com |
-| urn:ngsi-ld:Employee:E007 | Hedy Lamarr | S003 | Manager | Supervisor | €2400 | hedy@store.com |
-| urn:ngsi-ld:Employee:E008 | John Backus | S004 | Senior | Store Manager | €2700 | john@store.com |
-| urn:ngsi-ld:Employee:E009 | Barbara Liskov | S003 | Junior | Cashier | €1900 | barbara@store.com |
-| urn:ngsi-ld:Employee:E010 | Blaise Pascal | S004 | Junior | Stock Clerk | €1600 | blaise@store.com |
+| urn:ngsi-ld:Employee:E001 | Ángel Vilariño García | S001 | Specialist | Inventory Specialist | €2350 | angel.vilarino@xantadis.com |
+| urn:ngsi-ld:Employee:E002 | Alejandro Rodríguez Expósito | S002 | Senior | Store Supervisor | €2550 | alejandro.rodriguez.exposito@xantadis.com |
+| urn:ngsi-ld:Employee:E003 | Soraya Rodriguez Campos | S003 | Manager | Customer Service Lead | €2480 | soraya.rodriguez.campos@xantadis.com |
+| urn:ngsi-ld:Employee:E004 | Sara Paredes Bascoy | S004 | Senior | Operations Analyst | €2420 | sara.paredes.bascoy@xantadis.com |
+| urn:ngsi-ld:Employee:E005 | Alejandro Varela Vázquez | S001 | Junior | Cashier | €1820 | alejandro.varela.vazquez@xantadis.com |
+| urn:ngsi-ld:Employee:E006 | Daniel Martínez Martínez | S002 | Specialist | Logistics Coordinator | €2380 | daniel.martinez@xantadis.com |
+| urn:ngsi-ld:Employee:E007 | Pablo Armenteros Lobato | S003 | Junior | Stock Assistant | €1760 | pablo.armenteros@xantadis.com |
+| urn:ngsi-ld:Employee:E008 | Verónica Vila Viveiro | S004 | Manager | Store Manager | €2950 | veronica.vila@xantadis.com |
 
 **Validaciones:**
 - `email` formato válido Y único

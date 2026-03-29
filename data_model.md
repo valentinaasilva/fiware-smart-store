@@ -536,6 +536,7 @@ Recommended query models:
   - Contratos de subscription iniciales para cambios de `price` y bajo stock.
 - Alineado y completado para cierre de Issue #1:
   - Dataset de prueba implementado y verificable con 4 stores, 10 products, 8 employees, 12 shelves y 55+ inventory items.
+  - IDs de Employee en semilla normalizados a secuencia continua (`E001..E008`).
   - Script de carga dedicado `scripts/load_test_data.py` para provisionar entidades NGSIv2 de forma repetible.
   - Validaciones aplicadas en datos de prueba para enums, formatos, cardinalidades y relaciones esenciales.
   - Ajuste operativo: el script permite carga directa en SQLite para garantizar datos visibles en dashboard cuando Orion no es la fuente activa.
@@ -558,6 +559,7 @@ Recommended query models:
   - Initial subscription contracts for `price` changes and low stock.
 - Aligned and completed for Issue #1 closure:
   - Test dataset implemented and verifiable with 4 stores, 10 products, 8 employees, 12 shelves, and 55+ inventory items.
+  - Seed Employee IDs normalized to a contiguous sequence (`E001..E008`).
   - Dedicated loader script `scripts/load_test_data.py` to provision NGSIv2 entities in a repeatable way.
   - Validation applied in test data for enums, formats, cardinalities, and essential relationships.
   - Operational adjustment: the script supports direct SQLite loading to guarantee visible dashboard data when Orion is not the active source.

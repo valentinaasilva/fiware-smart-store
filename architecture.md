@@ -441,6 +441,7 @@ Test levels:
 - Implementado especificamente para cierre de Issue #1:
   - Script de carga de datos `scripts/load_test_data.py` integrado al flujo de desarrollo local.
   - Inicializacion de dataset funcional para cadena de supermercados (4 stores, 10 products, 8 employees, 12 shelves, 55+ inventory items).
+  - IDs de empleados en semilla reindexados de forma correlativa (`E001..E008`) para consistencia operativa y pruebas.
   - Suites de pruebas para validacion estructural de entidades y reglas de integridad.
   - Correccion posterior: el script ahora permite target `sqlite` por defecto para carga local efectiva del dashboard.
   - Correccion de navegacion: barra superior usa rutas estables y blueprints de listado aceptan URL con y sin slash final.
@@ -463,6 +464,7 @@ Test levels:
 - Implemented specifically to close Issue #1:
   - Test data loading script `scripts/load_test_data.py` integrated into local development workflow.
   - Functional supermarket bootstrap dataset (4 stores, 10 products, 8 employees, 12 shelves, 55+ inventory items).
+  - Seed employee IDs were reindexed to a contiguous range (`E001..E008`) for operational and test consistency.
   - Test suites for entity-structure validation and integrity rule checks.
   - Post-fix: the script now supports `sqlite` as default target to ensure effective local dashboard seeding.
   - Navigation fix: topbar uses stable route links and list blueprints accept URLs both with and without trailing slash.
