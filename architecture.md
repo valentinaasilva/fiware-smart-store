@@ -717,7 +717,7 @@ Test levels:
 ## 25. Implementation progress (Issue #8 Orion-first operational bootstrap)
 
 ### ES
-- Estado: Implementacion iniciada para robustecer arquitectura de arranque Orion-first con fallback SQLite sin sincronizacion.
+- Estado: Implementacion completada y cerrada para robustecer arquitectura de arranque Orion-first con fallback SQLite sin sincronizacion.
 - Cambios arquitectonicos aplicados:
   - `DataSourceSelector.bootstrap()` consolida decision de fuente activa en arranque y registra logs operativos del modo seleccionado.
   - Se mantiene fallback a SQLite ante error de operaciones Orion para continuidad, sin replicacion de datos entre fuentes.
@@ -730,7 +730,7 @@ Test levels:
   - Archivos clave: `models/data_source.py`, `docker-compose.yml`, `start.sh`, `stop.sh`.
 
 ### EN
-- Status: Implementation started to harden Orion-first startup architecture with SQLite fallback and no synchronization.
+- Status: Implementation completed and closed to harden Orion-first startup architecture with SQLite fallback and no synchronization.
 - Applied architectural changes:
   - `DataSourceSelector.bootstrap()` now centralizes startup source decision with explicit operational mode logging.
   - SQLite fallback on Orion operation failures is kept for continuity, without any cross-source data replication.
@@ -741,3 +741,17 @@ Test levels:
 - Technical traceability:
   - Affected layers: Data access, Integration, and local deployment operations.
   - Key files: `models/data_source.py`, `docker-compose.yml`, `start.sh`, `stop.sh`.
+
+## 26. Closure status (Issue #8)
+
+### ES
+- Estado de fusion: cambios de Issue #8 consolidados en `main`.
+- Estado de sincronizacion: rama de trabajo y remoto `origin/main` sin diferencias pendientes.
+- Estado tecnico: flujo Orion-first en bootstrap, fallback controlado a SQLite y ciclo operativo con scripts start/stop consolidado.
+- Estado de ticket: cierre trazado por commit en `main` con referencia de cierre de issue.
+
+### EN
+- Merge status: Issue #8 changes consolidated on `main`.
+- Sync status: working branch and `origin/main` are aligned with no pending diffs.
+- Technical status: Orion-first bootstrap flow, controlled SQLite fallback, and start/stop operational lifecycle consolidated.
+- Ticket status: closure traced by a `main` commit with issue-closing reference.

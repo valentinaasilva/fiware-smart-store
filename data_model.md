@@ -815,7 +815,7 @@ Recommended query models:
 ## 23. Implementation alignment progress (Issue #8 Orion startup fallback scope)
 
 ### ES
-- Estado: Alineacion de persistencia iniciada para estrategia Orion-first con fallback SQLite por conectividad.
+- Estado: Alineacion de persistencia completada y cerrada para estrategia Orion-first con fallback SQLite por conectividad.
 - Alineacion aplicada:
   - La fuente activa se decide en arranque segun `health_check` de Orion.
   - SQLite permanece como repositorio de fallback local ante indisponibilidad de Orion.
@@ -826,7 +826,7 @@ Recommended query models:
   - Integridad de entidades NGSIv2 mantenida sin cambios de schema por conmutacion de fuente.
 
 ### EN
-- Status: Persistence alignment started for Orion-first strategy with SQLite connectivity fallback.
+- Status: Persistence alignment completed and closed for Orion-first strategy with SQLite connectivity fallback.
 - Applied alignment:
   - Active source is decided at startup using Orion `health_check`.
   - SQLite remains the local fallback repository when Orion is unavailable.
@@ -835,3 +835,15 @@ Recommended query models:
 - Expected evidence:
   - Startup logs showing `ORION` or `SQLITE` mode.
   - NGSIv2 entity integrity maintained with no schema changes due to source switching.
+
+## 24. Closure status (Issue #8)
+
+### ES
+- Estado de modelo: persistencia Orion/SQLite validada en modo alternativo sin sincronizacion cruzada.
+- Estado de sincronizacion de fuentes: explicitamente desactivada por alcance del issue (sin replicacion Orion<->SQLite).
+- Estado de sincronizacion de ramas: cambios de cierre integrados en `main` y listos en remoto.
+
+### EN
+- Model status: Orion/SQLite persistence validated in alternative mode without cross-source synchronization.
+- Source synchronization status: explicitly disabled by issue scope (no Orion<->SQLite replication).
+- Branch synchronization status: closure changes integrated on `main` and ready on remote.

@@ -676,7 +676,7 @@ Assumptions:
 ## 23. Implementation progress (Issue #8 Orion-first startup fallback)
 
 ### ES
-- Estado: Implementacion iniciada para integracion operativa Orion-first sin sincronizacion de datos entre Orion y SQLite.
+- Estado: Implementacion completada y cerrada para integracion operativa Orion-first sin sincronizacion de datos entre Orion y SQLite.
 - Alcance implementado:
 	- Seleccion de fuente en arranque reforzada con trazas explicitas de modo ORION/SQLITE.
 	- Fallback runtime mantiene continuidad operativa con cambio controlado a SQLite cuando Orion falla.
@@ -689,7 +689,7 @@ Assumptions:
 	- FR-006, FR-007: scripts de operacion y no-sincronizacion entre fuentes.
 
 ### EN
-- Status: Implementation started for Orion-first operational integration without data synchronization between Orion and SQLite.
+- Status: Implementation completed and closed for Orion-first operational integration without data synchronization between Orion and SQLite.
 - Implemented scope:
 	- Startup source selection now includes explicit ORION/SQLITE mode logs.
 	- Runtime fallback preserves continuity with controlled switch to SQLite when Orion fails.
@@ -700,3 +700,17 @@ Assumptions:
 	- FR-001, FR-002, FR-003: connectivity-based source selection at startup.
 	- FR-004, FR-005: external integration registration when Orion is active.
 	- FR-006, FR-007: operational scripts and no cross-source synchronization.
+
+## 24. Closure status (Issue #8)
+
+### ES
+- Estado de fusion: `feature/issue-8-orion-integration` integrada en `main`.
+- Estado de sincronizacion: `main` y `origin/main` sincronizados tras push de cierre.
+- Estado funcional: Orion-first en arranque, fallback SQLite operativo y scripts `start.sh`/`stop.sh` validados por suite.
+- Estado de ticket GitHub: cerrado mediante commit en `main` con referencia `Closes #8`.
+
+### EN
+- Merge status: `feature/issue-8-orion-integration` integrated into `main`.
+- Sync status: `main` and `origin/main` synchronized after closure push.
+- Functional status: startup Orion-first, operational SQLite fallback, and validated `start.sh`/`stop.sh` scripts.
+- GitHub ticket status: closed through a `main` commit referencing `Closes #8`.
