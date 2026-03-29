@@ -243,17 +243,17 @@ SHELF_MAX_CAPACITY = 50
 
 # Inventory distribution: ensure min 5 products per store and min 12 items per store
 INVENTORY_DISTRIBUTION = {
-    "urn:ngsi-ld:Store:S001": {
-        "urn:ngsi-ld:Product:P001": {"stock": 30, "shelf": 10},
-        "urn:ngsi-ld:Product:P002": {"stock": 0, "shelf": 0},
-        "urn:ngsi-ld:Product:P003": {"stock": 40, "shelf": 15},
-        "urn:ngsi-ld:Product:P004": {"stock": 35, "shelf": 12},
-        "urn:ngsi-ld:Product:P005": {"stock": 25, "shelf": 8},
-        "urn:ngsi-ld:Product:P006": {"stock": 20, "shelf": 7},
-        "urn:ngsi-ld:Product:P007": {"stock": 0, "shelf": 0},
-        "urn:ngsi-ld:Product:P008": {"stock": 32, "shelf": 11},
-        "urn:ngsi-ld:Product:P009": {"stock": 15, "shelf": 5},
-        "urn:ngsi-ld:Product:P010": {"stock": 28, "shelf": 9}
+    "urn:ngsi-ld:Store:S001": {07392837207-278d3ecbf3d2", "dateOfContract": "2025-01-15T00:00:00Z", "username": "alejandro.varela"},
+    {"id": "urn:ngsi-ld:Employee:E003", "name": "Sara Paredes", "store_id": "urn:ngsi-ld:Store:S003", "category": "Manager", "role": "Supervisor", "salary": 2500.00, "email": "sara.paredes@xantadis.com", "skills": ["WritingReports", "CustomerRelationships"], "image": "https://images.unsplash.com/photo-1544005313-94ddf0286df2", "dateOfContract": "2023-10-02T00:00:00Z", "username": "sara.paredes"},
+    {"id": "urn:ngsi-ld:Employee:E004", "name": "Alejandro Martínez", "store_id": "urn:ngsi-ld:Store:S004", "category": "Senior", "role": "Store Manager", "salary": 2900.00, "email": "alejandro.martinez@xantadis.com", "skills": ["WritingReports"], "image": "https://images.unsplash.com/photo-1500935460413-b2518dc0f1d4", "dateOfContract": "2022-11-21T00:00:00Z", "username": "alejandro.martinez"},
+    {"id": "urn:ngsi-ld:Employee:E005", "name": "Ángel Vilariño García", "store_id": "urn:ngsi-ld:Store:S001", "category": "Specialist", "role": "Inventory Specialist", "salary": 2350.00, "email": "angel.vilarino@xantadis.com", "skills": ["MachineryDriving", "WritingReports"], "image": "https://images.unsplash.com/photo-1507003-6956481", "dateOfContract": "2024-05-12T00:00:00Z", "username": "angel.vilarino"},
+    {"id": "urn:ngsi-ld:Employee:E006", "name": "Alejandro Rodríguez Expósito", "store_id": "urn:ngsi-ld:Store:S002", "category": "Senior", "role": "Store Supervisor", "salary": 2550.00, "email": "alejandro.rodriguez.exposito@xantadis.com", "skills": ["WritingReports", "CustomerRelationships"], "image": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d", "dateOfContract": "2023-08-01T00:00:00Z", "username": "alejandro.rodriguez.exposito"},
+    {"id": "urn:ngsi-ld:Employee:E007", "name": "Soraya Rodriguez Campos", "store_id": "urn:ngsi-ld:Store:S003", "category": "Manager", "role": "Customer Service Lead", "salary": 2480.00, "email": "soraya.rodriguez.campos@xantadis.com", "skills": ["CustomerRelationships", "WritingReports"], "image": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f", "dateOfContract": "2024-01-09T00:00:00Z", "username": "soraya.rodriguez.campos"},
+    {"id": "urn:ngsi-ld:Employee:E008", "name": "Sara Paredes Bascoy", "store_id": "urn:ngsi-ld:Store:S004", "category": "Senior", "role": "Operations Analyst", "salary": 2420.00, "email": "sara.paredes.bascoy@xantadis.com", "skills": ["WritingReports"], "image": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80", "dateOfContract": "2023-12-11T00:00:00Z", "username": "sara.paredes.bascoy"},
+    {"id": "urn:ngsi-ld:Employee:E009", "name": "Alejandro Varela Vázquez", "store_id": "urn:ngsi-ld:Store:S001", "category": "Junior", "role": "Cashier", "salary": 1820.00, "email": "alejandro.varela.vazquez@xantadis.com", "skills": ["CustomerRelationships"], "image": "https://images.unsplash.com/photo-1508739773434-c26b3d09e071", "dateOfContract": "2025-02-03T00:00:00Z", "username": "alejandro.varela.vazquez"},
+    {"id": "urn:ngsi-ld:Employee:E010", "name": "Daniel Martínez Martínez", "store_id": "urn:ngsi-ld:Store:S002", "category": "Specialist", "role": "Logistics Coordinator", "salary": 2380.00, "email": "daniel.martinez@xantadis.com", "skills": ["MachineryDriving", "WritingReports"], "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e", "dateOfContract": "2022-07-18T00:00:00Z", "username": "daniel.martinez"},
+    {"id": "urn:ngsi-ld:Employee:E011", "name": "Pablo Armenteros Lobato", "store_id": "urn:ngsi-ld:Store:S003", "category": "Junior", "role": "Stock Assistant", "salary": 1760.00, "email": "pablo.armenteros@xantadis.com", "skills": ["MachineryDriving"], "image": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e", "dateOfContract": "2025-04-20T00:00:00Z", "username": "pablo.armenteros"},
+    {"id": "urn:ngsi-ld:Employee:E012", "name": "Verónica Vila Viveiro", "store_id": "urn:ngsi-ld:Store:S004", "category": "Manager", "role": "Store Manager", "salary": 2950.00, "email": "veronica.vila@xantadis.com", "skills": ["WritingReports", "CustomerRelationships"], "image": "https://images.unsplash.com/photo-1534751516642-a1ef2d51b3e1
     },
     "urn:ngsi-ld:Store:S002": {
         "urn:ngsi-ld:Product:P001": {"stock": 25, "shelf": 8},
