@@ -1,39 +1,58 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="hero-panel">
-  <div>
+<section class="welcome-hero">
+  <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1800&q=80" alt="Xantadis Market" loading="lazy">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
     <p class="eyebrow">{{ _('Dashboard') }}</p>
-    <h2>{{ _('Dashboard') }}</h2>
+    <h2>{{ _('Welcome to Xantadis') }}</h2>
+    <p>{{ _('Freshness, quality and trusted service for your day-to-day shopping.') }}</p>
     <p class="hero-subtitle">{{ _('Active source mode') }}: <strong>{{ source_mode }}</strong></p>
-  </div>
-  <div class="hero-links">
-    <a class="button-link" href="{{ url_for('stores.list_stores') }}">{{ _('Stores') }}</a>
-    <a class="button-link" href="{{ url_for('products.list_products') }}">{{ _('Products') }}</a>
-    <a class="button-link" href="{{ url_for('employees.list_employees') }}">{{ _('Employees') }}</a>
   </div>
 </section>
 
-<section class="cards-grid">
+<section class="dashboard-metrics">
   <article class="metric-card">
-    <h3>{{ _('Stores') }}</h3>
-    <p class="metric-value">{{ stats.stores }}</p>
-    <p class="metric-note">Physical locations registered</p>
+    <span class="metric-icon products">◼</span>
+    <div>
+      <h3>{{ _('Total Products') }}</h3>
+      <p class="metric-value">{{ stats.products }}</p>
+    </div>
   </article>
+
   <article class="metric-card">
-    <h3>{{ _('Products') }}</h3>
-    <p class="metric-value">{{ stats.products }}</p>
-    <p class="metric-note">Active catalog entries</p>
+    <span class="metric-icon stores">◉</span>
+    <div>
+      <h3>{{ _('Stores') }}</h3>
+      <p class="metric-value">{{ stats.stores }}</p>
+    </div>
   </article>
+
   <article class="metric-card">
-    <h3>{{ _('Employees') }}</h3>
-    <p class="metric-value">{{ stats.employees }}</p>
-    <p class="metric-note">Staff records tracked</p>
+    <span class="metric-icon employees">◍</span>
+    <div>
+      <h3>{{ _('Employees') }}</h3>
+      <p class="metric-value">{{ stats.employees }}</p>
+    </div>
   </article>
+
   <article class="metric-card">
-    <h3>{{ _('Inventory Items') }}</h3>
-    <p class="metric-value">{{ stats.inventory_items }}</p>
-    <p class="metric-note">Stock positions monitored</p>
+    <span class="metric-icon alert">▲</span>
+    <div>
+      <h3>{{ _('Low Stock') }}</h3>
+      <p class="metric-value">{{ low_stock_count }}</p>
+    </div>
   </article>
+</section>
+
+<section class="dashboard-actions">
+  <a class="button-link" href="{{ url_for('products.list_products') }}">{{ _('View Catalog') }}</a>
+  <a class="button-link secondary" href="{{ url_for('stores.list_stores') }}">{{ _('Manage Stores') }}</a>
+</section>
+
+<section class="map-shell" id="stores-map">
+  <h3>{{ _('Stores Map') }}</h3>
+  <div id="dashboard-stores-map" class="store-map" data-markers='{{ stores_map|tojson|safe }}'></div>
 </section>
 {% endblock %}

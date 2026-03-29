@@ -14,6 +14,14 @@
 - Status: Technical baseline
 - Scope: Target architecture for Flask + FIWARE implementation
 
+## 1.1 Change log
+
+### ES
+- 2026-03-29: Actualizada arquitectura de presentacion con shell de dos niveles (sidebar + cabecera superior) y dashboard enriquecido con mapa agregado de tiendas y KPI de bajo stock.
+
+### EN
+- 2026-03-29: Presentation architecture updated with a two-level shell (sidebar + top header) and an enriched dashboard with aggregated stores map and low-stock KPI.
+
 ## 2. Architectural goals
 
 ### ES
@@ -59,6 +67,7 @@ Capas y componentes:
 - Assets estaticos CSS/JS.
 - Socket.IO client para actualizaciones real-time.
 - Librerias visuales Leaflet, Three.js, Mermaid y Font Awesome.
+- Shell UI desacoplado en `templates/base.html` con sidebar fijo, support strip y top header de controles.
 
 2. Application layer
 - app.py como punto de entrada Flask y configuracion SocketIO.
@@ -88,6 +97,7 @@ Layers and components:
 - Static CSS/JS assets.
 - Socket.IO client for real-time updates.
 - Visual libraries Leaflet, Three.js, Mermaid, and Font Awesome.
+- Decoupled UI shell in `templates/base.html` with fixed sidebar, support strip, and control-oriented top header.
 
 2. Application layer
 - app.py as Flask entrypoint and SocketIO bootstrap.
@@ -173,6 +183,11 @@ Critical connectivity rule:
 4. Persistencia en origen activo.
 5. Respuesta a UI y refresco de atributos visibles.
 
+#### 7.4 Dashboard map flow
+1. `app.py` agrega datos de ubicacion validos de Store en `stores_map` para el dashboard.
+2. `templates/dashboard.html` serializa los marcadores en atributo de datos del contenedor Leaflet.
+3. `static/js/app.js` inicializa mapa agregado y ajusta bounds para mostrar todas las tiendas.
+
 #### 7.2 Price-change event flow
 1. Cambio de price en Product ocurre via CRUD.
 2. Orion detecta condicion de subscription y emite notificacion HTTP.
@@ -194,6 +209,11 @@ Critical connectivity rule:
 3. DataSourceSelector routes to OrionClient or SQLiteRepository.
 4. Persistence in active source.
 5. Response to UI and refresh of visible attributes.
+
+#### 7.4 Dashboard map flow
+1. `app.py` aggregates valid Store coordinates into `stores_map` for dashboard rendering.
+2. `templates/dashboard.html` serializes markers into a Leaflet container data attribute.
+3. `static/js/app.js` initializes the aggregate map and fits bounds to show all stores.
 
 #### 7.2 Price-change event flow
 1. Product price change occurs through CRUD.

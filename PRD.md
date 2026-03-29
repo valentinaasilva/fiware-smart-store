@@ -16,6 +16,14 @@
 - Product: fiware-smart-store
 - Document type: Product Requirements Document
 
+## 1.1 Change log
+
+### ES
+- 2026-03-29: Rediseño visual del shell de la aplicacion (sidebar + support strip + top header), dashboard hero y tarjetas KPI. Se mantiene funcionalidad CRUD existente y se incorpora metrica explicita de bajo stock en dashboard.
+
+### EN
+- 2026-03-29: Visual redesign of the app shell (sidebar + support strip + top header), dashboard hero, and KPI cards. Existing CRUD functionality remains unchanged and an explicit low-stock metric is added to the dashboard.
+
 ## 2. Product vision and goals
 
 ### ES
@@ -144,6 +152,7 @@ Out of scope:
 - FR-042: Stores map con Leaflet y marcadores de todas las tiendas.
 - FR-043: Hover en marcador muestra tarjeta flotante con datos principales.
 - FR-044: Click en marcador navega a detalle de store.
+- FR-045: Dashboard debe exponer contador de bajo stock calculado con umbral operativo (stockCount <= 10 o shelfCount <= 3).
 
 #### 6.6 UX and visual standards
 - FR-050: Soporte bilingue ES/EN en toda la app.
@@ -195,6 +204,7 @@ Out of scope:
 - FR-042: Stores map using Leaflet with markers for all stores.
 - FR-043: Marker hover displays floating card with main store data.
 - FR-044: Marker click navigates to store detail.
+- FR-045: Dashboard must expose a low-stock counter computed with the operational threshold (stockCount <= 10 or shelfCount <= 3).
 
 #### 6.6 UX and visual standards
 - FR-050: Full ES/EN bilingual support.

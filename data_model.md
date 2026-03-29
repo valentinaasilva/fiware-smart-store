@@ -14,6 +14,14 @@
 - Status: Target data model specification
 - Standard: FIWARE NGSIv2
 
+## 1.1 Change log
+
+### ES
+- 2026-03-29: Sin cambios estructurales en entidades NGSIv2 por el rediseño UI. Se documenta metrica derivada de dashboard `low_stock_count` como agregacion de `InventoryItem`.
+
+### EN
+- 2026-03-29: No structural changes to NGSIv2 entities due to the UI redesign. Dashboard derived metric `low_stock_count` is documented as an `InventoryItem` aggregation.
+
 ## 2. Modeling conventions
 
 ### ES
@@ -249,6 +257,18 @@ Constraints:
 - IR-005: Deleting Store must be blocked if related Shelf/Employee/InventoryItem exist, unless cascade delete is explicitly enabled.
 - IR-006: Deleting Product must be blocked when related InventoryItem records exist, unless reassigned first.
 - IR-007: countryCode must map to a valid frontend flag.
+
+## 6.1 Derived dashboard metrics
+
+### ES
+- DM-001: `low_stock_count` es una metrica derivada no persistida.
+- DM-002: Se calcula contando `InventoryItem` con `stockCount <= 10` o `shelfCount <= 3`.
+- DM-003: La metrica se usa para visualizacion operativa en dashboard y no modifica payload NGSIv2.
+
+### EN
+- DM-001: `low_stock_count` is a non-persisted derived metric.
+- DM-002: It is computed as the count of `InventoryItem` where `stockCount <= 10` or `shelfCount <= 3`.
+- DM-003: The metric is used for dashboard operational visualization and does not modify NGSIv2 payloads.
 
 ## 7. NGSIv2 payload examples
 
