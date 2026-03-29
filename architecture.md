@@ -713,3 +713,31 @@ Test levels:
   - Error contracts and integrity rules are operational across Application/Data access/Presentation layers.
 - Ticket status:
   - `issues/7` is not detected via public API at technical closure time.
+
+## 25. Implementation progress (Issue #8 Orion-first operational bootstrap)
+
+### ES
+- Estado: Implementacion iniciada para robustecer arquitectura de arranque Orion-first con fallback SQLite sin sincronizacion.
+- Cambios arquitectonicos aplicados:
+  - `DataSourceSelector.bootstrap()` consolida decision de fuente activa en arranque y registra logs operativos del modo seleccionado.
+  - Se mantiene fallback a SQLite ante error de operaciones Orion para continuidad, sin replicacion de datos entre fuentes.
+  - `docker-compose.yml` se ajusta al stack del tutorial CRUD Operations con defaults que evitan dependencias de variables no definidas.
+  - Scripts de operacion:
+    - `start.sh`: detiene stack previo, levanta contenedores, espera salud de Orion y arranca Flask.
+    - `stop.sh`: detiene app local y contenedores del stack.
+- Trazabilidad tecnica:
+  - Capas afectadas: Data access, Integration y operacion local de despliegue.
+  - Archivos clave: `models/data_source.py`, `docker-compose.yml`, `start.sh`, `stop.sh`.
+
+### EN
+- Status: Implementation started to harden Orion-first startup architecture with SQLite fallback and no synchronization.
+- Applied architectural changes:
+  - `DataSourceSelector.bootstrap()` now centralizes startup source decision with explicit operational mode logging.
+  - SQLite fallback on Orion operation failures is kept for continuity, without any cross-source data replication.
+  - `docker-compose.yml` is aligned to the CRUD Operations tutorial stack with defaults that avoid undefined-variable dependencies.
+  - Operational scripts:
+    - `start.sh`: stops previous stack, starts containers, waits for Orion health, then starts Flask.
+    - `stop.sh`: stops local app process and stack containers.
+- Technical traceability:
+  - Affected layers: Data access, Integration, and local deployment operations.
+  - Key files: `models/data_source.py`, `docker-compose.yml`, `start.sh`, `stop.sh`.

@@ -811,3 +811,27 @@ Recommended query models:
   - No diffs remain between Issue #7 branch and `main` after merge/sync.
 - Ticket status:
   - `issues/7` resource is not available via public API at technical closure time.
+
+## 23. Implementation alignment progress (Issue #8 Orion startup fallback scope)
+
+### ES
+- Estado: Alineacion de persistencia iniciada para estrategia Orion-first con fallback SQLite por conectividad.
+- Alineacion aplicada:
+  - La fuente activa se decide en arranque segun `health_check` de Orion.
+  - SQLite permanece como repositorio de fallback local ante indisponibilidad de Orion.
+  - Se explicita que no existe sincronizacion de entidades Orion<->SQLite para este issue.
+  - Scripts operativos (`start.sh`/`stop.sh`) no introducen replicacion de datos; solo gestionan ciclo de vida de stack y app.
+- Evidencia esperada:
+  - Logs de arranque mostrando modo `ORION` o `SQLITE`.
+  - Integridad de entidades NGSIv2 mantenida sin cambios de schema por conmutacion de fuente.
+
+### EN
+- Status: Persistence alignment started for Orion-first strategy with SQLite connectivity fallback.
+- Applied alignment:
+  - Active source is decided at startup using Orion `health_check`.
+  - SQLite remains the local fallback repository when Orion is unavailable.
+  - It is explicit that no Orion<->SQLite entity synchronization exists for this issue.
+  - Operational scripts (`start.sh`/`stop.sh`) do not add data replication; they only manage stack/app lifecycle.
+- Expected evidence:
+  - Startup logs showing `ORION` or `SQLITE` mode.
+  - NGSIv2 entity integrity maintained with no schema changes due to source switching.

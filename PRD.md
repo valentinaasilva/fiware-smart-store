@@ -124,6 +124,8 @@ Out of scope:
 - FR-003: Si Orion no responde, el sistema usa SQLite fallback sin interrumpir UI.
 - FR-004: El sistema debe registrar providers externos de temperature, relativeHumidity y tweets al arrancar.
 - FR-005: El sistema debe registrar subscriptions NGSIv2 para cambio de precio y bajo stock.
+- FR-006: El stack de desarrollo debe levantarse con script `start.sh` (contenedores + aplicacion) y detenerse con `stop.sh`.
+- FR-007: El fallback Orion/SQLite no debe sincronizar datos entre fuentes; solo selecciona fuente activa por conectividad.
 
 #### 6.2 Stores
 - FR-010: Listado de stores con imagen, nombre, countryCode, temperature y relativeHumidity.
@@ -181,6 +183,8 @@ Out of scope:
 - FR-003: If Orion is unreachable, SQLite fallback is used without UI interruption.
 - FR-004: The system must register external providers for temperature, relativeHumidity, and tweets at startup.
 - FR-005: The system must register NGSIv2 subscriptions for price change and low stock.
+- FR-006: Development stack startup must be automated with `start.sh` (containers + app) and stopped with `stop.sh`.
+- FR-007: Orion/SQLite fallback must not synchronize data between sources; it only selects the active source by connectivity.
 
 #### 6.2 Stores
 - FR-010: Store list with image, name, countryCode, temperature, and relativeHumidity.
@@ -668,3 +672,31 @@ Assumptions:
 - Sync status: local branch and `origin/main` are synchronized.
 - Functional status: Issue #7 CRUD scope validated by tests (full suite green).
 - GitHub ticket status: `issues/7` is not available through the public API at technical closure time.
+
+## 23. Implementation progress (Issue #8 Orion-first startup fallback)
+
+### ES
+- Estado: Implementacion iniciada para integracion operativa Orion-first sin sincronizacion de datos entre Orion y SQLite.
+- Alcance implementado:
+	- Seleccion de fuente en arranque reforzada con trazas explicitas de modo ORION/SQLITE.
+	- Fallback runtime mantiene continuidad operativa con cambio controlado a SQLite cuando Orion falla.
+	- `docker-compose.yml` alineado al stack tutorial CRUD Operations con defaults seguros para ejecucion local.
+	- Se agregan scripts operativos `start.sh` y `stop.sh` para levantar/parar contenedores y aplicacion.
+	- Se mantiene exclusion explicita de sincronizacion Orion<->SQLite.
+- Trazabilidad de requisitos:
+	- FR-001, FR-002, FR-003: seleccion de fuente por conectividad en arranque.
+	- FR-004, FR-005: registro de integraciones externas cuando Orion esta activo.
+	- FR-006, FR-007: scripts de operacion y no-sincronizacion entre fuentes.
+
+### EN
+- Status: Implementation started for Orion-first operational integration without data synchronization between Orion and SQLite.
+- Implemented scope:
+	- Startup source selection now includes explicit ORION/SQLITE mode logs.
+	- Runtime fallback preserves continuity with controlled switch to SQLite when Orion fails.
+	- `docker-compose.yml` is aligned with the CRUD Operations tutorial stack with safe local defaults.
+	- Operational scripts `start.sh` and `stop.sh` were added to start/stop containers and app.
+	- Explicit exclusion of Orion<->SQLite synchronization is preserved.
+- Requirement traceability:
+	- FR-001, FR-002, FR-003: connectivity-based source selection at startup.
+	- FR-004, FR-005: external integration registration when Orion is active.
+	- FR-006, FR-007: operational scripts and no cross-source synchronization.

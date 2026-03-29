@@ -1,8 +1,12 @@
 import os
+import logging
 from typing import Any
 
 from models.database import SQLiteRepository
 from models.orion_client import OrionClient
+
+
+logger = logging.getLogger(__name__)
 
 
 class DataSourceSelector:
@@ -13,8 +17,12 @@ class DataSourceSelector:
 
     def bootstrap(self) -> None:
         self.mode = "ORION" if self.orion.health_check() else "SQLITE"
+        logger.info("Data source selected at startup: %s", self.mode)
         if self.mode == "ORION":
             self._register_external_integrations()
+            logger.info("Orion integrations registered (providers/subscriptions)")
+        else:
+            logger.warning("Orion unavailable at startup, running with SQLite fallback")
 
     def _active(self):
         return self.orion if self.mode == "ORION" else self.sqlite
@@ -59,11 +67,16 @@ class DataSourceSelector:
         for subscription in subscriptions:
             self.orion.register_subscription(subscription)
 
+    def _fallback_to_sqlite(self, reason: str) -> None:
+        if self.mode != "SQLITE":
+            logger.warning("Switching data source from ORION to SQLITE fallback: %s", reason)
+        self.mode = "SQLITE"
+
     def list_entities(self, entity_type: str | None = None) -> list[dict[str, Any]]:
         try:
             return self._active().list_entities(entity_type)
-        except Exception:
-            self.mode = "SQLITE"
+        except Exception as exc:
+            self._fallback_to_sqlite(f"list_entities failed ({exc})")
             return self.sqlite.list_entities(entity_type)
 
     @staticmethod
@@ -83,29 +96,29 @@ class DataSourceSelector:
     def get_entity(self, entity_id: str) -> dict[str, Any] | None:
         try:
             return self._active().get_entity(entity_id)
-        except Exception:
-            self.mode = "SQLITE"
+        except Exception as exc:
+            self._fallback_to_sqlite(f"get_entity failed ({exc})")
             return self.sqlite.get_entity(entity_id)
 
     def create_entity(self, entity: dict[str, Any]) -> dict[str, Any]:
         try:
             return self._active().create_entity(entity)
-        except Exception:
-            self.mode = "SQLITE"
+        except Exception as exc:
+            self._fallback_to_sqlite(f"create_entity failed ({exc})")
             return self.sqlite.create_entity(entity)
 
     def update_entity(self, entity_id: str, attrs: dict[str, Any]) -> dict[str, Any] | None:
         try:
             return self._active().update_entity(entity_id, attrs)
-        except Exception:
-            self.mode = "SQLITE"
+        except Exception as exc:
+            self._fallback_to_sqlite(f"update_entity failed ({exc})")
             return self.sqlite.update_entity(entity_id, attrs)
 
     def delete_entity(self, entity_id: str) -> bool:
         try:
             return self._active().delete_entity(entity_id)
-        except Exception:
-            self.mode = "SQLITE"
+        except Exception as exc:
+            self._fallback_to_sqlite(f"delete_entity failed ({exc})")
             return self.sqlite.delete_entity(entity_id)
 
     def get_dashboard_stats(self) -> dict[str, int]:
