@@ -959,8 +959,10 @@ Recommended query models:
 - Estado de dataset: ✅ DETERMINISTA - script de carga refaktorizado con cardinalidad exacta (4 emp, 4 store, 16 shelf, 10 prod, 64+ items), backward compatible con seed files.
 - Estado de integridad: ✅ PRESERVADO - cross-entity rules (IR-001..IR-007) mantenidas, nuevas validaciones no generan conflictos, todas las restricciones igualmente enforced.
 - Estado de compatibilidad: ✅ BACKWARD COMPATIBLE - atributos legacy siguen siendo aceptados, solo nuevas validaciones enforced en campos nuevos.
+- Documentacion visual: ✅ DIAGRAMA MERMAID ACTUALIZADO - ERD dibujado con relaciones mejoradas (belongs, contains, tracks, holds, stocked_as) y documentacion detallada de atributos (tipos, restricciones, cardinales).
+- Mejoras Mermaid (fase post-inicial): Tema personalizado aplicado con colores corporativos (primaryColor #0aa64f, primaryBorderColor #0f5c3f, blanco #ffffff), tipografia consistente (Manrope), y inicializacion en static/js/app.js con themeVariables.
 - Deuda tecnica resigtrada: password en claro sera migrado a bcrypt en future refactor (v0.4+ security enhancement).
-- Merge status: ✅ COMPLETADO (commit 327b906 de feature/issue-9-modelo-ampliado a main).
+- Merge status: ✅ COMPLETADO (commit 327b906 de feature/issue-9-modelo-ampliado a main, commit 34ecec7 para mejoras visuales Mermaid).
 - Test coverage: ✅ 108/108 TESTS PASSING con todas las validaciones cubiertas.
 
 ### EN
@@ -968,6 +970,8 @@ Recommended query models:
 - Dataset status: ✅ DETERMINISTIC - data loading script refactored with exact cardinality (4 emp, 4 store, 16 shelf, 10 prod, 64+ items), backward compatible with seed files.
 - Integrity status: ✅ PRESERVED - cross-entity rules (IR-001..IR-007) maintained, new validations do not create conflicts, all constraints equally enforced.
 - Compatibility status: ✅ BACKWARD COMPATIBLE - legacy attributes continue to be accepted, only new validations enforced on new fields.
+- Visual documentation: ✅ MERMAID ERD UPDATED - diagram rendered with improved relationships (belongs, contains, tracks, holds, stocked_as) and detailed attribute documentation (types, constraints, cardinality).
+- Mermaid improvements (post-initial phase): Custom theme applied with corporate colors (primaryColor #0aa64f, primaryBorderColor #0f5c3f, white #ffffff), consistent typography (Manrope), and initialization in static/js/app.js with themeVariables.
 - Technical debt registered: plain-text password will be migrated to bcrypt in future refactor (v0.4+ security enhancement).
-- Merge status: ✅ COMPLETED (commit 327b906 from feature/issue-9-modelo-ampliado to main).
+- Merge status: ✅ COMPLETED (commit 327b906 from feature/issue-9-modelo-ampliado to main, commit 34ecec7 for Mermaid visual improvements).
 - Test coverage: ✅ 108/108 TESTS PASSING with all validations covered.
