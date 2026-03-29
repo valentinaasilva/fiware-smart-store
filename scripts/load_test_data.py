@@ -74,10 +74,10 @@ STORES_DATA = [
             "postalCode": "33003",
             "addressCountry": "ES"
         },
-        "telephone": "+49-30-123456",
-        "url": "https://store.example/berlin-mitte",
+        "telephone": "+34 985 000 001",
+        "url": "https://store.xantadis.es/oviedo",
         "image": "https://images.unsplash.com/photo-1542838132-92c53300491e",
-        "description": "Main city branch in Berlin center"
+        "description": "Sucursal principal en el centro de Oviedo"
     },
     {
         "id": "urn:ngsi-ld:Store:S002",
@@ -93,10 +93,10 @@ STORES_DATA = [
             "postalCode": "41001",
             "addressCountry": "ES"
         },
-        "telephone": "+34-91-234567",
-        "url": "https://store.example/madrid-centro",
+        "telephone": "+34 954 000 001",
+        "url": "https://store.xantadis.es/sevilla",
         "image": "https://images.unsplash.com/photo-1534723452862-4c874018d66d",
-        "description": "Premium location on Gran Vía"
+        "description": "Sucursal premium en el centro de Sevilla"
     },
     {
         "id": "urn:ngsi-ld:Store:S003",
@@ -112,10 +112,10 @@ STORES_DATA = [
             "postalCode": "46004",
             "addressCountry": "ES"
         },
-        "telephone": "+34-93-345678",
-        "url": "https://store.example/barcelona-eixample",
+        "telephone": "+34 963 000 001",
+        "url": "https://store.xantadis.es/valencia",
         "image": "https://images.unsplash.com/photo-1516594798947-e65505dbb29d",
-        "description": "Iconic location in Barcelona"
+        "description": "Sucursal iconica en el centro de Valencia"
     },
     {
         "id": "urn:ngsi-ld:Store:S004",
@@ -131,10 +131,10 @@ STORES_DATA = [
             "postalCode": "36202",
             "addressCountry": "ES"
         },
-        "telephone": "+33-1-45678901",
-        "url": "https://store.example/paris-marais",
+        "telephone": "+34 986 000 001",
+        "url": "https://store.xantadis.es/vigo",
         "image": "https://images.unsplash.com/photo-1578916171728-46686eac8d58",
-        "description": "Central location near Place des Vosges"
+        "description": "Sucursal central en Vigo"
     }
 ]
 

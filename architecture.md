@@ -17,10 +17,12 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-03-30: Ajuste de datos semilla de Store en capa de datos para coherencia geografica: URLs por ciudad real y telefonos +34 por provincia/ciudad.
 - 2026-03-29: Actualizada arquitectura de presentacion con shell de dos niveles (sidebar + cabecera superior) y dashboard enriquecido con mapa agregado de tiendas y KPI de bajo stock.
 - 2026-03-29: Se incorporan busqueda de productos por query, selector de tema dark/light/system y formularios CRUD en listados para Store/Product/Employee.
 
 ### EN
+- 2026-03-30: Store seed-data adjustment in data layer for geographic coherence: city-specific URLs and +34 phone numbers by city.
 - 2026-03-29: Presentation architecture updated with a two-level shell (sidebar + top header) and an enriched dashboard with aggregated stores map and low-stock KPI.
 - 2026-03-29: Added query-based product search, dark/light/system theme selector, and list-view CRUD forms for Store/Product/Employee.
 

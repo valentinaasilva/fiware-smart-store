@@ -17,10 +17,12 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-03-30: Datos de ejemplo de Store normalizados: `url` y `telephone` alineados con ubicaciones reales (Oviedo, Sevilla, Valencia, Vigo) y formato telefonico espanol +34.
 - 2026-03-29: Sin cambios estructurales en entidades NGSIv2 por el rediseño UI. Se documenta metrica derivada de dashboard `low_stock_count` como agregacion de `InventoryItem`.
 - 2026-03-29: Se añade atributo `Product.category` y se amplian datos semilla de Employee a 12 registros con `dateOfContract` y `username` consistentes.
 
 ### EN
+- 2026-03-30: Store sample data normalized: `url` and `telephone` aligned to real locations (Oviedo, Sevilla, Valencia, Vigo) using Spanish +34 phone format.
 - 2026-03-29: No structural changes to NGSIv2 entities due to the UI redesign. Dashboard derived metric `low_stock_count` is documented as an `InventoryItem` aggregation.
 - 2026-03-29: Added `Product.category` attribute and expanded Employee seed data to 12 records with consistent `dateOfContract` and `username`.
 
@@ -107,8 +109,8 @@ Constraints:
 | address | PostalAddress | Si | 1 | Debe incluir streetAddress, addressLocality, addressRegion | {...} | Interno |
 | location | geo:json | Si | 1 | GeoJSON Point valido | {"type":"Point","coordinates":[13.40,52.53]} | Interno |
 | image | Text | No | 0..1 | URL valida (http/https) | https://images... | Interno |
-| url | Text | No | 0..1 | URL valida | https://store.example | Interno |
-| telephone | Text | No | 0..1 | Patron telefono internacional | +49-30-123456 | Interno |
+| url | Text | No | 0..1 | URL valida | https://store.xantadis.es/oviedo | Interno |
+| telephone | Text | No | 0..1 | Patron telefono internacional | +34 985 000 001 | Interno |
 | countryCode | Text | Si | 1 | ISO alpha-2 | DE | Interno |
 | capacity | Integer | Si | 1 | > 0 | 2000 | Interno |
 | description | Text | No | 0..1 | <= 2000 chars | Main branch... | Interno |
@@ -125,8 +127,8 @@ Constraints:
 | address | PostalAddress | Yes | 1 | Must include streetAddress, addressLocality, addressRegion | {...} | Internal |
 | location | geo:json | Yes | 1 | Valid GeoJSON Point | {"type":"Point","coordinates":[13.40,52.53]} | Internal |
 | image | Text | No | 0..1 | Valid URL (http/https) | https://images... | Internal |
-| url | Text | No | 0..1 | Valid URL | https://store.example | Internal |
-| telephone | Text | No | 0..1 | International phone pattern | +49-30-123456 | Internal |
+| url | Text | No | 0..1 | Valid URL | https://store.xantadis.es/oviedo | Internal |
+| telephone | Text | No | 0..1 | International phone pattern | +34 985 000 001 | Internal |
 | countryCode | Text | Yes | 1 | ISO alpha-2 | DE | Internal |
 | capacity | Integer | Yes | 1 | > 0 | 2000 | Internal |
 | description | Text | No | 0..1 | <= 2000 chars | Main branch... | Internal |
@@ -300,8 +302,8 @@ Constraints:
     "value": {"type": "Point", "coordinates": [13.405, 52.52]}
   },
   "image": {"type": "Text", "value": "https://picsum.photos/600/300"},
-  "url": {"type": "Text", "value": "https://store.example/berlin-mitte"},
-  "telephone": {"type": "Text", "value": "+49-30-123456"},
+  "url": {"type": "Text", "value": "https://store.xantadis.es/oviedo"},
+  "telephone": {"type": "Text", "value": "+34 985 000 001"},
   "countryCode": {"type": "Text", "value": "DE"},
   "capacity": {"type": "Integer", "value": 2000},
   "description": {"type": "Text", "value": "Main city branch"}
