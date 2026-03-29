@@ -17,11 +17,13 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-03-30: Presentacion de `Store.countryCode` separada del nombre de pais en UI (listado y detalle) para lectura operativa.
 - 2026-03-30: Datos de ejemplo de Store normalizados: `url` y `telephone` alineados con ubicaciones reales (Oviedo, Sevilla, Valencia, Vigo) y formato telefonico espanol +34.
 - 2026-03-29: Sin cambios estructurales en entidades NGSIv2 por el rediseño UI. Se documenta metrica derivada de dashboard `low_stock_count` como agregacion de `InventoryItem`.
 - 2026-03-29: Se añade atributo `Product.category` y se amplian datos semilla de Employee a 12 registros con `dateOfContract` y `username` consistentes.
 
 ### EN
+- 2026-03-30: `Store.countryCode` presentation split from country-name field in UI (list/detail) for clearer operations.
 - 2026-03-30: Store sample data normalized: `url` and `telephone` aligned to real locations (Oviedo, Sevilla, Valencia, Vigo) using Spanish +34 phone format.
 - 2026-03-29: No structural changes to NGSIv2 entities due to the UI redesign. Dashboard derived metric `low_stock_count` is documented as an `InventoryItem` aggregation.
 - 2026-03-29: Added `Product.category` attribute and expanded Employee seed data to 12 records with consistent `dateOfContract` and `username`.

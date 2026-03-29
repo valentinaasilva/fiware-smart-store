@@ -32,6 +32,7 @@
     <dl>
       <dt>{{ _('ID') }}</dt><dd class="mono">{{ simplified_id }}</dd>
       <dt>{{ _('Country') }}</dt><dd>{{ _(country_names.get(country_code, country_code if country_code else '-')) }}</dd>
+      <dt>{{ _('Country Code') }}</dt><dd class="mono">{{ country_code if country_code else '-' }}</dd>
       <dt>{{ _('URL') }}</dt>
       <dd>
         {% if store.url %}

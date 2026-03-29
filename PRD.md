@@ -21,11 +21,13 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-03-30: Vista de Stores ajustada para mostrar pais y countryCode en campos separados (listado y detalle).
 - 2026-03-30: Normalizacion de datos de Store en semilla y base local: URLs por ciudad real (oviedo, sevilla, valencia, vigo) y telefonos en formato espanol +34 coherentes por ubicacion.
 - 2026-03-29: Rediseño visual del shell de la aplicacion (sidebar + support strip + top header), dashboard hero y tarjetas KPI. Se mantiene funcionalidad CRUD existente y se incorpora metrica explicita de bajo stock en dashboard.
 - 2026-03-29: Mejoras operativas: buscador funcional de productos, selector de tema con modo sistema, CRUD directo en listados, categoria de producto y ampliacion de dataset de empleados.
 
 ### EN
+- 2026-03-30: Stores view adjusted to display country and countryCode in separate fields (list and detail).
 - 2026-03-30: Store seed/local database normalization: city-specific URLs (oviedo, sevilla, valencia, vigo) and Spanish +34 phone numbers aligned with each location.
 - 2026-03-29: Visual redesign of the app shell (sidebar + support strip + top header), dashboard hero, and KPI cards. Existing CRUD functionality remains unchanged and an explicit low-stock metric is added to the dashboard.
 - 2026-03-29: Operational improvements: working product search, theme selector with system mode, direct CRUD from list views, product category, and expanded employee dataset.
