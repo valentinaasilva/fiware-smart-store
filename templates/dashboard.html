@@ -59,60 +59,73 @@
 </section>
 
 <section class="data-model-uml">
-  <h3>{{ _('Data Model') }} — ERD</h3>
+  <h3>{{ _('Data Model') }} — Entity Relationship Diagram</h3>
+  <p class="subtitle">Schema v1.0 (NGSIv2) — Orion-first Architecture</p>
   <div class="mermaid-container">
     <div class="mermaid">
 erDiagram
-  STORE ||--o{ EMPLOYEE : "1..N"
-  STORE ||--o{ SHELF : "1..N"
-  STORE ||--o{ INVENTORYITEM : "1..N"
-  SHELF ||--o{ INVENTORYITEM : "1..N"
-  PRODUCT ||--o{ INVENTORYITEM : "1..N"
-  
-  STORE {
-    string id PK
-    string name "name (Text)"
-    string address "address (PostalAddress)"
-    string location "location (GeoJSON Point)"
-    string countryCode "countryCode (ISO alpha-2)"
-    int capacity "capacity (m³)"
-    string url "url (optional)"
-    string telephone "telephone (optional)"
-    string description "description (optional)"
-    float temperature "temperature (optional, °C)"
-    float relativeHumidity "relativeHumidity (optional, %)"
-  }
-  
-  EMPLOYEE {
-    string id PK
-    string name "name (Text)"
-    string email "email (unique)"
-    string username "username (4-32 chars)"
-    string password "password (credential)"
-    string role "role (Text)"
-    float salary "salary (Float, ≥0)"
-    string skills "skills (Array enum)"
-    string dateOfContract "dateOfContract (DateTime)"
-    string refStore FK "refStore (Relationship to Store)"
-  }
-  
-  PRODUCT {
-    string id PK
-    string name "name (Text)"
-    string category "category (enum)"
-    string size "size (S/M/L/XL)"
-    float price "price (Float, ≥0)"
-    string color "color (hex #RRGGBB)"
-    string originCountry "originCountry (ISO alpha-2, optional)"
-  }
-  
-  SHELF {
-    string id PK
-    string name "name (Text)"
-    string location "location (GeoJSON Point)"
-    int maxCapacity "maxCapacity (Integer, >0)"
-    string refStore FK "refStore (Relationship to Store)"
-  }
+    STORE ||--o{ EMPLOYEE : "belongs"
+    STORE ||--o{ SHELF : "contains"
+    STORE ||--o{ INVENTORYITEM : "tracks"
+    SHELF ||--o{ INVENTORYITEM : "holds"
+    PRODUCT ||--o{ INVENTORYITEM : "stocked_as"
+
+    STORE {
+        string id PK
+        string name "Store name"
+        string address "Postal address"
+        string location "GeoJSON Point"
+        string countryCode "ISO alpha-2"
+        int capacity "m³ capacity"
+        string url "Store website"
+        string telephone "Contact number"
+        string description "Full description"
+        float temperature "°C (external)"
+        float relativeHumidity "% (external)"
+    }
+
+    EMPLOYEE {
+        string id PK
+        string name "Full name"
+        string email "Email (unique)"
+        string username "Username (4-32)"
+        string password "Credential"
+        string category "Junior/Senior/Manager/Specialist"
+        string role "Job title"
+        float salary "Gross salary"
+        string skills "Array of enum"
+        string dateOfContract "ISO-8601"
+        string refStore FK "Store reference"
+    }
+
+    PRODUCT {
+        string id PK
+        string name "Product name"
+        string category "Food/Supplies/Cleaning/Beverages"
+        string size "S/M/L/XL"
+        float price "Price in EUR"
+        string color "Hex #RRGGBB"
+        string originCountry "ISO alpha-2 (optional)"
+        string image "URL (optional)"
+    }
+
+    SHELF {
+        string id PK
+        string name "Shelf identifier"
+        string location "GeoJSON Point"
+        int maxCapacity "Max units (>0)"
+        string refStore FK "Store reference"
+    }
+
+    INVENTORYITEM {
+        string id PK
+        int stockCount "Total units (≥0)"
+        int shelfCount "Units on shelf (≤stockCount)"
+        string refStore FK "Store reference"
+        string refShelf FK "Shelf reference"
+        string refProduct FK "Product reference"
+    }
+    
   
   INVENTORYITEM {
     string id PK

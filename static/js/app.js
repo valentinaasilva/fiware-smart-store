@@ -121,8 +121,25 @@
 
 	function initMermaidDiagrams() {
 		if (typeof window.mermaid !== "undefined") {
-			window.mermaid.initialize({ startOnLoad: true, theme: 'default' });
-			window.mermaid.contentLoaded();
+                    window.mermaid.initialize({
+                            startOnLoad: true,
+                            theme: 'base',
+                            themeVariables: {
+                                    primaryColor: '#0aa64f',
+                                    primaryTextColor: '#ffffff',
+                                    primaryBorderColor: '#0f5c3f',
+                                    lineColor: '#2fc77b',
+                                    secondBkgColor: '#e4f6e8',
+                                    tertiaryColor: '#e4f6e8',
+                                    background: '#ffffff',
+                                    mainBkg: '#0aa64f',
+                                    clusterBkg: '#e4f6e8',
+                                    clusterBorder: '#0f5c3f',
+                                    fontFamily: 'Manrope, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+                            },
+                            securityLevel: 'loose'
+                    });
+                    window.mermaid.contentLoaded();
 		}
 	}
 
