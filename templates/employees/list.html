@@ -16,6 +16,11 @@
         <th>{{ _('Image') }}</th>
         <th>{{ _('ID') }}</th>
         <th>{{ _('Name') }}</th>
+        <th>Email</th>
+        <th>Skills</th>
+        <th>Date of Contract</th>
+        <th>Username</th>
+        <th>Password</th>
         <th>{{ _('Role') }}</th>
         <th>{{ _('Salary') }}</th>
         <th>{{ _('Ref Store') }}</th>
@@ -37,6 +42,17 @@
         </td>
         <td class="mono">{{ employee.id.split(':')[-1] if employee.id is string else employee.id }}</td>
         <td><a class="entity-link" href="{{ url_for('employees.get_employee', entity_id=employee.id) }}">{{ employee.name }}</a></td>
+        <td>{{ employee.email or '-' }}</td>
+        <td>
+          {% if employee.skills is iterable and employee.skills is not string %}
+            {{ employee.skills|join(', ') }}
+          {% else %}
+            {{ employee.skills or '-' }}
+          {% endif %}
+        </td>
+        <td>{{ employee.dateOfContract[:10] if employee.dateOfContract else '-' }}</td>
+        <td>{{ employee.username or '-' }}</td>
+        <td>{{ employee.password or '-' }}</td>
         <td>{{ employee.role or '-' }}</td>
         <td class="price-cell">{{ employee.salary if employee.salary is not none else '-' }}</td>
         <td class="mono">{{ employee.refStore.split(':')[-1] if employee.refStore is string else (employee.refStore or '-') }}</td>
@@ -48,7 +64,7 @@
         </td>
       </tr>
     {% else %}
-      <tr><td colspan="7">{{ _('No records') }}</td></tr>
+      <tr><td colspan="12">{{ _('No records') }}</td></tr>
     {% endfor %}
     </tbody>
   </table>

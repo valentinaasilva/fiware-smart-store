@@ -32,6 +32,19 @@
     <dl>
       <dt>{{ _('ID') }}</dt><dd class="mono">{{ simplified_id }}</dd>
       <dt>{{ _('Country') }}</dt><dd>{{ _(country_names.get(country_code, country_code if country_code else '-')) }}</dd>
+      <dt>{{ _('URL') }}</dt>
+      <dd>
+        {% if store.url %}
+          <a href="{{ store.url }}" target="_blank" rel="noopener noreferrer">{{ store.url }}</a>
+        {% else %}
+          -
+        {% endif %}
+      </dd>
+      <dt>{{ _('Telephone') }}</dt><dd>{{ store.telephone or '-' }}</dd>
+      <dt>Capacity (m3)</dt><dd>{{ store.capacity if store.capacity is not none else '-' }}</dd>
+      <dt>{{ _('Temperature (°C)') }}</dt><dd>{{ store.temperature if store.temperature is not none else '-' }}</dd>
+      <dt>{{ _('Relative Humidity (%)') }}</dt><dd>{{ store.relativeHumidity if store.relativeHumidity is not none else '-' }}</dd>
+      <dt>{{ _('Description') }}</dt><dd>{{ store.description or '-' }}</dd>
       <dt>{{ _('Address') }}</dt>
       <dd>
         {% if addr %}

@@ -126,8 +126,10 @@
                             theme: 'base',
                             themeVariables: {
                                     primaryColor: '#0aa64f',
-                                    primaryTextColor: '#ffffff',
+				    primaryTextColor: '#0f5c3f',
                                     primaryBorderColor: '#0f5c3f',
+				    secondaryTextColor: '#0f5c3f',
+				    tertiaryTextColor: '#0f5c3f',
                                     lineColor: '#2fc77b',
                                     secondBkgColor: '#e4f6e8',
                                     tertiaryColor: '#e4f6e8',

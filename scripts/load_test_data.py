@@ -252,7 +252,7 @@ EMPLOYEES_DATA = [
 SHELVES_PER_STORE = 4
 SHELF_MAX_CAPACITY = 50
 
-# Inventory distribution: ensure min 5 products per store and min 12 items per store
+# Inventory distribution base values used to build at least 4 products per shelf
 INVENTORY_DISTRIBUTION = {
     "urn:ngsi-ld:Store:S001": {
         "urn:ngsi-ld:Product:P001": {"stock": 30, "shelf": 10},
@@ -575,7 +575,7 @@ class OrionDataLoader:
         return len(shelf_urns) == len(STORES_DATA) * SHELVES_PER_STORE
 
     def load_inventory(self) -> bool:
-        """Create InventoryItem entities ensuring minimum product coverage per store."""
+        """Create InventoryItem entities with at least 4 products per shelf."""
         logger.info("START: Creating inventory items...")
         inventory_urns = []
         store_urns = self._get_store_urns()
@@ -585,13 +585,7 @@ class OrionDataLoader:
         item_counter = 1
         shelves_by_store = {}
         
-        # Map shelves to stores
-        for shelf_urn in shelf_urns:
-            for store_urn in store_urns:
-                store_shelf_query = self._list_entities_by_type("Shelf")
-                # Simplified: just distribute shelves sequentially per store
-        
-        # Distribute 3 shelves per store (simplified for now)
+        # Distribute shelves per store sequentially (4 shelves per store).
         for store_idx, store_urn in enumerate(store_urns):
             shelves_for_store = shelf_urns[store_idx * SHELVES_PER_STORE:(store_idx + 1) * SHELVES_PER_STORE]
             shelves_by_store[store_urn] = shelves_for_store
@@ -599,15 +593,30 @@ class OrionDataLoader:
         for store_urn in store_urns:
             dist = INVENTORY_DISTRIBUTION.get(store_urn, {})
             shelves = shelves_by_store[store_urn]
-            shelf_idx = 0
+            active_products = [
+                product_urn
+                for product_urn in product_urns
+                if dist.get(product_urn, {}).get("stock", 0) > 0 or dist.get(product_urn, {}).get("shelf", 0) > 0
+            ]
+            if len(active_products) < 4:
+                active_products = product_urns[:4]
 
-            for product_urn in product_urns:
-                prod_dist = dist.get(product_urn, {})
-                stock = prod_dist.get("stock", 0)
-                shelf_count = prod_dist.get("shelf", 0)
+            for shelf_idx, shelf_urn in enumerate(shelves):
+                selected_products = []
+                cursor = (shelf_idx * 3) % len(active_products)
+                while len(selected_products) < 4:
+                    candidate = active_products[cursor % len(active_products)]
+                    if candidate not in selected_products:
+                        selected_products.append(candidate)
+                    cursor += 1
 
-                if stock > 0 or shelf_count > 0:
-                    shelf_urn = shelves[shelf_idx % len(shelves)]
+                for product_pos, product_urn in enumerate(selected_products):
+                    prod_dist = dist.get(product_urn, {})
+                    base_stock = int(prod_dist.get("stock", 20) or 20)
+                    base_shelf = int(prod_dist.get("shelf", 5) or 5)
+                    stock = max(base_stock - shelf_idx - product_pos, 1)
+                    shelf_count = max(min(base_shelf - product_pos, stock), 1)
+
                     inventory_id = f"urn:ngsi-ld:InventoryItem:{item_counter:03d}"
                     item_counter += 1
 
@@ -624,13 +633,12 @@ class OrionDataLoader:
                     if self._create_entity(entity):
                         inventory_urns.append(inventory_id)
                         self._log("DEBUG", f"  ✓ {inventory_id}")
-                        shelf_idx += 1
                     else:
                         logger.error(f"✗ {inventory_id} creation failed")
                         self.errors.append(f"InventoryItem {inventory_id} creation failed")
 
         self.created_entities["inventory"] = inventory_urns
-        min_required_items = len(STORES_DATA) * 5
+        min_required_items = len(STORES_DATA) * SHELVES_PER_STORE * 4
         logger.info(
             f"SUCCESS: Created {len(inventory_urns)} inventory items "
             f"(minimum required by rule: {min_required_items})"
@@ -699,7 +707,7 @@ class OrionDataLoader:
             return True, []
 
     def verify_minimum_requirements(self) -> Tuple[bool, Dict[str, int]]:
-        """Verify min 5 products per store."""
+        """Verify 4 shelves per store and at least 4 products per shelf."""
         logger.info("START: Verifying minimum requirements...")
         stats = {"stores": 0, "products": 0, "employees": 0, "shelves": 0, "inventory": 0}
         
@@ -721,20 +729,37 @@ class OrionDataLoader:
         logger.info(f"SUMMARY: {stats['stores']} stores, {stats['products']} products, "
                    f"{stats['employees']} employees, {stats['shelves']} shelves, {stats['inventory']} items")
         
-        # Check min 5 products per store
+        shelves_by_store = {}
+        for shelf in shelves:
+            store_id = shelf.get("refStore", {}).get("value")
+            shelves_by_store.setdefault(store_id, []).append(shelf.get("id"))
+
         for store in stores:
             store_id = store.get("id")
-            store_inventory = [
-                item for item in inventory
-                if item.get("refStore", {}).get("value") == store_id
-            ]
-            unique_products = set(
-                item.get("refProduct", {}).get("value")
-                for item in store_inventory
-            )
-            if len(unique_products) < 5:
-                logger.warning(f"✗ Store {store_id} has only {len(unique_products)} unique products (min 5)")
+            store_shelves = shelves_by_store.get(store_id, [])
+            if len(store_shelves) != SHELVES_PER_STORE:
+                logger.warning(
+                    f"✗ Store {store_id} has {len(store_shelves)} shelves "
+                    f"(required: {SHELVES_PER_STORE})"
+                )
                 return False, stats
+
+            for shelf_id in store_shelves:
+                shelf_inventory = [
+                    item for item in inventory
+                    if item.get("refStore", {}).get("value") == store_id
+                    and item.get("refShelf", {}).get("value") == shelf_id
+                ]
+                unique_products = {
+                    item.get("refProduct", {}).get("value")
+                    for item in shelf_inventory
+                    if item.get("refProduct", {}).get("value")
+                }
+                if len(unique_products) < 4:
+                    logger.warning(
+                        f"✗ Shelf {shelf_id} in store {store_id} has {len(unique_products)} products (min 4)"
+                    )
+                    return False, stats
         
         logger.info("✓ All minimum requirements satisfied")
         return True, stats

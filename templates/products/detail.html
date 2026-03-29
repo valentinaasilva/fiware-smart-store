@@ -28,6 +28,19 @@
     {% set origin_country = product.originCountry if product.originCountry is string else '' %}
     <dl>
       <dt>{{ _('ID') }}</dt><dd class="mono">{{ product.id.split(':')[-1] if product.id is string else product.id }}</dd>
+      <dt>{{ _('Category') }}</dt><dd>{{ product.category or '-' }}</dd>
+      <dt>Size</dt><dd>{{ product.size or '-' }}</dd>
+      <dt>Color</dt>
+      <dd>
+        {% if product.color %}
+          <span style="display:inline-flex; align-items:center; gap:.4rem;">
+            <span style="display:inline-block; width:1rem; height:1rem; border-radius:999px; border:1px solid #d1d5db; background:{{ product.color }};"></span>
+            <span class="mono">{{ product.color }}</span>
+          </span>
+        {% else %}
+          -
+        {% endif %}
+      </dd>
       <dt>{{ _('Origin Country') }}</dt><dd>{{ _(country_names.get(origin_country, origin_country if origin_country else '-')) }}</dd>
       <dt>{{ _('Price') }}</dt><dd class="price-cell">{{ product.price }}</dd>
     </dl>

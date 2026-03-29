@@ -829,6 +829,9 @@ Test levels:
 - Estado de integridad: ✅ VALIDADO - reglas de validacion implementadas en centralized normalize_ngsi_payload() llamado por todos endpoints CRUD, 20+ nuevas validaciones sin conflictos.
 - Estado de Mermaid: ✅ RENDERIZADO - diagrama UML ERD en dashboard sin dependencias externas no-CDN (solo jsdelivr CDN), responsive en mobile y desktop.
 - Mejoras visuales Mermaid (fase post-inicial): Tema personalizado aplicado con themeVariables en static/js/app.js usando paleta corporativa (primaryColor: #0aa64f, primaryBorderColor: #0f5c3f, white: #ffffff), etiquetas de relaciones mejoradas (belongs, contains, tracks, holds, stocked_as), documentacion detallada de campos en diagrama ERD con tipos y restricciones.
+- Correccion de render Mermaid: se elimina bloque ERD duplicado de INVENTORYITEM y se ajusta contraste de texto en themeVariables para garantizar lectura de atributos y relaciones.
+- Orden dashboard actualizado: Panel de Control -> Featured Products -> Store Management -> Stores Map (diagrama de datos se mantiene como seccion complementaria).
+- Script de datos reforzado: load_test_data.py garantiza 4 productos por estanteria con verificacion estricta de 4 shelves por tienda y minimo 4 productos unicos por shelf.
 - Estado de continuidad: ✅ MANTENIDO - Orion-first preservado sin sincronizacion, fallback SQLite sin cambios, backward compatible.
 - Merge status: ✅ COMPLETADO (commit 327b906 desde feature/issue-9-modelo-ampliado a main, commit 34ecec7 para mejoras Mermaid)
 - Test status: ✅ 108/108 PASSING sin regresiones.
@@ -838,6 +841,9 @@ Test levels:
 - Integrity status: ✅ VALIDATED - validation rules implemented in centralized normalize_ngsi_payload() called by all CRUD endpoints, 20+ new validations without conflicts.
 - Mermaid status: ✅ RENDERED - ERD UML diagram on dashboard with no external non-CDN dependencies (only jsdelivr CDN), responsive on mobile and desktop.
 - Visual Mermaid improvements (post-initial phase): Custom theme applied with themeVariables in static/js/app.js using corporate color palette (primaryColor: #0aa64f, primaryBorderColor: #0f5c3f, white: #ffffff), improved relationship labels (belongs, contains, tracks, holds, stocked_as), detailed field documentation in ERD diagram with types and constraints.
+- Mermaid rendering fix: removed duplicated INVENTORYITEM ERD block and increased text contrast in themeVariables to ensure attributes and relationships are visible.
+- Dashboard order updated: Control Panel -> Featured Products -> Store Management -> Stores Map (data model diagram remains as a complementary section).
+- Data script hardened: load_test_data.py now guarantees 4 products per shelf with strict verification of 4 shelves per store and at least 4 unique products per shelf.
 - Continuity status: ✅ MAINTAINED - Orion-first preserved without synchronization, SQLite fallback unchanged, backward compatible.
 - Merge status: ✅ COMPLETED (commit 327b906 from feature/issue-9-modelo-ampliado to main, commit 34ecec7 for Mermaid improvements)
 - Test status: ✅ 108/108 PASSING without regressions.

@@ -794,6 +794,7 @@ Assumptions:
 - Suite de pruebas: ✅ 108/108 TESTS EN VERDE (0 fallos) - unit, integration, e2e, y smoke tests completados exitosamente.
 - Deuda tecnica documentada: password almacenado en texto plano en demo para esta fase, migracion a hash bcrypt deferred a future release.
 - Mejoras visuales en Mermaid (fase post-inicial): Tema aplicado con colores corporativos (verde primario #0aa64f, verde oscuro #0f5c3f, blanco #ffffff), etiquetas de relaciones mejoradas (belongs, contains, tracks, holds, stocked_as), documentacion detallada de atributos en diagrama ERD con tipos y restricciones.
+- Correcciones funcionales post-cierre: se elimina definicion duplicada de INVENTORYITEM en Mermaid para evitar render vacio, se reordena dashboard en secuencia Panel de Control -> Featured Products -> Store Management -> Stores Map, y se amplian vistas list/detail para exponer atributos extendidos de Employee, Store y Product.
 - Commits de cierre: 327b906 ("chore: Issue #9 implementation complete - Closes #9"), 34ecec7 ("feat: mejorar diagrama Mermaid con tema personalizado — colores de aplicacion").
 
 ### EN
@@ -802,6 +803,7 @@ Assumptions:
 - Functional status: ✅ OPERATIONAL - extended attribute validations in utils.py (98 lines), dashboard with responsively-rendered Mermaid diagram, data loading script with guaranteed cardinality (4 emp, 4 store, 16 shelf, 10 prod, 64+ items).
 - Test suite: ✅ 108/108 TESTS GREEN (0 failures) - unit, integration, e2e, and smoke tests completed successfully.
 - Visual Mermaid improvements (post-initial phase): Theme applied with corporate colors (primary green #0aa64f, dark green #0f5c3f, white #ffffff), improved relationship labels (belongs, contains, tracks, holds, stocked_as), detailed attribute documentation in ERD diagram with types and constraints.
+- Post-closure functional fixes: removed duplicated INVENTORYITEM Mermaid definition to prevent empty rendering, reordered dashboard sections as Control Panel -> Featured Products -> Store Management -> Stores Map, and expanded list/detail views to expose extended attributes for Employee, Store, and Product.
 - Closure commits: 327b906 ("chore: Issue #9 implementation complete - Closes #9"), 34ecec7 ("feat: mejorar diagrama Mermaid con tema personalizado — colores de aplicacion").
 - Technical debt documented: password stored in plain text in demo for this phase, migration to bcrypt hash deferred to future release.
 - Closure commit: 327b906 ("chore: Issue #9 implementation complete - Closes #9")

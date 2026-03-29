@@ -58,84 +58,28 @@
   </article>
 </section>
 
-<section class="data-model-uml">
-  <h3>{{ _('Data Model') }} — Entity Relationship Diagram</h3>
-  <p class="subtitle">Schema v1.0 (NGSIv2) — Orion-first Architecture</p>
-  <div class="mermaid-container">
-    <div class="mermaid">
-erDiagram
-    STORE ||--o{ EMPLOYEE : "belongs"
-    STORE ||--o{ SHELF : "contains"
-    STORE ||--o{ INVENTORYITEM : "tracks"
-    SHELF ||--o{ INVENTORYITEM : "holds"
-    PRODUCT ||--o{ INVENTORYITEM : "stocked_as"
-
-    STORE {
-        string id PK
-        string name "Store name"
-        string address "Postal address"
-        string location "GeoJSON Point"
-        string countryCode "ISO alpha-2"
-        int capacity "m³ capacity"
-        string url "Store website"
-        string telephone "Contact number"
-        string description "Full description"
-        float temperature "°C (external)"
-        float relativeHumidity "% (external)"
-    }
-
-    EMPLOYEE {
-        string id PK
-        string name "Full name"
-        string email "Email (unique)"
-        string username "Username (4-32)"
-        string password "Credential"
-        string category "Junior/Senior/Manager/Specialist"
-        string role "Job title"
-        float salary "Gross salary"
-        string skills "Array of enum"
-        string dateOfContract "ISO-8601"
-        string refStore FK "Store reference"
-    }
-
-    PRODUCT {
-        string id PK
-        string name "Product name"
-        string category "Food/Supplies/Cleaning/Beverages"
-        string size "S/M/L/XL"
-        float price "Price in EUR"
-        string color "Hex #RRGGBB"
-        string originCountry "ISO alpha-2 (optional)"
-        string image "URL (optional)"
-    }
-
-    SHELF {
-        string id PK
-        string name "Shelf identifier"
-        string location "GeoJSON Point"
-        int maxCapacity "Max units (>0)"
-        string refStore FK "Store reference"
-    }
-
-    INVENTORYITEM {
-        string id PK
-        int stockCount "Total units (≥0)"
-        int shelfCount "Units on shelf (≤stockCount)"
-        string refStore FK "Store reference"
-        string refShelf FK "Shelf reference"
-        string refProduct FK "Product reference"
-    }
-    
-  
-  INVENTORYITEM {
-    string id PK
-    int stockCount "stockCount (Integer, ≥0)"
-    int shelfCount "shelfCount (Integer, ≥0, ≤stockCount)"
-    string refStore FK "refStore (Relationship)"
-    string refShelf FK "refShelf (Relationship)"
-    string refProduct FK "refProduct (Relationship)"
-  }
-    </div>
+<section class="table-shell">
+  <h3>{{ _('Featured Products') }}</h3>
+  <div class="featured-grid">
+    {% for offer in featured_offers %}
+    <article class="featured-card">
+      <div class="featured-media">
+        {% if offer.image %}
+        <img src="{{ offer.image }}" alt="{{ offer.title }}" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
+        <span class="img-fallback is-hidden">No image</span>
+        {% else %}
+        <span class="img-fallback">No image</span>
+        {% endif %}
+      </div>
+      <div class="featured-body">
+        <h4>{{ offer.title }}</h4>
+        <p class="featured-price">Desde {{ '%.2f'|format(offer.from_price) }}€</p>
+        <p>{{ offer.description }}</p>
+      </div>
+    </article>
+    {% else %}
+    <p>{{ _('No records') }}</p>
+    {% endfor %}
   </div>
 </section>
 
@@ -165,33 +109,79 @@ erDiagram
   </table>
 </section>
 
-<section class="table-shell">
-  <h3>{{ _('Featured Products') }}</h3>
-  <div class="featured-grid">
-    {% for offer in featured_offers %}
-    <article class="featured-card">
-      <div class="featured-media">
-        {% if offer.image %}
-        <img src="{{ offer.image }}" alt="{{ offer.title }}" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
-        <span class="img-fallback is-hidden">No image</span>
-        {% else %}
-        <span class="img-fallback">No image</span>
-        {% endif %}
-      </div>
-      <div class="featured-body">
-        <h4>{{ offer.title }}</h4>
-        <p class="featured-price">Desde {{ '%.2f'|format(offer.from_price) }}€</p>
-        <p>{{ offer.description }}</p>
-      </div>
-    </article>
-    {% else %}
-    <p>{{ _('No records') }}</p>
-    {% endfor %}
-  </div>
-</section>
-
 <section class="map-shell" id="stores-map">
   <h3>{{ _('Stores Map') }}</h3>
   <div id="dashboard-stores-map" class="store-map" data-markers='{{ stores_map|tojson|safe }}'></div>
+</section>
+
+<section class="data-model-uml">
+  <h3>{{ _('Data Model') }} — Entity Relationship Diagram</h3>
+  <p class="subtitle">Schema v1.0 (NGSIv2) — Orion-first Architecture</p>
+  <div class="mermaid-container">
+    <div class="mermaid">
+erDiagram
+    STORE ||--o{ EMPLOYEE : belongs
+    STORE ||--o{ SHELF : contains
+    STORE ||--o{ INVENTORYITEM : tracks
+    SHELF ||--o{ INVENTORYITEM : holds
+    PRODUCT ||--o{ INVENTORYITEM : stocked_as
+
+    STORE {
+        string id PK
+        string name
+        string address
+        string location
+        string countryCode
+        int capacity
+        string url
+        string telephone
+        string description
+        float temperature
+        float relativeHumidity
+    }
+
+    EMPLOYEE {
+        string id PK
+        string name
+        string email
+        string username
+        string password
+        string category
+        string role
+        float salary
+        string skills
+        string dateOfContract
+        string refStore FK
+    }
+
+    PRODUCT {
+        string id PK
+        string name
+        string category
+        string size
+        float price
+        string color
+        string originCountry
+        string image
+    }
+
+    SHELF {
+        string id PK
+        string name
+        string location
+        int maxCapacity
+        string refStore FK
+    }
+
+    INVENTORYITEM {
+        string id PK
+        int stockCount
+        int shelfCount
+        string refStore FK
+        string refShelf FK
+        string refProduct FK
+    }
+    </div>
+  </div>
 </section>
 {% endblock %}

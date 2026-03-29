@@ -961,6 +961,9 @@ Recommended query models:
 - Estado de compatibilidad: ✅ BACKWARD COMPATIBLE - atributos legacy siguen siendo aceptados, solo nuevas validaciones enforced en campos nuevos.
 - Documentacion visual: ✅ DIAGRAMA MERMAID ACTUALIZADO - ERD dibujado con relaciones mejoradas (belongs, contains, tracks, holds, stocked_as) y documentacion detallada de atributos (tipos, restricciones, cardinales).
 - Mejoras Mermaid (fase post-inicial): Tema personalizado aplicado con colores corporativos (primaryColor #0aa64f, primaryBorderColor #0f5c3f, blanco #ffffff), tipografia consistente (Manrope), y inicializacion en static/js/app.js con themeVariables.
+- Correccion de visualizacion: bloque duplicado de INVENTORYITEM removido del ERD y contraste de texto ajustado para evitar entidades vacias en dashboard.
+- Regla de cardinalidad reforzada: dataset recargado con 16 shelves (4 por tienda) y 64 inventory items garantizando al menos 4 productos por estanteria.
+- Alineacion UI-datos: listados y detalles de Employee, Store y Product muestran atributos extendidos (email/dateOfContract/skills/username/password, url/telephone/countryCode/capacity/description/temperature/relativeHumidity, color).
 - Deuda tecnica resigtrada: password en claro sera migrado a bcrypt en future refactor (v0.4+ security enhancement).
 - Merge status: ✅ COMPLETADO (commit 327b906 de feature/issue-9-modelo-ampliado a main, commit 34ecec7 para mejoras visuales Mermaid).
 - Test coverage: ✅ 108/108 TESTS PASSING con todas las validaciones cubiertas.
@@ -972,6 +975,9 @@ Recommended query models:
 - Compatibility status: ✅ BACKWARD COMPATIBLE - legacy attributes continue to be accepted, only new validations enforced on new fields.
 - Visual documentation: ✅ MERMAID ERD UPDATED - diagram rendered with improved relationships (belongs, contains, tracks, holds, stocked_as) and detailed attribute documentation (types, constraints, cardinality).
 - Mermaid improvements (post-initial phase): Custom theme applied with corporate colors (primaryColor #0aa64f, primaryBorderColor #0f5c3f, white #ffffff), consistent typography (Manrope), and initialization in static/js/app.js with themeVariables.
+- Visibility correction: duplicated INVENTORYITEM block removed from ERD and text contrast adjusted to avoid empty entities on dashboard.
+- Cardinality rule hardened: dataset reloaded with 16 shelves (4 per store) and 64 inventory items, guaranteeing at least 4 products per shelf.
+- UI-data alignment: Employee, Store, and Product list/detail views now expose extended attributes (email/dateOfContract/skills/username/password, url/telephone/countryCode/capacity/description/temperature/relativeHumidity, color).
 - Technical debt registered: plain-text password will be migrated to bcrypt in future refactor (v0.4+ security enhancement).
 - Merge status: ✅ COMPLETED (commit 327b906 from feature/issue-9-modelo-ampliado to main, commit 34ecec7 for Mermaid visual improvements).
 - Test coverage: ✅ 108/108 TESTS PASSING with all validations covered.

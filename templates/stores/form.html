@@ -23,7 +23,7 @@
     </label>
 
     <label>{{ _('Country') }}
-      <input type="text" name="countryCode" maxlength="2" value="{{ store.countryCode if store else '' }}" required>
+      <input type="text" name="countryCode" maxlength="2" pattern="[A-Z]{2}" value="{{ store.countryCode if store else '' }}" required>
     </label>
 
     <label>Capacity

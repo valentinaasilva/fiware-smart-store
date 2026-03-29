@@ -23,6 +23,11 @@
         <th>{{ _('ID') }}</th>
         <th>{{ _('Name') }}</th>
         <th>{{ _('Country') }}</th>
+        <th>{{ _('URL') }}</th>
+        <th>{{ _('Telephone') }}</th>
+        <th>Capacity (m3)</th>
+        <th>{{ _('Temperature (°C)') }}</th>
+        <th>{{ _('Relative Humidity (%)') }}</th>
         <th>{{ _('Actions') }}</th>
       </tr>
     </thead>
@@ -43,6 +48,17 @@
         <td><a class="entity-link" href="{{ url_for('stores.get_store', entity_id=store.id) }}">{{ store.name }}</a></td>
         {% set country_code = store.countryCode if store.countryCode is string else '' %}
         <td>{{ _(country_names.get(country_code, country_code if country_code else '-')) }}</td>
+        <td>
+          {% if store.url %}
+            <a href="{{ store.url }}" target="_blank" rel="noopener noreferrer">{{ store.url }}</a>
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        <td>{{ store.telephone or '-' }}</td>
+        <td>{{ store.capacity if store.capacity is not none else '-' }}</td>
+        <td>{{ store.temperature if store.temperature is not none else '-' }}</td>
+        <td>{{ store.relativeHumidity if store.relativeHumidity is not none else '-' }}</td>
         <td class="actions-cell">
           <a class="button-link" href="{{ url_for('stores.edit_store_page', entity_id=store.id) }}">{{ _('Update') }}</a>
           <form method="post" action="{{ url_for('stores.delete_store_form', entity_id=store.id) }}" onsubmit="return confirm('{{ _('Delete') }} {{ store.name }}?');">
@@ -51,7 +67,7 @@
         </td>
       </tr>
     {% else %}
-      <tr><td colspan="5">{{ _('No records') }}</td></tr>
+      <tr><td colspan="10">{{ _('No records') }}</td></tr>
     {% endfor %}
     </tbody>
   </table>

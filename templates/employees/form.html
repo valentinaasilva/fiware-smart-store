@@ -47,8 +47,13 @@
     </label>
 
     <label>Skills
-      <input type="text" name="skills" value="{{ employee.skills if employee else '' }}" placeholder="WritingReports, CustomerRelationships">
+      <input type="text" name="skills" value="{{ employee.skills if employee else '' }}" placeholder="MachineryDriving, WritingReports" list="employee-skills-options">
     </label>
+    <datalist id="employee-skills-options">
+      <option value="MachineryDriving"></option>
+      <option value="WritingReports"></option>
+      <option value="CustomerRelationships"></option>
+    </datalist>
 
     <label>Date of Contract
       <input type="date" name="dateOfContract" value="{{ employee.dateOfContract[:10] if employee and employee.dateOfContract else '' }}">
@@ -59,7 +64,7 @@
     </label>
 
     <label>Password
-      <input type="text" name="password" value="{{ employee.password if employee else '' }}">
+      <input type="password" name="password" value="{{ employee.password if employee else '' }}" autocomplete="new-password">
     </label>
 
     <label>{{ _('Ref Store') }}

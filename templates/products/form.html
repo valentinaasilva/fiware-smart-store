@@ -48,7 +48,7 @@
     </label>
 
     <label>Color
-      <input type="text" name="color" pattern="#[0-9A-F]{6}" value="{{ product.color if product else '#FFFFFF' }}" required>
+      <input type="text" name="color" pattern="#[0-9A-F]{6}" placeholder="#FFFFFF" value="{{ product.color if product else '#FFFFFF' }}" required>
     </label>
 
     <label>{{ _('Image') }}
