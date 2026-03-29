@@ -535,7 +535,7 @@ Recommended query models:
   - Flujo CRUD uniforme create/list/get/update/delete.
   - Contratos de subscription iniciales para cambios de `price` y bajo stock.
 - Alineado y completado para cierre de Issue #1:
-  - Dataset de prueba implementado y verificable con 4 stores, 10 products, 10 employees, 12 shelves y 55+ inventory items.
+  - Dataset de prueba implementado y verificable con 4 stores, 10 products, 8 employees, 12 shelves y 55+ inventory items.
   - Script de carga dedicado `scripts/load_test_data.py` para provisionar entidades NGSIv2 de forma repetible.
   - Validaciones aplicadas en datos de prueba para enums, formatos, cardinalidades y relaciones esenciales.
   - Ajuste operativo: el script permite carga directa en SQLite para garantizar datos visibles en dashboard cuando Orion no es la fuente activa.
@@ -557,7 +557,7 @@ Recommended query models:
   - Uniform CRUD flow create/list/get/update/delete.
   - Initial subscription contracts for `price` changes and low stock.
 - Aligned and completed for Issue #1 closure:
-  - Test dataset implemented and verifiable with 4 stores, 10 products, 10 employees, 12 shelves, and 55+ inventory items.
+  - Test dataset implemented and verifiable with 4 stores, 10 products, 8 employees, 12 shelves, and 55+ inventory items.
   - Dedicated loader script `scripts/load_test_data.py` to provision NGSIv2 entities in a repeatable way.
   - Validation applied in test data for enums, formats, cardinalities, and essential relationships.
   - Operational adjustment: the script supports direct SQLite loading to guarantee visible dashboard data when Orion is not the active source.

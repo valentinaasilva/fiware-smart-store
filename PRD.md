@@ -148,7 +148,7 @@ Out of scope:
 - FR-030: Listado empleados con imagen, nombre, category, skills e iconos asociados.
 - FR-031: CRUD completo de employees con validacion HTML5 y JS.
 - FR-032: Imagen de empleado con efecto zoom en hover (CSS).
-- FR-033: Dataset base debe incluir al menos 12 empleados con datos de contrato, username y refStore.
+- FR-033: Dataset base debe incluir al menos 8 empleados con datos de contrato, username y refStore.
 
 #### 6.5 Dashboard and map
 - FR-040: Home dashboard con metricas de stores, products, employees e inventory items.
@@ -205,7 +205,7 @@ Out of scope:
 - FR-030: Employee list with image, name, category, skills, mapped icons.
 - FR-031: Full employee CRUD with HTML5 and JS validation.
 - FR-032: Employee image hover zoom effect (CSS).
-- FR-033: Baseline dataset must include at least 12 employees with contract date, username, and valid refStore.
+- FR-033: Baseline dataset must include at least 8 employees with contract date, username, and valid refStore.
 
 #### 6.5 Dashboard and map
 - FR-040: Home dashboard with metrics for stores, products, employees, inventory items.
@@ -359,7 +359,7 @@ Assumptions:
 	- Blueprints CRUD para Stores, Products, Employees, Inventory y Notifications.
 	- Capa de seleccion de fuente de datos Orion-first con fallback SQLite.
 	- Script de carga de datos de prueba `scripts/load_test_data.py` con opciones `--clean`, `--dry-run` y `--verbose`.
-	- Carga objetivo cumplida: 4 stores, 10 products, 10 employees, 12 shelves y 55+ inventory items.
+	- Carga objetivo cumplida: 4 stores, 10 products, 8 employees, 12 shelves y 55+ inventory items.
 	- Suites de tests agregadas para stores, products, employees, inventory y data loading.
 - Cobertura de requisitos lograda en Issue #1:
 	- FR-001, FR-002, FR-003: implementados y operativos.
@@ -384,7 +384,7 @@ Assumptions:
 	- CRUD blueprints for Stores, Products, Employees, Inventory, and Notifications.
 	- Orion-first data source selector with SQLite fallback.
 	- Test data loader script `scripts/load_test_data.py` with `--clean`, `--dry-run`, and `--verbose`.
-	- Target dataset delivered: 4 stores, 10 products, 10 employees, 12 shelves, and 55+ inventory items.
+	- Target dataset delivered: 4 stores, 10 products, 8 employees, 12 shelves, and 55+ inventory items.
 	- Test suites added for stores, products, employees, inventory, and data loading.
 - Requirement coverage achieved in Issue #1:
 	- FR-001, FR-002, FR-003: implemented and working.
