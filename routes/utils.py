@@ -21,6 +21,7 @@ NGSI_ATTR_TYPES: dict[str, dict[str, str]] = {
     "Product": {
         "name": "Text",
         "size": "Text",
+        "category": "Text",
         "price": "Float",
         "color": "Text",
         "originCountry": "Text",
@@ -55,6 +56,7 @@ NGSI_ATTR_TYPES: dict[str, dict[str, str]] = {
 }
 
 PRODUCT_SIZES = {"S", "M", "L", "XL"}
+PRODUCT_CATEGORIES = {"Lacteos", "Despensa", "Frescos", "Limpieza", "Bebidas", "Panaderia"}
 HEX_COLOR_RE = re.compile(r"^#[0-9A-F]{6}$")
 
 
@@ -134,6 +136,10 @@ def _validate_product(payload: dict, partial: bool) -> None:
     image = _unwrap_value(payload.get("image"))
     if image is not None and (not isinstance(image, str) or not _is_valid_url(image)):
         raise ValueError("Product.image must be a valid http/https URL")
+
+    category = _unwrap_value(payload.get("category"))
+    if category is not None and category not in PRODUCT_CATEGORIES:
+        raise ValueError("Product.category must be one of Lacteos, Despensa, Frescos, Limpieza, Bebidas, Panaderia")
 
 
 def _validate_employee(payload: dict, partial: bool) -> None:

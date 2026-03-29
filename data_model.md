@@ -18,9 +18,11 @@
 
 ### ES
 - 2026-03-29: Sin cambios estructurales en entidades NGSIv2 por el rediseño UI. Se documenta metrica derivada de dashboard `low_stock_count` como agregacion de `InventoryItem`.
+- 2026-03-29: Se añade atributo `Product.category` y se amplian datos semilla de Employee a 12 registros con `dateOfContract` y `username` consistentes.
 
 ### EN
 - 2026-03-29: No structural changes to NGSIv2 entities due to the UI redesign. Dashboard derived metric `low_stock_count` is documented as an `InventoryItem` aggregation.
+- 2026-03-29: Added `Product.category` attribute and expanded Employee seed data to 12 records with consistent `dateOfContract` and `username`.
 
 ## 2. Modeling conventions
 
@@ -76,6 +78,7 @@ Constraints:
 
 ### ES
 - Product.size permitido: S, M, L, XL
+- Product.category permitido: Lacteos, Despensa, Frescos, Limpieza, Bebidas, Panaderia
 - Employee.skills permitido:
   - MachineryDriving
   - WritingReports
@@ -84,6 +87,7 @@ Constraints:
 
 ### EN
 - Allowed Product.size: S, M, L, XL
+- Allowed Product.category: Lacteos, Despensa, Frescos, Limpieza, Bebidas, Panaderia
 - Allowed Employee.skills:
   - MachineryDriving
   - WritingReports
@@ -138,6 +142,7 @@ Constraints:
 | id | n/a | Si | 1 | URN Product unico | urn:ngsi-ld:Product:001 |
 | type | n/a | Si | 1 | Valor fijo Product | Product |
 | name | Text | Si | 1 | 1..120 chars | Banana |
+| category | Text | Si | 1 | Enum Lacteos/Despensa/Frescos/Limpieza/Bebidas/Panaderia | Frescos |
 | size | Text | Si | 1 | Enum S/M/L/XL | M |
 | price | Float | Si | 1 | >= 0 y precision 2 decimales | 2.99 |
 | image | Text | No | 0..1 | URL valida | https://images... |
@@ -150,6 +155,7 @@ Constraints:
 | id | n/a | Yes | 1 | Unique Product URN | urn:ngsi-ld:Product:001 |
 | type | n/a | Yes | 1 | Fixed value Product | Product |
 | name | Text | Yes | 1 | 1..120 chars | Banana |
+| category | Text | Yes | 1 | Enum Lacteos/Despensa/Frescos/Limpieza/Bebidas/Panaderia | Frescos |
 | size | Text | Yes | 1 | Enum S/M/L/XL | M |
 | price | Float | Yes | 1 | >= 0 and 2-dec precision | 2.99 |
 | image | Text | No | 0..1 | Valid URL | https://images... |
@@ -263,12 +269,14 @@ Constraints:
 ### ES
 - DM-001: `low_stock_count` es una metrica derivada no persistida.
 - DM-002: Se calcula contando `InventoryItem` con `stockCount <= 10` o `shelfCount <= 3`.
-- DM-003: La metrica se usa para visualizacion operativa en dashboard y no modifica payload NGSIv2.
+- DM-003: `estimated_stock_value` es una metrica derivada no persistida calculada como suma de `stockCount * Product.price` por item.
+- DM-004: Las metricas derivadas se usan para visualizacion operativa y no modifican payload NGSIv2.
 
 ### EN
 - DM-001: `low_stock_count` is a non-persisted derived metric.
 - DM-002: It is computed as the count of `InventoryItem` where `stockCount <= 10` or `shelfCount <= 3`.
-- DM-003: The metric is used for dashboard operational visualization and does not modify NGSIv2 payloads.
+- DM-003: `estimated_stock_value` is a non-persisted derived metric computed as sum of `stockCount * Product.price` across items.
+- DM-004: Derived metrics are used for dashboard operational visualization and do not modify NGSIv2 payloads.
 
 ## 7. NGSIv2 payload examples
 

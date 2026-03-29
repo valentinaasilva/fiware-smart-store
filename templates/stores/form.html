@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="detail-header">
+  <a class="back-link" href="{{ url_for('stores.list_stores') }}">&larr; {{ _('Stores') }}</a>
+  <h2>{% if store %}{{ _('Update') }} {{ _('Stores') }}{% else %}{{ _('Add Store') }}{% endif %}</h2>
+</section>
+
+<section class="table-shell">
+  <form method="post" action="{% if store %}{{ url_for('stores.update_store_form', entity_id=store.id) }}{% else %}{{ url_for('stores.create_store_form') }}{% endif %}" class="form-grid">
+    {% if store %}
+      <label>{{ _('ID') }}
+        <input type="text" value="{{ store.id }}" disabled>
+      </label>
+    {% else %}
+      <label>{{ _('ID') }}
+        <input type="text" name="id" placeholder="urn:ngsi-ld:Store:NEW001" required>
+      </label>
+    {% endif %}
+
+    <label>{{ _('Name') }}
+      <input type="text" name="name" value="{{ store.name if store else '' }}" required>
+    </label>
+
+    <label>{{ _('Country') }}
+      <input type="text" name="countryCode" maxlength="2" value="{{ store.countryCode if store else '' }}" required>
+    </label>
+
+    <label>Capacity
+      <input type="number" name="capacity" min="1" value="{{ store.capacity if store else '' }}" required>
+    </label>
+
+    <label>{{ _('Image') }}
+      <input type="url" name="image" value="{{ store.image if store else '' }}" required>
+    </label>
+
+    <label>{{ _('Address') }}
+      <input type="text" name="address" value="{{ store.address if store else '' }}" placeholder="Calle, Ciudad" >
+    </label>
+
+    <div class="form-actions-row">
+      <button type="submit">{% if store %}{{ _('Update') }}{% else %}{{ _('Add Store') }}{% endif %}</button>
+      <a class="button-link secondary" href="{{ url_for('stores.list_stores') }}">{{ _('Back') }}</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

@@ -2,7 +2,7 @@
 """
 Load test data for fiware-smart-store into Orion Context Broker.
 
-Populates 4 stores, 10 products, 4 employees, 12 shelves, and 50+ inventory items
+Populates 4 stores, 10 products, 12 employees, 12 shelves, and 50+ inventory items
 with full NGSIv2 validation and integrity rule checking.
 
 Usage:
@@ -50,6 +50,7 @@ VALID_ISO_COUNTRIES = {
 }
 
 PRODUCT_SIZES = {"S", "M", "L", "XL"}
+PRODUCT_CATEGORIES = {"Lacteos", "Despensa", "Frescos", "Limpieza", "Bebidas", "Panaderia"}
 EMPLOYEE_CATEGORIES = {"Junior", "Senior", "Manager", "Specialist"}
 EMPLOYEE_SKILLS = {"MachineryDriving", "WritingReports", "CustomerRelationships"}
 
@@ -141,6 +142,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P001",
         "name": "Banana",
+        "category": "Frescos",
         "size": "M",
         "color": "#FFE135",
         "price": 2.99,
@@ -150,6 +152,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P002",
         "name": "Red Apple",
+        "category": "Frescos",
         "size": "M",
         "color": "#DC143C",
         "price": 1.49,
@@ -159,6 +162,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P003",
         "name": "Orange",
+        "category": "Frescos",
         "size": "L",
         "color": "#FF8C00",
         "price": 3.99,
@@ -168,6 +172,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P004",
         "name": "Lettuce",
+        "category": "Frescos",
         "size": "L",
         "color": "#228B22",
         "price": 1.99,
@@ -177,6 +182,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P005",
         "name": "Tomato",
+        "category": "Frescos",
         "size": "M",
         "color": "#FF4500",
         "price": 2.49,
@@ -186,6 +192,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P006",
         "name": "Milk 1L",
+        "category": "Lacteos",
         "size": "S",
         "color": "#FFFFFF",
         "price": 1.29,
@@ -195,6 +202,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P007",
         "name": "Cheese",
+        "category": "Lacteos",
         "size": "S",
         "color": "#FFD700",
         "price": 4.99,
@@ -204,6 +212,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P008",
         "name": "Bread",
+        "category": "Panaderia",
         "size": "M",
         "color": "#8B4513",
         "price": 2.49,
@@ -213,6 +222,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P009",
         "name": "Water 2L",
+        "category": "Bebidas",
         "size": "L",
         "color": "#87CEEB",
         "price": 0.99,
@@ -222,6 +232,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P010",
         "name": "Coffee",
+        "category": "Despensa",
         "size": "S",
         "color": "#6F4E37",
         "price": 5.99,
@@ -231,10 +242,18 @@ PRODUCTS_DATA = [
 ]
 
 EMPLOYEES_DATA = [
-    {"id": "urn:ngsi-ld:Employee:E001", "name": "Soraya Rodríguez", "store_id": "urn:ngsi-ld:Store:S001", "category": "Senior", "role": "Store Manager", "salary": 2800.00, "email": "ada@store.com", "skills": ["WritingReports"], "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2"},
-    {"id": "urn:ngsi-ld:Employee:E002", "name": "Alejandro Varela", "store_id": "urn:ngsi-ld:Store:S002", "category": "Junior", "role": "Cashier", "salary": 1800.00, "email": "alan@store.com", "skills": ["CustomerRelationships"], "image": "https://images.unsplash.com/photo-1521119989659-a83eee488004"},
-    {"id": "urn:ngsi-ld:Employee:E003", "name": "Sara Paredes", "store_id": "urn:ngsi-ld:Store:S003", "category": "Manager", "role": "Supervisor", "salary": 2500.00, "email": "grace@store.com", "skills": ["WritingReports", "CustomerRelationships"], "image": "https://images.unsplash.com/photo-1544005313-94ddf0286df2"},
-    {"id": "urn:ngsi-ld:Employee:E004", "name": "Alejandro Martínez", "store_id": "urn:ngsi-ld:Store:S004", "category": "Senior", "role": "Store Manager", "salary": 2900.00, "email": "donald@store.com", "skills": ["WritingReports"], "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e"}
+    {"id": "urn:ngsi-ld:Employee:E001", "name": "Soraya Rodríguez", "store_id": "urn:ngsi-ld:Store:S001", "category": "Senior", "role": "Store Manager", "salary": 2800.00, "email": "soraya.rodriguez@xantadis.com", "skills": ["WritingReports"], "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2", "dateOfContract": "2024-03-10T00:00:00Z", "username": "soraya.rodriguez"},
+    {"id": "urn:ngsi-ld:Employee:E002", "name": "Alejandro Varela", "store_id": "urn:ngsi-ld:Store:S002", "category": "Junior", "role": "Cashier", "salary": 1800.00, "email": "alejandro.varela@xantadis.com", "skills": ["CustomerRelationships"], "image": "https://images.unsplash.com/photo-1521119989659-a83eee488004", "dateOfContract": "2025-01-15T00:00:00Z", "username": "alejandro.varela"},
+    {"id": "urn:ngsi-ld:Employee:E003", "name": "Sara Paredes", "store_id": "urn:ngsi-ld:Store:S003", "category": "Manager", "role": "Supervisor", "salary": 2500.00, "email": "sara.paredes@xantadis.com", "skills": ["WritingReports", "CustomerRelationships"], "image": "https://images.unsplash.com/photo-1544005313-94ddf0286df2", "dateOfContract": "2023-10-02T00:00:00Z", "username": "sara.paredes"},
+    {"id": "urn:ngsi-ld:Employee:E004", "name": "Alejandro Martínez", "store_id": "urn:ngsi-ld:Store:S004", "category": "Senior", "role": "Store Manager", "salary": 2900.00, "email": "alejandro.martinez@xantadis.com", "skills": ["WritingReports"], "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e", "dateOfContract": "2022-11-21T00:00:00Z", "username": "alejandro.martinez"},
+    {"id": "urn:ngsi-ld:Employee:E005", "name": "Ángel Vilariño García", "store_id": "urn:ngsi-ld:Store:S001", "category": "Specialist", "role": "Inventory Specialist", "salary": 2350.00, "email": "angel.vilarino@xantadis.com", "skills": ["MachineryDriving", "WritingReports"], "image": "https://images.unsplash.com/photo-1599566150163-29194dcaad36", "dateOfContract": "2024-05-12T00:00:00Z", "username": "angel.vilarino"},
+    {"id": "urn:ngsi-ld:Employee:E006", "name": "Alejandro Rodríguez Expósito", "store_id": "urn:ngsi-ld:Store:S002", "category": "Senior", "role": "Store Supervisor", "salary": 2550.00, "email": "alejandro.rodriguez.exposito@xantadis.com", "skills": ["WritingReports", "CustomerRelationships"], "image": "https://images.unsplash.com/photo-1546961329-78bef0414d7c", "dateOfContract": "2023-08-01T00:00:00Z", "username": "alejandro.rodriguez.exposito"},
+    {"id": "urn:ngsi-ld:Employee:E007", "name": "Soraya Rodriguez Campos", "store_id": "urn:ngsi-ld:Store:S003", "category": "Manager", "role": "Customer Service Lead", "salary": 2480.00, "email": "soraya.rodriguez.campos@xantadis.com", "skills": ["CustomerRelationships", "WritingReports"], "image": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f", "dateOfContract": "2024-01-09T00:00:00Z", "username": "soraya.rodriguez.campos"},
+    {"id": "urn:ngsi-ld:Employee:E008", "name": "Sara Paredes Bascoy", "store_id": "urn:ngsi-ld:Store:S004", "category": "Senior", "role": "Operations Analyst", "salary": 2420.00, "email": "sara.paredes.bascoy@xantadis.com", "skills": ["WritingReports"], "image": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80", "dateOfContract": "2023-12-11T00:00:00Z", "username": "sara.paredes.bascoy"},
+    {"id": "urn:ngsi-ld:Employee:E009", "name": "Alejandro Varela Vázquez", "store_id": "urn:ngsi-ld:Store:S001", "category": "Junior", "role": "Cashier", "salary": 1820.00, "email": "alejandro.varela.vazquez@xantadis.com", "skills": ["CustomerRelationships"], "image": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d", "dateOfContract": "2025-02-03T00:00:00Z", "username": "alejandro.varela.vazquez"},
+    {"id": "urn:ngsi-ld:Employee:E010", "name": "Daniel Martínez Martínez", "store_id": "urn:ngsi-ld:Store:S002", "category": "Specialist", "role": "Logistics Coordinator", "salary": 2380.00, "email": "daniel.martinez@xantadis.com", "skills": ["MachineryDriving", "WritingReports"], "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e", "dateOfContract": "2022-07-18T00:00:00Z", "username": "daniel.martinez"},
+    {"id": "urn:ngsi-ld:Employee:E011", "name": "Pablo Armenteros Lobato", "store_id": "urn:ngsi-ld:Store:S003", "category": "Junior", "role": "Stock Assistant", "salary": 1760.00, "email": "pablo.armenteros@xantadis.com", "skills": ["MachineryDriving"], "image": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e", "dateOfContract": "2025-04-20T00:00:00Z", "username": "pablo.armenteros"},
+    {"id": "urn:ngsi-ld:Employee:E012", "name": "Verónica Vila Viveiro", "store_id": "urn:ngsi-ld:Store:S004", "category": "Manager", "role": "Store Manager", "salary": 2950.00, "email": "veronica.vila@xantadis.com", "skills": ["WritingReports", "CustomerRelationships"], "image": "https://images.unsplash.com/photo-1580489944761-15a19d654956", "dateOfContract": "2021-09-06T00:00:00Z", "username": "veronica.vila"}
 ]
 
 # Shelves: 3 per store (12 total)
@@ -461,6 +480,7 @@ class OrionDataLoader:
                 "id": product_data["id"],
                 "type": "Product",
                 "name": {"type": "Text", "value": product_data["name"]},
+                "category": {"type": "Text", "value": product_data["category"]},
                 "size": {"type": "Text", "value": product_data["size"]},
                 "price": {"type": "Float", "value": product_data["price"]},
                 "color": {"type": "Text", "value": product_data["color"]},
@@ -496,8 +516,8 @@ class OrionDataLoader:
                 "salary": {"type": "Float", "value": employee_data["salary"]},
                 "email": {"type": "Text", "value": employee_data["email"]},
                 "skills": {"type": "Array", "value": employee_data["skills"]},
-                "dateOfContract": {"type": "DateTime", "value": "2025-03-15T00:00:00Z"},
-                "username": {"type": "Text", "value": employee_data["email"].split("@")[0]},
+                "dateOfContract": {"type": "DateTime", "value": employee_data.get("dateOfContract", "2025-03-15T00:00:00Z")},
+                "username": {"type": "Text", "value": employee_data.get("username", employee_data["email"].split("@")[0])},
                 "password": {"type": "Text", "value": "$2b$12$hash"},  # Placeholder hash
                 "refStore": {
                     "type": "Relationship",

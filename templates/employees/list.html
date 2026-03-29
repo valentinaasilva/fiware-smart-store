@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="page-header">
-  <p class="eyebrow">Workforce management</p>
-  <h2>{{ _('Employees') }}</h2>
+<section class="page-header page-header-inline">
+  <div>
+    <p class="eyebrow">Workforce management</p>
+    <h2>{{ _('Employees') }}</h2>
+  </div>
+  <a class="button-link" href="{{ url_for('employees.new_employee_page') }}">{{ _('Add Employee') }}</a>
 </section>
 
 <section class="table-shell">
@@ -16,6 +19,7 @@
         <th>{{ _('Role') }}</th>
         <th>{{ _('Salary') }}</th>
         <th>{{ _('Ref Store') }}</th>
+        <th>{{ _('Actions') }}</th>
       </tr>
     </thead>
     <tbody>
@@ -36,7 +40,15 @@
         <td>{{ employee.role or '-' }}</td>
         <td class="price-cell">{{ employee.salary if employee.salary is not none else '-' }}</td>
         <td class="mono">{{ employee.refStore.split(':')[-1] if employee.refStore is string else (employee.refStore or '-') }}</td>
+        <td class="actions-cell">
+          <a class="button-link" href="{{ url_for('employees.edit_employee_page', entity_id=employee.id) }}">{{ _('Update') }}</a>
+          <form method="post" action="{{ url_for('employees.delete_employee_form', entity_id=employee.id) }}" onsubmit="return confirm('{{ _('Delete') }} {{ employee.name }}?');">
+            <button type="submit">{{ _('Delete') }}</button>
+          </form>
+        </td>
       </tr>
+    {% else %}
+      <tr><td colspan="7">{{ _('No records') }}</td></tr>
     {% endfor %}
     </tbody>
   </table>

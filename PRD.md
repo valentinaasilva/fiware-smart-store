@@ -20,9 +20,11 @@
 
 ### ES
 - 2026-03-29: Rediseño visual del shell de la aplicacion (sidebar + support strip + top header), dashboard hero y tarjetas KPI. Se mantiene funcionalidad CRUD existente y se incorpora metrica explicita de bajo stock en dashboard.
+- 2026-03-29: Mejoras operativas: buscador funcional de productos, selector de tema con modo sistema, CRUD directo en listados, categoria de producto y ampliacion de dataset de empleados.
 
 ### EN
 - 2026-03-29: Visual redesign of the app shell (sidebar + support strip + top header), dashboard hero, and KPI cards. Existing CRUD functionality remains unchanged and an explicit low-stock metric is added to the dashboard.
+- 2026-03-29: Operational improvements: working product search, theme selector with system mode, direct CRUD from list views, product category, and expanded employee dataset.
 
 ## 2. Product vision and goals
 
@@ -135,8 +137,9 @@ Out of scope:
 - FR-018: CRUD de inventory items desde detalle store.
 
 #### 6.3 Products
-- FR-020: Listado de productos con imagen, nombre, color, size y acciones editar/borrar.
+- FR-020: Listado de productos con imagen, nombre, color, size, categoria y acciones editar/borrar.
 - FR-021: CRUD completo de products con validacion HTML5 y JS.
+- FR-025: Busqueda de productos por nombre, categoria, origen o ID desde cabecera/listado.
 - FR-022: Vista detalle product con InventoryItems agrupados por store y shelf.
 - FR-023: CRUD de inventory items desde detalle product.
 - FR-024: Select dinamico de shelves segun store seleccionada.
@@ -145,6 +148,7 @@ Out of scope:
 - FR-030: Listado empleados con imagen, nombre, category, skills e iconos asociados.
 - FR-031: CRUD completo de employees con validacion HTML5 y JS.
 - FR-032: Imagen de empleado con efecto zoom en hover (CSS).
+- FR-033: Dataset base debe incluir al menos 12 empleados con datos de contrato, username y refStore.
 
 #### 6.5 Dashboard and map
 - FR-040: Home dashboard con metricas de stores, products, employees e inventory items.
@@ -153,13 +157,16 @@ Out of scope:
 - FR-043: Hover en marcador muestra tarjeta flotante con datos principales.
 - FR-044: Click en marcador navega a detalle de store.
 - FR-045: Dashboard debe exponer contador de bajo stock calculado con umbral operativo (stockCount <= 10 o shelfCount <= 3).
+- FR-046: Dashboard debe mostrar Valor Estimado de stock agregado y panel de Gestion de Tiendas con estado operativo.
+- FR-047: Dashboard debe mostrar seccion Productos Destacados usando productos reales existentes.
 
 #### 6.6 UX and visual standards
 - FR-050: Soporte bilingue ES/EN en toda la app.
-- FR-051: Toggle dark/light funcional y persistente por sesion.
+- FR-051: Selector de tema dark/light/system funcional y persistente.
 - FR-052: Navbar fija en scroll con seccion activa resaltada.
 - FR-053: Efectos visuales priorizan CSS sobre JS.
 - FR-054: JS cliente no crea HTML nuevo; solo actualiza atributos en nodos existentes.
+- FR-055: Vistas de listado de tiendas, productos y empleados deben permitir alta/edicion/borrado sin depender de vistas detalle.
 
 #### 6.7 Real-time notifications
 - FR-060: Notificacion de cambio de precio debe actualizar vistas de producto activas sin reload.
@@ -187,8 +194,9 @@ Out of scope:
 - FR-018: Inventory item CRUD from store detail.
 
 #### 6.3 Products
-- FR-020: Product list with image, name, color swatch, size, edit/delete actions.
+- FR-020: Product list with image, name, color swatch, size, category, edit/delete actions.
 - FR-021: Full product CRUD with HTML5 and JS validation.
+- FR-025: Product search by name, category, origin, or ID from header/list pages.
 - FR-022: Product detail with InventoryItems grouped by store and shelf.
 - FR-023: Inventory item CRUD from product detail.
 - FR-024: Dynamic shelf select filtered by selected store.
@@ -197,6 +205,7 @@ Out of scope:
 - FR-030: Employee list with image, name, category, skills, mapped icons.
 - FR-031: Full employee CRUD with HTML5 and JS validation.
 - FR-032: Employee image hover zoom effect (CSS).
+- FR-033: Baseline dataset must include at least 12 employees with contract date, username, and valid refStore.
 
 #### 6.5 Dashboard and map
 - FR-040: Home dashboard with metrics for stores, products, employees, inventory items.
@@ -205,13 +214,16 @@ Out of scope:
 - FR-043: Marker hover displays floating card with main store data.
 - FR-044: Marker click navigates to store detail.
 - FR-045: Dashboard must expose a low-stock counter computed with the operational threshold (stockCount <= 10 or shelfCount <= 3).
+- FR-046: Dashboard must display aggregated Estimated Stock Value and a Store Management panel with operational status.
+- FR-047: Dashboard must display a Featured Products section fed by existing real products.
 
 #### 6.6 UX and visual standards
 - FR-050: Full ES/EN bilingual support.
-- FR-051: Functional dark/light toggle persisted per session.
+- FR-051: Functional dark/light/system theme selector persisted across sessions.
 - FR-052: Sticky navbar with active section highlight.
 - FR-053: Visual effects should prioritize CSS over JS.
 - FR-054: Client JS must not generate new HTML; only update existing node attributes.
+- FR-055: Store, product, and employee list views must allow create/update/delete without relying only on detail pages.
 
 #### 6.7 Real-time notifications
 - FR-060: Price change notification must update active product views without reload.

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="detail-header">
+  <a class="back-link" href="{{ url_for('products.list_products') }}">&larr; {{ _('Products') }}</a>
+  <h2>{% if product %}{{ _('Update') }} {{ _('Product') }}{% else %}{{ _('Add Product') }}{% endif %}</h2>
+</section>
+
+<section class="table-shell">
+  <form method="post" action="{% if product %}{{ url_for('products.update_product_form', entity_id=product.id) }}{% else %}{{ url_for('products.create_product_form') }}{% endif %}" class="form-grid">
+    {% if product %}
+      <label>{{ _('ID') }}
+        <input type="text" value="{{ product.id }}" disabled>
+      </label>
+    {% else %}
+      <label>{{ _('ID') }}
+        <input type="text" name="id" placeholder="urn:ngsi-ld:Product:NEW001" required>
+      </label>
+    {% endif %}
+
+    <label>{{ _('Name') }}
+      <input type="text" name="name" value="{{ product.name if product else '' }}" required>
+    </label>
+
+    <label>{{ _('Category') }}
+      <select name="category" required>
+        <option value="">{{ _('Category') }}</option>
+        {% for category in product_categories %}
+        <option value="{{ category }}" {% if product and product.category == category %}selected{% endif %}>{{ _(category) }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>Size
+      <select name="size" required>
+        {% for size in ['S', 'M', 'L', 'XL'] %}
+        <option value="{{ size }}" {% if product and product.size == size %}selected{% endif %}>{{ size }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>{{ _('Price') }}
+      <input type="number" name="price" min="0" step="0.01" value="{{ product.price if product else '' }}" required>
+    </label>
+
+    <label>{{ _('Origin Country') }}
+      <input type="text" name="originCountry" maxlength="2" value="{{ product.originCountry if product else '' }}" required>
+    </label>
+
+    <label>Color
+      <input type="text" name="color" pattern="#[0-9A-F]{6}" value="{{ product.color if product else '#FFFFFF' }}" required>
+    </label>
+
+    <label>{{ _('Image') }}
+      <input type="url" name="image" value="{{ product.image if product else '' }}" required>
+    </label>
+
+    <div class="form-actions-row">
+      <button type="submit">{% if product %}{{ _('Update') }}{% else %}{{ _('Add Product') }}{% endif %}</button>
+      <a class="button-link secondary" href="{{ url_for('products.list_products') }}">{{ _('Back') }}</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

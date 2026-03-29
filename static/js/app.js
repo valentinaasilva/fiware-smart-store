@@ -1,8 +1,16 @@
 (function () {
-	var THEME_KEY = "smartstore-theme";
+	var THEME_KEY = "smartstore-theme-mode";
 
-	function applyTheme(theme) {
-		if (theme === "dark") {
+	function getSystemTheme() {
+		if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+			return "dark";
+		}
+		return "light";
+	}
+
+	function applyThemeMode(mode) {
+		var effective = mode === "system" ? getSystemTheme() : mode;
+		if (effective === "dark") {
 			document.body.classList.add("theme-dark");
 		} else {
 			document.body.classList.remove("theme-dark");
@@ -10,28 +18,29 @@
 	}
 
 	function initThemeToggle() {
-		var button = document.getElementById("theme-toggle");
-		if (!button) {
+		var selector = document.getElementById("theme-mode");
+		if (!selector) {
 			return;
 		}
 
-		function updateButtonLabel() {
-			var isDark = document.body.classList.contains("theme-dark");
-			button.textContent = isDark ? button.dataset.light : button.dataset.dark;
-		}
+		var savedMode = localStorage.getItem(THEME_KEY);
+		var mode = savedMode === "dark" || savedMode === "light" || savedMode === "system" ? savedMode : "system";
+		selector.value = mode;
+		applyThemeMode(mode);
 
-		var savedTheme = localStorage.getItem(THEME_KEY);
-		if (savedTheme === "dark" || savedTheme === "light") {
-			applyTheme(savedTheme);
-		}
-
-		updateButtonLabel();
-
-		button.addEventListener("click", function () {
-			var isDark = document.body.classList.toggle("theme-dark");
-			localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
-			updateButtonLabel();
+		selector.addEventListener("change", function () {
+			var nextMode = selector.value;
+			localStorage.setItem(THEME_KEY, nextMode);
+			applyThemeMode(nextMode);
 		});
+
+		if (window.matchMedia) {
+			window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () {
+				if ((localStorage.getItem(THEME_KEY) || "system") === "system") {
+					applyThemeMode("system");
+				}
+			});
+		}
 	}
 
 	function initStoreMap() {

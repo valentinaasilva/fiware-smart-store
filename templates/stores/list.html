@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="page-header">
-  <p class="eyebrow">Retail network overview</p>
-  <h2>{{ _('Stores') }}</h2>
+<section class="page-header page-header-inline">
+  <div>
+    <p class="eyebrow">Retail network overview</p>
+    <h2>{{ _('Stores') }}</h2>
+  </div>
+  <a class="button-link" href="{{ url_for('stores.new_store_page') }}">{{ _('Add Store') }}</a>
 </section>
 
 <section class="table-shell">
@@ -15,7 +18,13 @@
   } %}
   <table>
     <thead>
-      <tr><th>{{ _('Image') }}</th><th>{{ _('ID') }}</th><th>{{ _('Name') }}</th><th>{{ _('Country') }}</th></tr>
+      <tr>
+        <th>{{ _('Image') }}</th>
+        <th>{{ _('ID') }}</th>
+        <th>{{ _('Name') }}</th>
+        <th>{{ _('Country') }}</th>
+        <th>{{ _('Actions') }}</th>
+      </tr>
     </thead>
     <tbody>
     {% for store in stores %}
@@ -34,7 +43,15 @@
         <td><a class="entity-link" href="{{ url_for('stores.get_store', entity_id=store.id) }}">{{ store.name }}</a></td>
         {% set country_code = store.countryCode if store.countryCode is string else '' %}
         <td>{{ _(country_names.get(country_code, country_code if country_code else '-')) }}</td>
+        <td class="actions-cell">
+          <a class="button-link" href="{{ url_for('stores.edit_store_page', entity_id=store.id) }}">{{ _('Update') }}</a>
+          <form method="post" action="{{ url_for('stores.delete_store_form', entity_id=store.id) }}" onsubmit="return confirm('{{ _('Delete') }} {{ store.name }}?');">
+            <button type="submit">{{ _('Delete') }}</button>
+          </form>
+        </td>
       </tr>
+    {% else %}
+      <tr><td colspan="5">{{ _('No records') }}</td></tr>
     {% endfor %}
     </tbody>
   </table>

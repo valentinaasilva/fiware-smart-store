@@ -18,9 +18,11 @@
 
 ### ES
 - 2026-03-29: Actualizada arquitectura de presentacion con shell de dos niveles (sidebar + cabecera superior) y dashboard enriquecido con mapa agregado de tiendas y KPI de bajo stock.
+- 2026-03-29: Se incorporan busqueda de productos por query, selector de tema dark/light/system y formularios CRUD en listados para Store/Product/Employee.
 
 ### EN
 - 2026-03-29: Presentation architecture updated with a two-level shell (sidebar + top header) and an enriched dashboard with aggregated stores map and low-stock KPI.
+- 2026-03-29: Added query-based product search, dark/light/system theme selector, and list-view CRUD forms for Store/Product/Employee.
 
 ## 2. Architectural goals
 
@@ -68,6 +70,7 @@ Capas y componentes:
 - Socket.IO client para actualizaciones real-time.
 - Librerias visuales Leaflet, Three.js, Mermaid y Font Awesome.
 - Shell UI desacoplado en `templates/base.html` con sidebar fijo, support strip y top header de controles.
+- Header con formulario de busqueda global (`GET /products?q=...`) y selector de tema de tres modos.
 
 2. Application layer
 - app.py como punto de entrada Flask y configuracion SocketIO.
@@ -98,6 +101,7 @@ Layers and components:
 - Socket.IO client for real-time updates.
 - Visual libraries Leaflet, Three.js, Mermaid, and Font Awesome.
 - Decoupled UI shell in `templates/base.html` with fixed sidebar, support strip, and control-oriented top header.
+- Header with global search form (`GET /products?q=...`) and three-mode theme selector.
 
 2. Application layer
 - app.py as Flask entrypoint and SocketIO bootstrap.
@@ -236,14 +240,18 @@ Critical connectivity rule:
 
 - routes/stores.py
   - Listado, detalle, alta, edicion y borrado de Store.
+  - Formularios de alta/edicion/borrado desde vista de listado (`/stores/new`, `/stores/edit/<id>`, `/stores/delete/<id>`).
   - CRUD de Shelf e InventoryItem asociados.
 
 - routes/products.py
   - CRUD Product.
+  - Filtro de busqueda por query en listado (`q` por id/nombre/categoria/origen).
+  - Formularios de alta/edicion/borrado desde vista de listado (`/products/new`, `/products/edit/<id>`, `/products/delete/<id>`).
   - Vista detalle product con agregacion de inventario por tienda/estanteria.
 
 - routes/employees.py
   - CRUD Employee con validaciones de email, salary, contract date.
+  - Formularios de alta/edicion/borrado desde vista de listado (`/employees/new`, `/employees/edit/<id>`, `/employees/delete/<id>`).
 
 - routes/inventory.py
   - Operaciones transversales de InventoryItem.
@@ -266,14 +274,18 @@ Critical connectivity rule:
 
 - routes/stores.py
   - Store list/detail/create/update/delete.
+  - List-page create/edit/delete form endpoints (`/stores/new`, `/stores/edit/<id>`, `/stores/delete/<id>`).
   - CRUD for related Shelf and InventoryItem.
 
 - routes/products.py
   - Product CRUD.
+  - Query-based search filtering on list endpoint (`q` by id/name/category/origin).
+  - List-page create/edit/delete form endpoints (`/products/new`, `/products/edit/<id>`, `/products/delete/<id>`).
   - Product detail with inventory aggregation by store/shelf.
 
 - routes/employees.py
   - Employee CRUD with validation for email, salary, contract date.
+  - List-page create/edit/delete form endpoints (`/employees/new`, `/employees/edit/<id>`, `/employees/delete/<id>`).
 
 - routes/inventory.py
   - Cross-entity InventoryItem operations.

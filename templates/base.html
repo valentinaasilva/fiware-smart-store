@@ -52,25 +52,19 @@
       </div>
 
       <header class="top-header">
-        <div class="search-wrap">
+        <form class="search-wrap" method="get" action="{{ url_for('products.list_products') }}">
           <span aria-hidden="true">⌕</span>
-          <input type="search" placeholder="{{ _('Search products, stores...') }}">
-        </div>
+          <input type="search" name="q" value="{{ request.args.get('q', '') }}" placeholder="{{ _('Search products, stores...') }}">
+          <button type="submit" class="search-submit">{{ _('Search') }}</button>
+        </form>
 
         <div class="header-actions">
-          <button class="notif-btn" type="button" aria-label="{{ _('Notifications') }}">
-            <span>◔</span>
-            <em>3</em>
-          </button>
-
-          <button id="theme-toggle" class="theme-toggle" type="button" data-light="{{ _('Light Mode') }}" data-dark="{{ _('Dark Mode') }}">
-            {{ _('Dark Mode') }}
-          </button>
-
-          <div class="user-chip">
-            <span class="avatar">AD</span>
-            <span>{{ _('Administrator') }}</span>
-          </div>
+          <label for="theme-mode" class="theme-label">{{ _('Theme') }}</label>
+          <select id="theme-mode" class="theme-toggle" data-system="{{ _('System') }}" data-light="{{ _('Light Mode') }}" data-dark="{{ _('Dark Mode') }}">
+            <option value="system">{{ _('System') }}</option>
+            <option value="light">{{ _('Light Mode') }}</option>
+            <option value="dark">{{ _('Dark Mode') }}</option>
+          </select>
         </div>
       </header>
 

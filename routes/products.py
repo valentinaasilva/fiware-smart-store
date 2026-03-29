@@ -1,6 +1,7 @@
 from flask import Blueprint, current_app, jsonify, redirect, render_template, request, url_for
 
 from routes.utils import (
+    PRODUCT_CATEGORIES,
     denormalize_ngsi_entities,
     maybe_denormalize_for_view,
     extract_payload,
@@ -23,6 +24,24 @@ def _as_int(value, default=0):
         return int(parsed)
     except (TypeError, ValueError):
         return default
+
+
+def _filter_products(products: list[dict], query: str) -> list[dict]:
+    q = (query or "").strip().lower()
+    if not q:
+        return products
+
+    filtered = []
+    for product in products:
+        values = [
+            str(product.get("id", "")),
+            str(product.get("name", "")),
+            str(product.get("category", "")),
+            str(product.get("originCountry", "")),
+        ]
+        if any(q in value.lower() for value in values):
+            filtered.append(product)
+    return filtered
 
 
 def _inventory_relationship_ids(item: dict) -> tuple[str | None, str | None, str | None]:
@@ -124,15 +143,73 @@ def _build_product_detail_context(product_id: str) -> dict:
 
 @products_bp.get("/")
 def list_products():
-    products = current_app.extensions["data_selector"].list_entities("Product")
+    products = denormalize_ngsi_entities(current_app.extensions["data_selector"].list_entities("Product"))
+    query = request.args.get("q", "").strip()
+    filtered = _filter_products(products, query)
     if wants_json(request):
-        return jsonify(products)
-    return render_template("products/list.html", products=denormalize_ngsi_entities(products))
+        return jsonify(filtered)
+    return render_template(
+        "products/list.html",
+        products=filtered,
+        query=query,
+        product_categories=sorted(PRODUCT_CATEGORIES),
+    )
 
 
 @products_bp.get("")
 def list_products_no_slash():
     return list_products()
+
+
+@products_bp.get("/new")
+def new_product_page():
+    return render_template("products/form.html", product=None, product_categories=sorted(PRODUCT_CATEGORIES))
+
+
+@products_bp.post("/new")
+def create_product_form():
+    try:
+        payload = normalize_ngsi_payload(extract_payload(request), "Product")
+        current_app.extensions["data_selector"].create_entity(payload)
+    except ValueError:
+        pass
+    return redirect(url_for("products.list_products"))
+
+
+@products_bp.get("/edit/<path:entity_id>")
+def edit_product_page(entity_id: str):
+    product = current_app.extensions["data_selector"].get_entity(entity_id)
+    if not product:
+        return redirect(url_for("products.list_products"))
+    return render_template(
+        "products/form.html",
+        product=maybe_denormalize_for_view(product),
+        product_categories=sorted(PRODUCT_CATEGORIES),
+    )
+
+
+@products_bp.post("/edit/<path:entity_id>")
+def update_product_form(entity_id: str):
+    selector = current_app.extensions["data_selector"]
+    current = selector.get_entity(entity_id)
+    if current:
+        incoming = extract_payload(request)
+        incoming.pop("id", None)
+        try:
+            payload = normalize_ngsi_payload(incoming, "Product", partial=True)
+            selector.update_entity(entity_id, payload)
+        except ValueError:
+            pass
+    return redirect(url_for("products.list_products"))
+
+
+@products_bp.post("/delete/<path:entity_id>")
+def delete_product_form(entity_id: str):
+    selector = current_app.extensions["data_selector"]
+    inventory_items = selector.list_entities_filtered("InventoryItem", "refProduct", entity_id)
+    if not inventory_items:
+        selector.delete_entity(entity_id)
+    return redirect(url_for("products.list_products"))
 
 
 @products_bp.get("/<path:entity_id>")

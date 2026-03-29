@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="detail-header">
+  <a class="back-link" href="{{ url_for('employees.list_employees') }}">&larr; {{ _('Employees') }}</a>
+  <h2>{% if employee %}{{ _('Update') }} {{ _('Employees') }}{% else %}{{ _('Add Employee') }}{% endif %}</h2>
+</section>
+
+<section class="table-shell">
+  <form method="post" action="{% if employee %}{{ url_for('employees.update_employee_form', entity_id=employee.id) }}{% else %}{{ url_for('employees.create_employee_form') }}{% endif %}" class="form-grid">
+    {% if employee %}
+      <label>{{ _('ID') }}
+        <input type="text" value="{{ employee.id }}" disabled>
+      </label>
+    {% else %}
+      <label>{{ _('ID') }}
+        <input type="text" name="id" placeholder="urn:ngsi-ld:Employee:NEW001" required>
+      </label>
+    {% endif %}
+
+    <label>{{ _('Name') }}
+      <input type="text" name="name" value="{{ employee.name if employee else '' }}" required>
+    </label>
+
+    <label>{{ _('Image') }}
+      <input type="url" name="image" value="{{ employee.image if employee else '' }}" required>
+    </label>
+
+    <label>{{ _('Role') }}
+      <input type="text" name="role" value="{{ employee.role if employee else '' }}" required>
+    </label>
+
+    <label>{{ _('Category') }}
+      <select name="category" required>
+        {% for category in ['Junior', 'Senior', 'Manager', 'Specialist'] %}
+        <option value="{{ category }}" {% if employee and employee.category == category %}selected{% endif %}>{{ category }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>{{ _('Salary') }}
+      <input type="number" name="salary" step="0.01" min="0" value="{{ employee.salary if employee else '' }}" required>
+    </label>
+
+    <label>Email
+      <input type="email" name="email" value="{{ employee.email if employee else '' }}">
+    </label>
+
+    <label>Skills
+      <input type="text" name="skills" value="{{ employee.skills if employee else '' }}" placeholder="WritingReports, CustomerRelationships">
+    </label>
+
+    <label>Date of Contract
+      <input type="date" name="dateOfContract" value="{{ employee.dateOfContract[:10] if employee and employee.dateOfContract else '' }}">
+    </label>
+
+    <label>Username
+      <input type="text" name="username" value="{{ employee.username if employee else '' }}">
+    </label>
+
+    <label>Password
+      <input type="text" name="password" value="{{ employee.password if employee else '' }}">
+    </label>
+
+    <label>{{ _('Ref Store') }}
+      <select name="refStore" required>
+        {% for store in stores %}
+        <option value="{{ store.id }}" {% if employee and employee.refStore == store.id %}selected{% endif %}>{{ store.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <div class="form-actions-row">
+      <button type="submit">{% if employee %}{{ _('Update') }}{% else %}{{ _('Add Employee') }}{% endif %}</button>
+      <a class="button-link secondary" href="{{ url_for('employees.list_employees') }}">{{ _('Back') }}</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

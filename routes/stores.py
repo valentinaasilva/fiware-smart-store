@@ -154,6 +154,55 @@ def list_stores_no_slash():
     return list_stores()
 
 
+@stores_bp.get("/new")
+def new_store_page():
+    return render_template("stores/form.html", store=None)
+
+
+@stores_bp.post("/new")
+def create_store_form():
+    try:
+        payload = normalize_ngsi_payload(extract_payload(request), "Store")
+        current_app.extensions["data_selector"].create_entity(payload)
+    except ValueError:
+        pass
+    return redirect(url_for("stores.list_stores"))
+
+
+@stores_bp.get("/edit/<path:entity_id>")
+def edit_store_page(entity_id: str):
+    store = current_app.extensions["data_selector"].get_entity(entity_id)
+    if not store:
+        return redirect(url_for("stores.list_stores"))
+    return render_template("stores/form.html", store=maybe_denormalize_for_view(store))
+
+
+@stores_bp.post("/edit/<path:entity_id>")
+def update_store_form(entity_id: str):
+    selector = current_app.extensions["data_selector"]
+    current = selector.get_entity(entity_id)
+    if current:
+        incoming = extract_payload(request)
+        incoming.pop("id", None)
+        try:
+            payload = normalize_ngsi_payload(incoming, "Store", partial=True)
+            selector.update_entity(entity_id, payload)
+        except ValueError:
+            pass
+    return redirect(url_for("stores.list_stores"))
+
+
+@stores_bp.post("/delete/<path:entity_id>")
+def delete_store_form(entity_id: str):
+    selector = current_app.extensions["data_selector"]
+    has_shelves = selector.list_entities_filtered("Shelf", "refStore", entity_id)
+    has_inventory = selector.list_entities_filtered("InventoryItem", "refStore", entity_id)
+    has_employees = selector.list_entities_filtered("Employee", "refStore", entity_id)
+    if not has_shelves and not has_inventory and not has_employees:
+        selector.delete_entity(entity_id)
+    return redirect(url_for("stores.list_stores"))
+
+
 @stores_bp.get("/<path:entity_id>")
 def get_store(entity_id: str):
     selector = current_app.extensions["data_selector"]

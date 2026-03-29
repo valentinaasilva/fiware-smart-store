@@ -12,20 +12,24 @@
   </div>
 </section>
 
-<section class="dashboard-metrics">
-  <article class="metric-card">
-    <span class="metric-icon products">◼</span>
-    <div>
-      <h3>{{ _('Total Products') }}</h3>
-      <p class="metric-value">{{ stats.products }}</p>
-    </div>
-  </article>
+<section class="dashboard-intro">
+  <h3>Panel de Control — Resumen general del estado de la cadena y productos destacados.</h3>
+</section>
 
+<section class="dashboard-metrics">
   <article class="metric-card">
     <span class="metric-icon stores">◉</span>
     <div>
       <h3>{{ _('Stores') }}</h3>
       <p class="metric-value">{{ stats.stores }}</p>
+    </div>
+  </article>
+
+  <article class="metric-card">
+    <span class="metric-icon products">◼</span>
+    <div>
+      <h3>{{ _('Products') }}</h3>
+      <p class="metric-value">{{ stats.products }}</p>
     </div>
   </article>
 
@@ -44,11 +48,65 @@
       <p class="metric-value">{{ low_stock_count }}</p>
     </div>
   </article>
+
+  <article class="metric-card">
+    <span class="metric-icon value">€</span>
+    <div>
+      <h3>{{ _('Estimated Value') }}</h3>
+      <p class="metric-value">{{ '%.2f'|format(estimated_stock_value) }}€</p>
+    </div>
+  </article>
 </section>
 
-<section class="dashboard-actions">
-  <a class="button-link" href="{{ url_for('products.list_products') }}">{{ _('View Catalog') }}</a>
-  <a class="button-link secondary" href="{{ url_for('stores.list_stores') }}">{{ _('Manage Stores') }}</a>
+<section class="table-shell">
+  <h3>{{ _('Store Management') }}</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>{{ _('Name') }}</th>
+        <th>{{ _('Location') }}</th>
+        <th>{{ _('Status') }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for store in managed_stores %}
+      <tr>
+        <td><a class="entity-link" href="{{ url_for('stores.get_store', entity_id=store.id) }}">{{ store.name }}</a></td>
+        <td>{{ store.location }}</td>
+        <td>
+          <span class="status-badge {% if store.status == 'Operational' %}ok{% else %}off{% endif %}">{{ _(store.status) }}</span>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="3">{{ _('No records') }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="table-shell">
+  <h3>{{ _('Featured Products') }}</h3>
+  <div class="featured-grid">
+    {% for offer in featured_offers %}
+    <article class="featured-card">
+      <div class="featured-media">
+        {% if offer.image %}
+        <img src="{{ offer.image }}" alt="{{ offer.title }}" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
+        <span class="img-fallback is-hidden">No image</span>
+        {% else %}
+        <span class="img-fallback">No image</span>
+        {% endif %}
+      </div>
+      <div class="featured-body">
+        <h4>{{ offer.title }}</h4>
+        <p class="featured-price">Desde {{ '%.2f'|format(offer.from_price) }}€</p>
+        <p>{{ offer.description }}</p>
+      </div>
+    </article>
+    {% else %}
+    <p>{{ _('No records') }}</p>
+    {% endfor %}
+  </div>
 </section>
 
 <section class="map-shell" id="stores-map">

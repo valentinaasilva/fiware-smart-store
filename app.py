@@ -33,6 +33,14 @@ def _as_int(value, default=0):
         return default
 
 
+def _as_float(value, default=0.0):
+    parsed = _unwrap_attr(value)
+    try:
+        return float(parsed)
+    except (TypeError, ValueError):
+        return default
+
+
 def _build_store_markers(selector: DataSourceSelector) -> list[dict]:
     stores = selector.list_entities("Store")
     markers: list[dict] = []
@@ -73,6 +81,107 @@ def _count_low_stock(selector: DataSourceSelector) -> int:
         if stock_count <= 10 or shelf_count <= 3:
             count += 1
     return count
+
+
+def _estimate_stock_value(selector: DataSourceSelector) -> float:
+    products = selector.list_entities("Product")
+    inventory_items = selector.list_entities("InventoryItem")
+    prices_by_product = {product.get("id"): _as_float(product.get("price"), 0.0) for product in products}
+
+    total = 0.0
+    for item in inventory_items:
+        product_id = _unwrap_attr(item.get("refProduct"))
+        stock_count = _as_int(item.get("stockCount"), 0)
+        total += prices_by_product.get(product_id, 0.0) * max(stock_count, 0)
+
+    return round(total, 2)
+
+
+def _build_store_management_rows(selector: DataSourceSelector) -> list[dict]:
+    stores = selector.list_entities("Store")
+    rows: list[dict] = []
+    for store in stores:
+        name = _unwrap_attr(store.get("name")) or store.get("id")
+        location = _unwrap_attr(store.get("location"))
+        address = _unwrap_attr(store.get("address"))
+        coords = location.get("coordinates") if isinstance(location, dict) else None
+        city = ""
+        if isinstance(address, dict):
+            city = address.get("addressLocality") or ""
+        status = "Operational" if isinstance(coords, list) and len(coords) == 2 else "Not operational"
+        rows.append(
+            {
+                "id": store.get("id"),
+                "name": name,
+                "location": city or _unwrap_attr(store.get("countryCode")) or "-",
+                "status": status,
+            }
+        )
+
+    return sorted(rows, key=lambda row: row.get("name", ""))[:4]
+
+
+def _build_featured_offers(selector: DataSourceSelector) -> list[dict]:
+    products = selector.list_entities("Product")
+    if not products:
+        return []
+
+    product_rows = []
+    for product in products:
+        product_rows.append(
+            {
+                "id": product.get("id"),
+                "name": _unwrap_attr(product.get("name")) or "Producto",
+                "category": _unwrap_attr(product.get("category")) or "",
+                "price": _as_float(product.get("price"), 0.0),
+                "image": _unwrap_attr(product.get("image")) or "",
+            }
+        )
+
+    # Offer definitions map UI copy to real products in matching categories.
+    definitions = [
+        {
+            "category": "Frescos",
+            "title": "Frutas y Verduras de Temporada",
+            "description": "Seleccion premium de nuestros agricultores locales.",
+        },
+        {
+            "category": "Lacteos",
+            "title": "Lacteos para Cada Dia",
+            "description": "Ahorro diario en leche, queso y esenciales refrigerados.",
+        },
+        {
+            "category": "Panaderia",
+            "title": "Pan Recien Horneado",
+            "description": "Especialidades artesanas horneadas cada manana.",
+        },
+    ]
+
+    featured = []
+    used_ids = set()
+    for definition in definitions:
+        candidates = [
+            row for row in product_rows if row.get("category") == definition["category"] and row.get("id") not in used_ids
+        ]
+        if not candidates:
+            candidates = [row for row in product_rows if row.get("id") not in used_ids]
+        if not candidates:
+            continue
+
+        product = min(candidates, key=lambda row: row.get("price", 0.0))
+        used_ids.add(product.get("id"))
+        featured.append(
+            {
+                "product_id": product.get("id"),
+                "title": definition["title"],
+                "from_price": product.get("price", 0.0),
+                "description": definition["description"],
+                "image": product.get("image"),
+                "product_name": product.get("name"),
+            }
+        )
+
+    return featured
 
 
 def create_app() -> Flask:
@@ -129,7 +238,10 @@ def create_app() -> Flask:
             stats=stats,
             source_mode=selector.mode,
             low_stock_count=_count_low_stock(selector),
+            estimated_stock_value=_estimate_stock_value(selector),
             stores_map=_build_store_markers(selector),
+            managed_stores=_build_store_management_rows(selector),
+            featured_offers=_build_featured_offers(selector),
         )
 
     return app
