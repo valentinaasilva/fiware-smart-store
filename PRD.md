@@ -788,15 +788,17 @@ Assumptions:
 ## 27. Closure status (Issue #9)
 
 ### ES
-- Estado de fusion: cambios de Issue #9 consolidados en rama `main`.
-- Estado de sincronizacion: rama local y remoto `origin/main` sincronizados.
-- Estado funcional: validaciones de atributos extendidas en utils.py, dashboard con diagrama Mermaid operativo, script de carga con cardinalidad garantizada (4 emp, 4 store, 16 shelf, 10 prod, 64+ items).
-- Suite de pruebas: 108 tests en verde (0 fallos).
-- Deuda tecnica documentada: password almacenado en texto plano en demo para esta fase, migracion a hash bcrypt deferred.
+- Estado de fusion: ✅ COMPLETADO - cambios de Issue #9 merged desde `feature/issue-9-modelo-ampliado` a `main` (commit 327b906).
+- Estado de sincronizacion: ✅ SINCRONIZADO - rama local y remoto `origin/main` sincronizados post-merge con push a origin.
+- Estado funcional: ✅ OPERATIVO - validaciones de atributos extendidas en utils.py (98 líneas), dashboard con diagrama Mermaid renderizado responsivamente, script de carga con cardinalidad garantizada (4 emp, 4 store, 16 shelf, 10 prod, 64+ items).
+- Suite de pruebas: ✅ 108/108 TESTS EN VERDE (0 fallos) - unit, integration, e2e, y smoke tests completados exitosamente.
+- Deuda tecnica documentada: password almacenado en texto plano en demo para esta fase, migracion a hash bcrypt deferred a future release.
+- Commit de cierre: 327b906 ("chore: Issue #9 implementation complete - Closes #9")
 
 ### EN
-- Merge status: Issue #9 changes consolidated on `main` branch.
-- Sync status: local branch and `origin/main` synchronized.
-- Functional status: extended attribute validations in utils.py, dashboard with operational Mermaid diagram, data loading script with guaranteed cardinality (4 emp, 4 store, 16 shelf, 10 prod, 64+ items).
-- Test suite: 108 tests green (0 failures).
-- Technical debt documented: password stored in plain text in demo for this phase, migration to bcrypt hash deferred.
+- Merge status: ✅ COMPLETED - Issue #9 changes merged from `feature/issue-9-modelo-ampliado` to `main` (commit 327b906).
+- Sync status: ✅ SYNCHRONIZED - local branch and `origin/main` synchronized post-merge with push to origin.
+- Functional status: ✅ OPERATIONAL - extended attribute validations in utils.py (98 lines), dashboard with responsively-rendered Mermaid diagram, data loading script with guaranteed cardinality (4 emp, 4 store, 16 shelf, 10 prod, 64+ items).
+- Test suite: ✅ 108/108 TESTS GREEN (0 failures) - unit, integration, e2e, and smoke tests completed successfully.
+- Technical debt documented: password stored in plain text in demo for this phase, migration to bcrypt hash deferred to future release.
+- Closure commit: 327b906 ("chore: Issue #9 implementation complete - Closes #9")

@@ -825,15 +825,17 @@ Test levels:
 ## 29. Closure status (Issue #9)
 
 ### ES
-- Estado de arquitectura: cambios implementados en capas de aplicacion, presentacion y datos sin modificacion de persistencia.
-- Estado de integridad: reglas de validacion implementadas en centralized normalize_ngsi_payload() que es llamado por todos los endpoints CRUD.
-- Estado de Mermaid: diagrama UML renderizado en dashboard sin dependencias externas no-CDN, responsive en mobile.
-- Estado de continuidad: Orion-first mantenido sin sincronizacion, no cambios en fallback SQLite.
-- Compatibilidad: todos los cambios son backward compatible; atributos antiguos siguen siendo aceptados.
+- Estado de arquitectura: ✅ IMPLEMENTADO - cambios en capas de aplicacion (routes/utils.py: +98 lineas), presentacion (templates), y datos (load_test_data.py) sin modificacion de persistencia.
+- Estado de integridad: ✅ VALIDADO - reglas de validacion implementadas en centralized normalize_ngsi_payload() llamado por todos endpoints CRUD, 20+ nuevas validaciones sin conflictos.
+- Estado de Mermaid: ✅ RENDERIZADO - diagrama UML ERD en dashboard sin dependencias externas no-CDN (solo jsdelivr CDN), responsive en mobile y desktop.
+- Estado de continuidad: ✅ MANTENIDO - Orion-first preservado sin sincronizacion, fallback SQLite sin cambios, backward compatible.
+- Merge status: ✅ COMPLETADO (commit 327b906 desde feature/issue-9-modelo-ampliado a main)
+- Test status: ✅ 108/108 PASSING sin regresiones.
 
 ### EN
-- Architecture status: implemented changes in application, presentation, and data layers without persistence modification.
-- Integrity status: validation rules implemented in centralized normalize_ngsi_payload() called by all CRUD endpoints.
-- Mermaid status: UML diagram rendered on dashboard with no external non-CDN dependencies, responsive on mobile.
-- Continuity status: Orion-first maintained without synchronization, no SQLite fallback changes.
-- Compatibility: all changes are backward compatible; legacy attributes continue to be accepted.
+- Architecture status: ✅ IMPLEMENTED - changes in application (routes/utils.py: +98 lines), presentation (templates), and data (load_test_data.py) layers without persistence modification.
+- Integrity status: ✅ VALIDATED - validation rules implemented in centralized normalize_ngsi_payload() called by all CRUD endpoints, 20+ new validations without conflicts.
+- Mermaid status: ✅ RENDERED - ERD UML diagram on dashboard with no external non-CDN dependencies (only jsdelivr CDN), responsive on mobile and desktop.
+- Continuity status: ✅ MAINTAINED - Orion-first preserved without synchronization, SQLite fallback unchanged, backward compatible.
+- Merge status: ✅ COMPLETED (commit 327b906 from feature/issue-9-modelo-ampliado to main)
+- Test status: ✅ 108/108 PASSING without regressions.
