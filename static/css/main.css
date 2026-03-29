@@ -792,4 +792,23 @@ textarea:focus {
     min-width: 100%;
     min-height: 180px;
   }
+
+  .data-model-uml {
+    margin: 1.2rem 0;
+  }
+
+  .mermaid-container {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+    padding: 1.2rem;
+    box-shadow: var(--shadow);
+  }
+
+  .mermaid {
+    display: flex;
+    justify-content: center;
+    min-width: 100%;
+  }
 }

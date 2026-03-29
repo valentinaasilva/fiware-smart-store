@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from datetime import datetime
 from urllib.parse import urlparse
 
 from flask import Request
@@ -57,7 +58,17 @@ NGSI_ATTR_TYPES: dict[str, dict[str, str]] = {
 
 PRODUCT_SIZES = {"S", "M", "L", "XL"}
 PRODUCT_CATEGORIES = {"Lacteos", "Despensa", "Frescos", "Limpieza", "Bebidas", "Panaderia"}
+EMPLOYEE_SKILLS_ENUM = {"MachineryDriving", "WritingReports", "CustomerRelationships"}
+EMPLOYEE_USERNAME_MIN = 4
+EMPLOYEE_USERNAME_MAX = 32
+STORE_DESCRIPTION_MAX = 2000
+STORE_TEMPERATURE_MIN = -30.0
+STORE_TEMPERATURE_MAX = 60.0
+STORE_HUMIDITY_MIN = 0.0
+STORE_HUMIDITY_MAX = 100.0
+
 HEX_COLOR_RE = re.compile(r"^#[0-9A-F]{6}$")
+EMAIL_RE = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 
 
 def wants_json(request: Request) -> bool:
@@ -107,6 +118,52 @@ def _validate_store(payload: dict, partial: bool) -> None:
     image = _unwrap_value(payload.get("image"))
     if image is not None and (not isinstance(image, str) or not _is_valid_url(image)):
         raise ValueError("Store.image must be a valid http/https URL")
+
+    url = _unwrap_value(payload.get("url"))
+    if url is not None and (not isinstance(url, str) or not _is_valid_url(url)):
+        raise ValueError("Store.url must be a valid http/https URL")
+
+    telephone = _unwrap_value(payload.get("telephone"))
+    if telephone is not None:
+        if not isinstance(telephone, str) or not telephone.strip():
+            raise ValueError("Store.telephone must be a non-empty string")
+        # Basic international phone pattern validation: +XX-XXX-XXXXXX or variations
+        if not re.match(r"^\+?[0-9\-\s\(\)]+$", telephone):
+            raise ValueError("Store.telephone must be a valid international phone format")
+
+    capacity = _unwrap_value(payload.get("capacity"))
+    if capacity is not None:
+        try:
+            numeric_capacity = float(capacity)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("Store.capacity must be numeric") from exc
+        if numeric_capacity <= 0:
+            raise ValueError("Store.capacity must be > 0")
+
+    description = _unwrap_value(payload.get("description"))
+    if description is not None:
+        if not isinstance(description, str):
+            raise ValueError("Store.description must be a string")
+        if len(description) > STORE_DESCRIPTION_MAX:
+            raise ValueError(f"Store.description must be <= {STORE_DESCRIPTION_MAX} characters")
+
+    temperature = _unwrap_value(payload.get("temperature"))
+    if temperature is not None:
+        try:
+            numeric_temperature = float(temperature)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("Store.temperature must be numeric") from exc
+        if numeric_temperature < STORE_TEMPERATURE_MIN or numeric_temperature > STORE_TEMPERATURE_MAX:
+            raise ValueError(f"Store.temperature must be between {STORE_TEMPERATURE_MIN} and {STORE_TEMPERATURE_MAX}")
+
+    humidity = _unwrap_value(payload.get("relativeHumidity"))
+    if humidity is not None:
+        try:
+            numeric_humidity = float(humidity)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("Store.relativeHumidity must be numeric") from exc
+        if numeric_humidity < STORE_HUMIDITY_MIN or numeric_humidity > STORE_HUMIDITY_MAX:
+            raise ValueError(f"Store.relativeHumidity must be between {STORE_HUMIDITY_MIN} and {STORE_HUMIDITY_MAX}")
 
 
 def _validate_product(payload: dict, partial: bool) -> None:
@@ -181,6 +238,47 @@ def _validate_employee(payload: dict, partial: bool) -> None:
 
         if not isinstance(ref_store_value, str) or not ref_store_value.startswith("urn:ngsi-ld:Store:"):
             raise ValueError("Employee.refStore must point to a Store URN")
+
+    email = _unwrap_value(payload.get("email"))
+    if email is not None:
+        if not isinstance(email, str):
+            raise ValueError("Employee.email must be a string")
+        if not EMAIL_RE.match(email):
+            raise ValueError("Employee.email must be a valid email format")
+
+    date_of_contract = _unwrap_value(payload.get("dateOfContract"))
+    if date_of_contract is not None:
+        if isinstance(date_of_contract, str):
+            try:
+                # Accept ISO-8601 format with or without timezone
+                if date_of_contract.endswith("Z"):
+                    datetime.fromisoformat(date_of_contract.replace("Z", "+00:00"))
+                else:
+                    datetime.fromisoformat(date_of_contract)
+            except (ValueError, TypeError) as exc:
+                raise ValueError("Employee.dateOfContract must be ISO-8601 format") from exc
+        else:
+            raise ValueError("Employee.dateOfContract must be a string in ISO-8601 format")
+
+    skills = _unwrap_value(payload.get("skills"))
+    if skills is not None:
+        if not isinstance(skills, list) or not skills:
+            raise ValueError("Employee.skills must be a non-empty array")
+        for skill in skills:
+            if not isinstance(skill, str) or skill not in EMPLOYEE_SKILLS_ENUM:
+                raise ValueError(f"Employee.skills must only contain: {', '.join(EMPLOYEE_SKILLS_ENUM)}")
+
+    username = _unwrap_value(payload.get("username"))
+    if username is not None:
+        if not isinstance(username, str):
+            raise ValueError("Employee.username must be a string")
+        if len(username) < EMPLOYEE_USERNAME_MIN or len(username) > EMPLOYEE_USERNAME_MAX:
+            raise ValueError(f"Employee.username must be between {EMPLOYEE_USERNAME_MIN} and {EMPLOYEE_USERNAME_MAX} characters")
+
+    password = _unwrap_value(payload.get("password"))
+    if password is not None:
+        if not isinstance(password, str) or not password:
+            raise ValueError("Employee.password must be a non-empty string")
 
 
 def _extract_relationship_urn(value: object, field_name: str, expected_prefix: str) -> str | None:

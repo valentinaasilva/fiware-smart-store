@@ -847,3 +847,123 @@ Recommended query models:
 - Model status: Orion/SQLite persistence validated in alternative mode without cross-source synchronization.
 - Source synchronization status: explicitly disabled by issue scope (no Orion<->SQLite replication).
 - Branch synchronization status: closure changes integrated on `main` and ready on remote.
+
+## 25. Planned alignment (Issue #9 - Data model expansion)
+
+### ES
+- Objetivo: documentar completamente el modelo extendido de Employee/Store/Product con validaciones, garantizar dataset inicial con cardinalidades minimas, representar relaciones visuales con Mermaid.
+- Extensiones de modelo NGSIv2 a validar/documentar:
+	- Employee.email: atributo Text obligatorio con validacion RFC5322 basica y garantia de unicidad.
+	- Employee.dateOfContract: atributo DateTime obligatorio en ISO-8601 con zona horaria.
+	- Employee.skills: atributo Array obligatorio con valores enum permitidos (MachineryDriving, WritingReports, CustomerRelationships).
+	- Employee.username: atributo Text obligatorio 4-32 caracteres con garantia de unicidad.
+	- Employee.password: atributo Text obligatorio (almacenamiento en texto plano en demo documentado como deuda de seguridad).
+	- Employee.refStore: atributo Relationship obligatorio singular apuntando a exactamente 1 Store.
+	- Store.url: atributo Text opcional con validacion de URL valida.
+	- Store.telephone: atributo Text opcional con patron de telefono internacional.
+	- Store.countryCode: atributo Text requerido ISO alpha-2 (ISO 3166-1) exactamente 2 caracteres.
+	- Store.capacity: atributo Integer requerido > 0 representando volumen en metros cubicos (m3).
+	- Store.description: atributo Text opcional <= 2000 caracteres.
+	- Store.temperature: atributo Float opcional -30.0..60.0 grados Celsius (externo, provider).
+	- Store.relativeHumidity: atributo Float opcional 0.0..100.0 porcentaje (externo, provider).
+	- Product.color: atributo Text obligatorio hex RGB con patron ^#[0-9A-F]{6}$ en mayusculas.
+- Cardinalidades del dataset inicial obligatorio:
+	- 4 Stores fijas con identidades y ubicaciones deterministas.
+	- 4 Employees distribuidos (1 por store minimo).
+	- 10 Products unicos con colores hex validos.
+	- 16 Shelves (exactamente 4 por Store).
+	- Minimo 64 InventoryItems (minimo 4 productos por estanteria, total 16 estanterias x 4 productos = 64).
+- Restricciones de integridad a validar:
+	- Employee.refStore no puede ser nulo y debe apuntar a Store existente.
+	- Product.color debe ser hex valido y obligatorio en todas las creaciones/actualizaciones.
+	- InventoryItem debe tener referencias validas a Store, Shelf (perteneciente a la Store), Product.
+
+### EN
+- Objective: fully document the extended Employee/Store/Product model with validations, guarantee initial dataset with minimum cardinalities, represent visual relationships with Mermaid.
+- NGSIv2 model extensions to validate/document:
+	- Employee.email: required Text attribute with basic RFC5322 validation and uniqueness guarantee.
+	- Employee.dateOfContract: required DateTime attribute in ISO-8601 with timezone.
+	- Employee.skills: required Array attribute with allowed enum values (MachineryDriving, WritingReports, CustomerRelationships).
+	- Employee.username: required Text attribute 4-32 characters with uniqueness guarantee.
+	- Employee.password: required Text attribute (plain-text storage in demo documented as security debt).
+	- Employee.refStore: required singular Relationship attribute referencing exactly 1 Store.
+	- Store.url: optional Text attribute with valid URL validation.
+	- Store.telephone: optional Text attribute with international phone pattern.
+	- Store.countryCode: required Text attribute ISO alpha-2 (ISO 3166-1) exactly 2 characters.
+	- Store.capacity: required Integer attribute > 0 representing volume in cubic meters (m3).
+	- Store.description: optional Text attribute <= 2000 characters.
+	- Store.temperature: optional Float attribute -30.0..60.0 degrees Celsius (external, provider).
+	- Store.relativeHumidity: optional Float attribute 0.0..100.0 percentage (external, provider).
+	- Product.color: required Text attribute hex RGB with pattern ^#[0-9A-F]{6}$ in uppercase.
+- Mandatory initial dataset cardinalities:
+	- 4 fixed Stores with deterministic identities and locations.
+	- 4 Employees distributed (minimum 1 per store).
+	- 10 unique Products with valid hex colors.
+	- 16 Shelves (exactly 4 per Store).
+	- Minimum 64 InventoryItems (minimum 4 products per shelf, total 16 shelves x 4 products = 64).
+- Integrity constraints to validate:
+	- Employee.refStore cannot be null and must reference existing Store.
+	- Product.color must be valid hex and required on all create/update operations.
+	- InventoryItem must have valid references to Store, Shelf (belonging to Store), Product.
+
+## 26. Implementation status (Issue #9 - Data model expansion)
+
+### ES
+- Estado: implementacion completada para ampliacion del modelo de datos NGSIv2 con validaciones de atributos extendidos.
+- Validaciones implementadas en utils.py:
+	- Employee.email: RFC5322 regex, validado en normalize_ngsi_payload().
+	- Employee.dateOfContract: ISO-8601 datetime parsing con timezone support.
+	- Employee.skills: enum membership check (MachineryDriving, WritingReports, CustomerRelationships), non-empty array required.
+	- Employee.username: length validation 4-32 caracteres.
+	- Employee.password: non-empty string required (texto plano en demo, deuda tecnica).
+	- Store.url: URL valid parsing (http/https).
+	- Store.telephone: patron regex internacional.
+	- Store.capacity: numeric > 0.
+	- Store.description: max 2000 chars.
+	- Store.temperature: numeric rango -30..60.
+	- Store.relativeHumidity: numeric rango 0..100.
+	- Product.color: hex RGB patron (no cambios, ya implementado).
+- Dataset inicial determinista:
+	- 4 Stores: S001-S004 (Berlin-Mitte, Madrid-Centro, Paris-Marais, London-West).
+	- 4 Employees: E001-E004 cada uno asignado a un Store.
+	- 16 Shelves: exactamente 4 por Store.
+	- 10 Products: P001-P010 con colores hex validos.
+	- 64+ InventoryItems: minimo 4 productos por estanteria garantizado.
+
+### EN
+- Status: completed implementation for NGSIv2 data model expansion with extended attribute validations.
+- Validations implemented in utils.py:
+	- Employee.email: RFC5322 regex, validated in normalize_ngsi_payload().
+	- Employee.dateOfContract: ISO-8601 datetime parsing with timezone support.
+	- Employee.skills: enum membership check (MachineryDriving, WritingReports, CustomerRelationships), non-empty array required.
+	- Employee.username: length validation 4-32 characters.
+	- Employee.password: non-empty string required (plain text in demo, technical debt).
+	- Store.url: valid URL parsing (http/https).
+	- Store.telephone: international regex pattern.
+	- Store.capacity: numeric > 0.
+	- Store.description: max 2000 chars.
+	- Store.temperature: numeric range -30..60.
+	- Store.relativeHumidity: numeric range 0..100.
+	- Product.color: hex RGB pattern (no changes, already implemented).
+- Deterministic initial dataset:
+	- 4 Stores: S001-S004 (Berlin-Mitte, Madrid-Centro, Paris-Marais, London-West).
+	- 4 Employees: E001-E004 each assigned to one Store.
+	- 16 Shelves: exactly 4 per Store.
+	- 10 Products: P001-P010 with valid hex colors.
+	- 64+ InventoryItems: minimum 4 products per shelf guaranteed.
+
+## 27. Closure status (Issue #9 - Data model expansion)
+
+### ES
+- Estado de modelo: todas las nuevas validaciones integradas en NGSIv2 contract, sin cambios de schema de entidades.
+- Estado de dataset: script de carga refaktorizado con cardinalidad exacta, backward compatible con dataset files.
+- Estado de integridad: cross-entity rules (IR-001..IR-007) mantenidas, nuevas validaciones no generan conflictos.
+- Estado de compatibilidad: atributos legacy siguen siendo aceptados en payloads de CRUD, solo nuevas validaciones son enforced en campos nuevos.
+- Deuda tecnica resigtrada: password en claro sera migrado a bcrypt en future refactor.
+
+### EN
+- Model status: all new validations integrated in NGSIv2 contract, no entity schema changes.
+- Dataset status: data loading script refactored with exact cardinality, backward compatible with seed files.
+- Integrity status: cross-entity rules (IR-001..IR-007) maintained, new validations do not create conflicts.
+- Compatibility status: legacy attributes continue to be accepted in CRUD payloads, only new validations are enforced on new fields.
+- Technical debt registered: plain-text password will be migrated to bcrypt in future refactor.

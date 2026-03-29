@@ -30,6 +30,26 @@
       <input type="number" name="capacity" min="1" value="{{ store.capacity if store else '' }}" required>
     </label>
 
+    <label>{{ _('URL') }}
+      <input type="url" name="url" value="{{ store.url if store else '' }}">
+    </label>
+
+    <label>{{ _('Telephone') }}
+      <input type="tel" name="telephone" value="{{ store.telephone if store else '' }}">
+    </label>
+
+    <label>{{ _('Description') }}
+      <textarea name="description" maxlength="2000" rows="3">{{ store.description if store else '' }}</textarea>
+    </label>
+
+    <label>{{ _('Temperature (°C)') }}
+      <input type="number" name="temperature" step="0.1" min="-30" max="60" value="{{ store.temperature if store else '' }}">
+    </label>
+
+    <label>{{ _('Relative Humidity (%)') }}
+      <input type="number" name="relativeHumidity" step="0.1" min="0" max="100" value="{{ store.relativeHumidity if store else '' }}">
+    </label>
+
     <label>{{ _('Image') }}
       <input type="url" name="image" value="{{ store.image if store else '' }}" required>
     </label>

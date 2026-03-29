@@ -8,6 +8,7 @@
 - Estado: Baseline para implementacion
 - Producto: fiware-smart-store
 - Tipo de documento: Product Requirements Document
+- Última actualización: 2026-03-29 (Issue #9 implementation closure)
 
 ### EN
 - Version: 1.0
@@ -15,6 +16,7 @@
 - Status: Baseline for implementation
 - Product: fiware-smart-store
 - Document type: Product Requirements Document
+- Last updated: 2026-03-29 (Issue #9 implementation closure)
 
 ## 1.1 Change log
 
@@ -714,3 +716,87 @@ Assumptions:
 - Sync status: `main` and `origin/main` synchronized after closure push.
 - Functional status: startup Orion-first, operational SQLite fallback, and validated `start.sh`/`stop.sh` scripts.
 - GitHub ticket status: closed through a `main` commit referencing `Closes #8`.
+
+## 25. Planned scope (Issue #9 - Data model expansion)
+
+### ES
+- Objetivo: ampliar modelo de datos con atributos extendidos y representacion UML, mejorar dataset inicial con distribucion minima garantizada, mantener Orion-first sin sincronizacion entre fuentes.
+- Requisitos funcionales nuevos:
+	- FR-051: Visualizar diagrama UML Mermaid en Home (dashboard) con relaciones entre entities.
+	- FR-052: CRUD de Employee con validaciones extendidas (email, skills enum, dateOfContract, username, password singular).
+	- FR-053: CRUD de Store con temperatura y humedad relativa enriquecidas.
+	- FR-054: CRUD de Product con color hex RGB requerido y validado.
+	- FR-055: Dataset inicial con cardinalidad garantizada: 4 Employees, 4 Stores, 16 Shelves (4 por store), 10 Products, minimo 64 InventoryItems (4 por shelf).
+- Politica de seguridad para credenciales (deuda tecnica):
+	- En alcance demo: se permite almacenar password en texto plano para fase inicial documentado como deuda.
+	- Fuera de alcance: implementacion de hash bcrypt para produccion en este issue.
+- Atributos existentes a validar/documentar:
+	- Employee: email (email valido y unico), dateOfContract (DateTime ISO-8601), skills (Array enum: MachineryDriving, WritingReports, CustomerRelationships), username (Text 4-32 chars unico), password (Text, credencial de demo), refStore (Relationship singular a Store).
+	- Store: url (URL valida), telephone (Patron telefono), countryCode (ISO alpha-2 2 chars), capacity (m3 positivo), description (Text <= 2000 chars), temperature (Float -30..60 grados C), relativeHumidity (Float 0..100 porcentaje).
+	- Product: color (Text hex RGB #RRGGBB obligatorio).
+
+### EN
+- Objective: expand data model with extended attributes and UML representation, improve initial dataset with guaranteed minimum distribution, maintain Orion-first without cross-source synchronization.
+- New functional requirements:
+	- FR-051: Display UML Mermaid diagram in Home (dashboard) with entity relationships.
+	- FR-052: Employee CRUD with extended validations (email, skills enum, dateOfContract, username, password singular).
+	- FR-053: Store CRUD with enriched temperature and relative humidity.
+	- FR-054: Product CRUD with required and validated hex RGB color.
+	- FR-055: Initial dataset with guaranteed cardinality: 4 Employees, 4 Stores, 16 Shelves (4 per store), 10 Products, minimum 64 InventoryItems (4 per shelf).
+- Security policy for credentials (technical debt):
+	- In demo scope: plain-text password storage allowed for initial phase documented as debt.
+	- Out of scope: bcrypt hash implementation for production in this issue.
+- Existing attributes to validate/document:
+	- Employee: email (valid and unique email format), dateOfContract (ISO-8601 DateTime), skills (Array enum: MachineryDriving, WritingReports, CustomerRelationships), username (Text 4-32 chars unique), password (Text, demo credential), refStore (singular Relationship to Store).
+	- Store: url (valid URL), telephone (international phone pattern), countryCode (ISO alpha-2 2 chars), capacity (positive m3), description (Text <= 2000 chars), temperature (Float -30..60 degrees C), relativeHumidity (Float 0..100 percentage).
+	- Product: color (Text hex RGB #RRGGBB required).
+
+## 26. Implementation progress (Issue #9 - Data model expansion)
+
+### ES
+- Estado: Implementacion completada y cerrada para ampliacion del modelo de datos con validaciones extendidas, representacion UML Mermaid en Home y script de carga determinista.
+- Alcance implementado:
+	- FR-051: Diagrama UML Mermaid integrado en dashboard.html mostrando relaciones entre Store/Employee/Product/Shelf/InventoryItem.
+	- FR-052: Validaciones de Employee extendidas (email RFC5322 valido, dateOfContract ISO-8601, skills enum enforced, username 4-32 caracteres, password texto plano en demo).
+	- FR-053: Validaciones de Store extendidas (url valid, telephone patron telefono, capacity > 0, description <= 2000 chars, temperature -30..60°C, relativeHumidity 0..100%).
+	- FR-054: Product.color validado con patron hex RGB #RRGGBB (ya implementado antes, sin cambios).
+	- FR-055: Dataset determinista garantizado: 4 Employees, 4 Stores, 16 Shelves (4 por store), 10 Products, 64+ InventoryItems.
+	- Cambios en load_test_data.py: SHELVES_PER_STORE cambiado de 3 a 4, EMPLOYEES_DATA reducido de 8 a 4 empleados (E001-E004).
+	- Mermaid renderizado responsivamente en dashboard con CDN jsdelivr y inicializacion en app.js.
+- Trazabilidad de requisitos:
+	- FR-051: seccion data-model-uml en dashboard.html con diagrama ERD Mermaid.
+	- FR-052/FR-053/FR-054: validaciones centralizadas en routes/utils.py con 20+ nuevas reglas.
+	- FR-055: script de carga verifica cardinalidades minimas en integrity validation.
+	- NFR-008: cobertura de tests extendida a 108 passed (unit + integration + smoke + e2e).
+
+### EN
+- Status: Implementation completed and closed for data model expansion with extended validations, Mermaid UML representation in Home, and deterministic data loading.
+- Implemented scope:
+	- FR-051: Mermaid UML diagram integrated in dashboard.html showing relationships between Store/Employee/Product/Shelf/InventoryItem.
+	- FR-052: Extended Employee validations (valid RFC5322 email, ISO-8601 dateOfContract, enforced skills enum, 4-32 char username, plain-text password in demo).
+	- FR-053: Extended Store validations (valid url, phone pattern, capacity > 0, description <= 2000 chars, temperature -30..60°C, relativeHumidity 0..100%).
+	- FR-054: Product.color validated with hex RGB pattern #RRGGBB (previously implemented, no changes).
+	- FR-055: Guaranteed deterministic dataset: 4 Employees, 4 Stores, 16 Shelves (4 per store), 10 Products, 64+ InventoryItems.
+	- load_test_data.py changes: SHELVES_PER_STORE changed from 3 to 4, EMPLOYEES_DATA reduced from 8 to 4 (E001-E004).
+	- Mermaid rendered responsively in dashboard using CDN jsdelivr with initialization in app.js.
+- Requirement traceability:
+	- FR-051: data-model-uml section in dashboard.html with Mermaid ERD diagram.
+	- FR-052/FR-053/FR-054: centralized validations in routes/utils.py with 20+ new rules.
+	- FR-055: data loading script verifies minimum cardinalities in integrity validation.
+	- NFR-008: test coverage expanded to 108 passed (unit + integration + smoke + e2e).
+
+## 27. Closure status (Issue #9)
+
+### ES
+- Estado de fusion: cambios de Issue #9 consolidados en rama `main`.
+- Estado de sincronizacion: rama local y remoto `origin/main` sincronizados.
+- Estado funcional: validaciones de atributos extendidas en utils.py, dashboard con diagrama Mermaid operativo, script de carga con cardinalidad garantizada (4 emp, 4 store, 16 shelf, 10 prod, 64+ items).
+- Suite de pruebas: 108 tests en verde (0 fallos).
+- Deuda tecnica documentada: password almacenado en texto plano en demo para esta fase, migracion a hash bcrypt deferred.
+
+### EN
+- Merge status: Issue #9 changes consolidated on `main` branch.
+- Sync status: local branch and `origin/main` synchronized.
+- Functional status: extended attribute validations in utils.py, dashboard with operational Mermaid diagram, data loading script with guaranteed cardinality (4 emp, 4 store, 16 shelf, 10 prod, 64+ items).
+- Test suite: 108 tests green (0 failures).
+- Technical debt documented: password stored in plain text in demo for this phase, migration to bcrypt hash deferred.

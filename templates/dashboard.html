@@ -58,6 +58,74 @@
   </article>
 </section>
 
+<section class="data-model-uml">
+  <h3>{{ _('Data Model') }} — ERD</h3>
+  <div class="mermaid-container">
+    <div class="mermaid">
+erDiagram
+  STORE ||--o{ EMPLOYEE : "1..N"
+  STORE ||--o{ SHELF : "1..N"
+  STORE ||--o{ INVENTORYITEM : "1..N"
+  SHELF ||--o{ INVENTORYITEM : "1..N"
+  PRODUCT ||--o{ INVENTORYITEM : "1..N"
+  
+  STORE {
+    string id PK
+    string name "name (Text)"
+    string address "address (PostalAddress)"
+    string location "location (GeoJSON Point)"
+    string countryCode "countryCode (ISO alpha-2)"
+    int capacity "capacity (m³)"
+    string url "url (optional)"
+    string telephone "telephone (optional)"
+    string description "description (optional)"
+    float temperature "temperature (optional, °C)"
+    float relativeHumidity "relativeHumidity (optional, %)"
+  }
+  
+  EMPLOYEE {
+    string id PK
+    string name "name (Text)"
+    string email "email (unique)"
+    string username "username (4-32 chars)"
+    string password "password (credential)"
+    string role "role (Text)"
+    float salary "salary (Float, ≥0)"
+    string skills "skills (Array enum)"
+    string dateOfContract "dateOfContract (DateTime)"
+    string refStore FK "refStore (Relationship to Store)"
+  }
+  
+  PRODUCT {
+    string id PK
+    string name "name (Text)"
+    string category "category (enum)"
+    string size "size (S/M/L/XL)"
+    float price "price (Float, ≥0)"
+    string color "color (hex #RRGGBB)"
+    string originCountry "originCountry (ISO alpha-2, optional)"
+  }
+  
+  SHELF {
+    string id PK
+    string name "name (Text)"
+    string location "location (GeoJSON Point)"
+    int maxCapacity "maxCapacity (Integer, >0)"
+    string refStore FK "refStore (Relationship to Store)"
+  }
+  
+  INVENTORYITEM {
+    string id PK
+    int stockCount "stockCount (Integer, ≥0)"
+    int shelfCount "shelfCount (Integer, ≥0, ≤stockCount)"
+    string refStore FK "refStore (Relationship)"
+    string refShelf FK "refShelf (Relationship)"
+    string refProduct FK "refProduct (Relationship)"
+  }
+    </div>
+  </div>
+</section>
+
 <section class="table-shell">
   <h3>{{ _('Store Management') }}</h3>
   <table>

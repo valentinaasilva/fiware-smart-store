@@ -119,9 +119,17 @@
 		}
 	}
 
+	function initMermaidDiagrams() {
+		if (typeof window.mermaid !== "undefined") {
+			window.mermaid.initialize({ startOnLoad: true, theme: 'default' });
+			window.mermaid.contentLoaded();
+		}
+	}
+
 	document.addEventListener("DOMContentLoaded", function () {
 		initThemeToggle();
 		initStoreMap();
 		initDashboardStoresMap();
+		initMermaidDiagrams();
 	});
 })();
