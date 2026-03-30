@@ -28,8 +28,12 @@ echo "[INFO] Starting Orion/Mongo/tutorial stack"
 
 ORION_PORT="${ORION_PORT:-1026}"
 ORION_URL="${ORION_URL:-http://localhost:${ORION_PORT}}"
+ORION_TIMEOUT="${ORION_TIMEOUT:-15}"
 CALLBACK_BASE_URL="${CALLBACK_BASE_URL:-http://host.docker.internal:5000}"
-TUTORIAL_PROVIDER_URL="${TUTORIAL_PROVIDER_URL:-http://localhost:3000}"
+PROVIDER_BASE_URL="${PROVIDER_BASE_URL:-${CALLBACK_BASE_URL}}"
+WEATHER_PROVIDER_URL="${WEATHER_PROVIDER_URL:-${PROVIDER_BASE_URL}/providers/weather}"
+TWEETS_PROVIDER_URL="${TWEETS_PROVIDER_URL:-${PROVIDER_BASE_URL}/providers/tweets}"
+SEED_ON_START="${SEED_ON_START:-1}"
 
 # Wait up to 60s for Orion health endpoint.
 for i in $(seq 1 30); do
@@ -49,12 +53,43 @@ if [[ ! -x "${PYTHON_BIN}" ]]; then
   PYTHON_BIN="python3"
 fi
 
+if [[ "${SEED_ON_START}" == "1" ]]; then
+  echo "[INFO] Seeding Orion dataset (target=orion, clean=true)"
+  (
+    cd "${ROOT_DIR}"
+    "${PYTHON_BIN}" scripts/load_test_data.py \
+      --target orion \
+      --orion-url "${ORION_URL}" \
+      --clean
+  )
+  echo "[OK] Orion seed completed"
+else
+  echo "[WARN] Skipping Orion seed because SEED_ON_START=${SEED_ON_START}"
+fi
+
+# After seeding, Orion can be temporarily saturated. Wait until a lightweight
+# entity query succeeds before booting Flask bootstrap calls.
+for i in $(seq 1 20); do
+  if curl -fsS "${ORION_URL}/v2/entities?limit=1" >/dev/null 2>&1; then
+    echo "[INFO] Orion query API is responsive"
+    break
+  fi
+  if [[ "$i" -eq 20 ]]; then
+    echo "[WARN] Orion query API did not stabilize in time; continuing"
+    break
+  fi
+  sleep 1
+done
+
 echo "[INFO] Starting Flask app in background"
 (
   cd "${ROOT_DIR}"
   export ORION_URL
+  export ORION_TIMEOUT
   export CALLBACK_BASE_URL
-  export TUTORIAL_PROVIDER_URL
+  export PROVIDER_BASE_URL
+  export WEATHER_PROVIDER_URL
+  export TWEETS_PROVIDER_URL
   nohup "${PYTHON_BIN}" app.py >"${LOG_FILE}" 2>&1 &
   echo $! >"${PID_FILE}"
 )
