@@ -17,12 +17,16 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-03-30: Issue #11: integracion de atributos externos de Store separada en dos providers NGSIv2 (weather: `temperature` + `relativeHumidity`; social: `tweets`) con registro por `Store.id`.
+- 2026-03-30: Operacion de datos endurecida: `start.sh` fuerza seed ORION previo al arranque para garantizar minimos (4 Store, 10 Product, 4 Employee, 16 Shelf, 64 InventoryItem).
 - 2026-03-30: Presentacion de `Store.countryCode` separada del nombre de pais en UI (listado y detalle) para lectura operativa.
 - 2026-03-30: Datos de ejemplo de Store normalizados: `url` y `telephone` alineados con ubicaciones reales (Oviedo, Sevilla, Valencia, Vigo) y formato telefonico espanol +34.
 - 2026-03-29: Sin cambios estructurales en entidades NGSIv2 por el rediseño UI. Se documenta metrica derivada de dashboard `low_stock_count` como agregacion de `InventoryItem`.
 - 2026-03-29: Se añade atributo `Product.category` y se amplian datos semilla de Employee a 12 registros con `dateOfContract` y `username` consistentes.
 
 ### EN
+- 2026-03-30: Issue #11: Store external attributes integrated through two NGSIv2 providers (weather: `temperature` + `relativeHumidity`; social: `tweets`) registered by `Store.id`.
+- 2026-03-30: Data operations hardened: `start.sh` enforces ORION seed before app startup to guarantee minimum counts (4 Store, 10 Product, 4 Employee, 16 Shelf, 64 InventoryItem).
 - 2026-03-30: `Store.countryCode` presentation split from country-name field in UI (list/detail) for clearer operations.
 - 2026-03-30: Store sample data normalized: `url` and `telephone` aligned to real locations (Oviedo, Sevilla, Valencia, Vigo) using Spanish +34 phone format.
 - 2026-03-29: No structural changes to NGSIv2 entities due to the UI redesign. Dashboard derived metric `low_stock_count` is documented as an `InventoryItem` aggregation.
@@ -985,3 +989,45 @@ Recommended query models:
 - Technical debt registered: plain-text password will be migrated to bcrypt in future refactor (v0.4+ security enhancement).
 - Merge status: ✅ COMPLETED (commit 327b906 from feature/issue-9-modelo-ampliado to main, commit 34ecec7 for Mermaid visual improvements).
 - Test coverage: ✅ 108/108 TESTS PASSING with all validations covered.
+
+## 28. Implementation alignment (Issue #11 - external providers split)
+
+### ES
+- Estado: alineacion aplicada para separar la provison de atributos externos de `Store` en dos registrations NGSIv2 independientes durante startup.
+- Contratos de registro aplicados (`POST /v2/registrations`):
+  - Registration weather:
+    - entidades: `[{"id": "urn:ngsi-ld:Store:<STORE_ID>", "type": "Store"}]` por cada Store existente en startup
+    - attrs: `["temperature", "relativeHumidity"]`
+    - provider url default: `${PROVIDER_BASE_URL}/providers/weather`
+    - status: `active`
+  - Registration tweets:
+    - entidades: `[{"id": "urn:ngsi-ld:Store:<STORE_ID>", "type": "Store"}]` por cada Store existente en startup
+    - attrs: `["tweets"]`
+    - provider url default: `${PROVIDER_BASE_URL}/providers/tweets`
+    - status: `active`
+- Trazabilidad de fuentes:
+  - `temperature`, `relativeHumidity`, `tweets` mantienen origen `Provider externo` en el modelo de `Store`.
+  - La separacion de registrations no altera schema de entidad, solo contrato de integracion en Orion.
+- Configuracion:
+  - Nuevas variables: `PROVIDER_BASE_URL`, `WEATHER_PROVIDER_URL`, `TWEETS_PROVIDER_URL`.
+  - Politica: no usar URL generica de tutorial cuando no existan endpoints NGSI activos.
+
+### EN
+- Status: alignment applied to split external `Store` attribute provision into two independent NGSIv2 registrations at startup.
+- Applied registration contracts (`POST /v2/registrations`):
+  - Weather registration:
+    - entities: `[{"id": "urn:ngsi-ld:Store:<STORE_ID>", "type": "Store"}]` for each existing Store at startup
+    - attrs: `["temperature", "relativeHumidity"]`
+    - default provider URL: `${PROVIDER_BASE_URL}/providers/weather`
+    - status: `active`
+  - Tweets registration:
+    - entities: `[{"id": "urn:ngsi-ld:Store:<STORE_ID>", "type": "Store"}]` for each existing Store at startup
+    - attrs: `["tweets"]`
+    - default provider URL: `${PROVIDER_BASE_URL}/providers/tweets`
+    - status: `active`
+- Source traceability:
+  - `temperature`, `relativeHumidity`, and `tweets` keep `External provider` origin in the `Store` model.
+  - Registration split does not change entity schema, only Orion integration contract.
+- Configuration:
+  - New variables: `PROVIDER_BASE_URL`, `WEATHER_PROVIDER_URL`, `TWEETS_PROVIDER_URL`.
+  - Policy: avoid generic tutorial URL when NGSI endpoints are not active.

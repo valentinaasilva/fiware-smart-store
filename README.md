@@ -26,6 +26,17 @@ source .venv/bin/activate
 ./start.sh
 ```
 
+El script `start.sh` ejecuta siempre en este orden:
+1. Levanta stack Docker (Orion/Mongo/tutorial)
+2. Carga dataset en Orion (`scripts/load_test_data.py --target orion --clean`)
+3. Arranca Flask app
+
+Para desactivar el seed automatico de forma puntual:
+
+```bash
+SEED_ON_START=0 ./start.sh
+```
+
 3. Abrir la aplicacion en:
 
 - http://localhost:5000
@@ -62,3 +73,16 @@ python scripts/load_test_data.py --target sqlite --sqlite-path instance/fiware.d
   - Orion disponible -> modo ORION
   - Orion no disponible -> fallback SQLITE
 - No hay sincronizacion de datos entre Orion y SQLite.
+- Registro automatico NGSIv2 al arranque en modo ORION:
+  - 2 providers externos para `Store` via `POST /v2/registrations`.
+  - Provider A: atributos `temperature` y `relativeHumidity`.
+  - Provider B: atributo `tweets`.
+  - Se usan endpoints explicitos de provider por atributo; no se usa URL generica del tutorial.
+
+## Variables de entorno
+
+- `ORION_URL`: URL del Orion Context Broker. Default: `http://localhost:1026`.
+- `CALLBACK_BASE_URL`: base de callbacks para subscriptions. Default: `http://host.docker.internal:5000`.
+- `PROVIDER_BASE_URL`: base del provider externo (NGSI). Default: `http://host.docker.internal:5000`.
+- `WEATHER_PROVIDER_URL`: endpoint NGSI para weather provider de `Store`. Default: `${PROVIDER_BASE_URL}/providers/weather`.
+- `TWEETS_PROVIDER_URL`: endpoint NGSI para tweets provider de `Store`. Default: `${PROVIDER_BASE_URL}/providers/tweets`.

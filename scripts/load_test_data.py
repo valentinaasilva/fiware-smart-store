@@ -400,13 +400,28 @@ class OrionDataLoader:
             return self.sqlite_repo.list_entities(entity_type)
 
         try:
-            resp = requests.get(
-                f"{self.orion_url}/v2/entities?type={entity_type}",
-                timeout=self.timeout
-            )
-            if resp.status_code == 200:
-                return resp.json()
-            return []
+            entities: List[Dict[str, Any]] = []
+            limit = 1000
+            offset = 0
+            while True:
+                resp = requests.get(
+                    f"{self.orion_url}/v2/entities",
+                    params={"type": entity_type, "limit": limit, "offset": offset},
+                    timeout=self.timeout
+                )
+                if resp.status_code != 200:
+                    break
+
+                page = resp.json()
+                if not isinstance(page, list) or not page:
+                    break
+
+                entities.extend(page)
+                if len(page) < limit:
+                    break
+                offset += limit
+
+            return entities
         except RequestException:
             return []
 

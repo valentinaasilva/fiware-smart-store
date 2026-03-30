@@ -21,12 +21,16 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-03-30: Issue #11 completado: providers externos de Store separados por atributo (weather: temperature/relativeHumidity, social: tweets) con registro automatico en bootstrap Orion y en alta de nuevas tiendas.
+- 2026-03-30: Arranque endurecido en `start.sh`: secuencia obligatoria stack Docker -> seed ORION (`SEED_ON_START=1`) -> app Flask, para evitar estados vacios tras reinicio.
 - 2026-03-30: Vista de Stores ajustada para mostrar pais y countryCode en campos separados (listado y detalle).
 - 2026-03-30: Normalizacion de datos de Store en semilla y base local: URLs por ciudad real (oviedo, sevilla, valencia, vigo) y telefonos en formato espanol +34 coherentes por ubicacion.
 - 2026-03-29: Rediseño visual del shell de la aplicacion (sidebar + support strip + top header), dashboard hero y tarjetas KPI. Se mantiene funcionalidad CRUD existente y se incorpora metrica explicita de bajo stock en dashboard.
 - 2026-03-29: Mejoras operativas: buscador funcional de productos, selector de tema con modo sistema, CRUD directo en listados, categoria de producto y ampliacion de dataset de empleados.
 
 ### EN
+- 2026-03-30: Issue #11 completed: Store external providers split by attribute (weather: temperature/relativeHumidity, social: tweets) with automatic registration at Orion bootstrap and on new store creation.
+- 2026-03-30: Hardened startup in `start.sh`: mandatory sequence Docker stack -> ORION seed (`SEED_ON_START=1`) -> Flask app, preventing empty-state runs after restart.
 - 2026-03-30: Stores view adjusted to display country and countryCode in separate fields (list and detail).
 - 2026-03-30: Store seed/local database normalization: city-specific URLs (oviedo, sevilla, valencia, vigo) and Spanish +34 phone numbers aligned with each location.
 - 2026-03-29: Visual redesign of the app shell (sidebar + support strip + top header), dashboard hero, and KPI cards. Existing CRUD functionality remains unchanged and an explicit low-stock metric is added to the dashboard.
@@ -132,6 +136,7 @@ Out of scope:
 - FR-005: El sistema debe registrar subscriptions NGSIv2 para cambio de precio y bajo stock.
 - FR-006: El stack de desarrollo debe levantarse con script `start.sh` (contenedores + aplicacion) y detenerse con `stop.sh`.
 - FR-007: El fallback Orion/SQLite no debe sincronizar datos entre fuentes; solo selecciona fuente activa por conectividad.
+- FR-008: `start.sh` debe ejecutar por defecto un seed completo sobre ORION antes de arrancar la app para garantizar dataset minimo consistente tras reinicios (desactivable con `SEED_ON_START=0`).
 
 #### 6.2 Stores
 - FR-010: Listado de stores con imagen, nombre, countryCode, temperature y relativeHumidity.
@@ -191,6 +196,7 @@ Out of scope:
 - FR-005: The system must register NGSIv2 subscriptions for price change and low stock.
 - FR-006: Development stack startup must be automated with `start.sh` (containers + app) and stopped with `stop.sh`.
 - FR-007: Orion/SQLite fallback must not synchronize data between sources; it only selects the active source by connectivity.
+- FR-008: `start.sh` must run a full ORION seed by default before app startup to guarantee a consistent minimum dataset after restarts (can be disabled with `SEED_ON_START=0`).
 
 #### 6.2 Stores
 - FR-010: Store list with image, name, countryCode, temperature, and relativeHumidity.
@@ -811,3 +817,37 @@ Assumptions:
 - Closure commits: 327b906 ("chore: Issue #9 implementation complete - Closes #9"), 34ecec7 ("feat: mejorar diagrama Mermaid con tema personalizado — colores de aplicacion").
 - Technical debt documented: password stored in plain text in demo for this phase, migration to bcrypt hash deferred to future release.
 - Closure commit: 327b906 ("chore: Issue #9 implementation complete - Closes #9")
+
+## 28. Implementation progress (Issue #11 - NGSIv2 external context providers)
+
+### ES
+- Estado: implementacion completada en rama de trabajo para separar providers externos de Store en dos registros NGSIv2 independientes durante startup.
+- Alcance funcional implementado:
+	- FR-004 reforzado: registro automatico de providers al arranque en modo ORION mediante `POST /v2/registrations`.
+	- Registro A (Store weather): atributos `temperature` y `relativeHumidity`.
+	- Registro B (Store tweets): atributo `tweets`.
+	- Ambos registros aplican a `Store` mediante registro por `id` de cada Store existente en startup.
+- Configuracion operativa:
+	- `PROVIDER_BASE_URL` como base de provider NGSI para contexto externo.
+	- `WEATHER_PROVIDER_URL` con default `${PROVIDER_BASE_URL}/providers/weather`.
+	- `TWEETS_PROVIDER_URL` con default `${PROVIDER_BASE_URL}/providers/tweets`.
+	- Politica de integracion: no usar URL generica del tutorial sin endpoints NGSI activos.
+- Evidencia esperada:
+	- Reinicio idempotente sin fallo por duplicados (Orion `201/409` tratados como exito en cliente).
+	- `GET /v2/registrations` mostrando dos registros activos para tipo `Store`.
+
+### EN
+- Status: implementation completed in working branch to split external Store providers into two independent NGSIv2 registrations at startup.
+- Implemented functional scope:
+	- FR-004 strengthened: automatic provider registration at startup in ORION mode through `POST /v2/registrations`.
+	- Registration A (Store weather): `temperature` and `relativeHumidity`.
+	- Registration B (Store tweets): `tweets`.
+	- Both registrations target `Store` by registering each existing Store `id` at startup.
+- Operational configuration:
+	- `PROVIDER_BASE_URL` as external NGSI provider base.
+	- `WEATHER_PROVIDER_URL` defaulting to `${PROVIDER_BASE_URL}/providers/weather`.
+	- `TWEETS_PROVIDER_URL` defaulting to `${PROVIDER_BASE_URL}/providers/tweets`.
+	- Integration policy: do not use generic tutorial URL when NGSI endpoints are not active.
+- Expected evidence:
+	- Idempotent restart with no duplicate-registration failure (Orion `201/409` treated as success by client contract).
+	- `GET /v2/registrations` exposing two active registrations for `Store`.

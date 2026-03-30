@@ -10,6 +10,7 @@ from models.i18n import DEFAULT_LOCALE, SUPPORTED_LOCALES, normalize_locale, res
 from routes.employees import employees_bp
 from routes.inventory import inventory_bp
 from routes.notifications import notifications_bp
+from routes.providers import providers_bp
 from routes.products import products_bp
 from routes.stores import stores_bp
 
@@ -229,6 +230,7 @@ def create_app() -> Flask:
     app.register_blueprint(employees_bp)
     app.register_blueprint(inventory_bp)
     app.register_blueprint(notifications_bp)
+    app.register_blueprint(providers_bp)
 
     @app.get("/")
     def dashboard():
@@ -252,4 +254,10 @@ socketio.init_app(app)
 
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=int(os.getenv("FLASK_PORT", "5000")), debug=True)
+    socketio.run(
+        app,
+        host="0.0.0.0",
+        port=int(os.getenv("FLASK_PORT", "5000")),
+        debug=True,
+        allow_unsafe_werkzeug=True,
+    )

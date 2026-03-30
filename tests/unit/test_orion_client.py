@@ -42,7 +42,9 @@ def test_health_check_request_exception(monkeypatch):
 def test_list_entities_by_type(monkeypatch):
     def fake_get(url, params, headers, timeout):
         assert url.endswith("/v2/entities")
-        assert params == {"type": "Store"}
+        assert params["type"] == "Store"
+        assert params["limit"] == 1000
+        assert params["offset"] == 0
         return DummyResponse(200, [{"id": "urn:ngsi-ld:Store:001", "type": "Store"}])
 
     monkeypatch.setattr(requests, "get", fake_get)

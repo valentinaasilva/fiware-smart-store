@@ -17,12 +17,16 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-03-30: Issue #11: providers externos de Store desacoplados por atributo y servidos por blueprint interno `routes/providers.py`; registro por Store en bootstrap Orion y alta de tienda.
+- 2026-03-30: `start.sh` endurecido con secuencia determinista stack -> seed ORION -> app para eliminar carreras de arranque y estados sin datos.
 - 2026-03-30: Capa de presentacion de Stores actualizada para separar visualmente nombre de pais y countryCode en listado y detalle.
 - 2026-03-30: Ajuste de datos semilla de Store en capa de datos para coherencia geografica: URLs por ciudad real y telefonos +34 por provincia/ciudad.
 - 2026-03-29: Actualizada arquitectura de presentacion con shell de dos niveles (sidebar + cabecera superior) y dashboard enriquecido con mapa agregado de tiendas y KPI de bajo stock.
 - 2026-03-29: Se incorporan busqueda de productos por query, selector de tema dark/light/system y formularios CRUD en listados para Store/Product/Employee.
 
 ### EN
+- 2026-03-30: Issue #11: Store external providers split by attribute and served by internal `routes/providers.py` blueprint; registrations created per Store on Orion bootstrap and store creation.
+- 2026-03-30: `start.sh` hardened with deterministic sequence stack -> ORION seed -> app to eliminate startup races and empty-data states.
 - 2026-03-30: Stores presentation layer updated to separate country name and countryCode in list/detail views.
 - 2026-03-30: Store seed-data adjustment in data layer for geographic coherence: city-specific URLs and +34 phone numbers by city.
 - 2026-03-29: Presentation architecture updated with a two-level shell (sidebar + top header) and an enriched dashboard with aggregated stores map and low-stock KPI.
@@ -47,22 +51,22 @@
 ## 3. System context
 
 ### ES
-El sistema opera como una app Flask conectada a Orion Context Broker y MongoDB en Docker. Tambien consume providers externos del contenedor tutorial para enriquecer Stores con temperature, relativeHumidity y tweets.
+El sistema opera como una app Flask conectada a Orion Context Broker y MongoDB en Docker. Los providers de contexto externo para Store se exponen en la propia app Flask (blueprint `routes/providers.py`) y Orion los consulta para enriquecer `temperature`, `relativeHumidity` y `tweets`.
 
 Actores externos:
 - Navegador web del operador/supervisor.
 - Orion Context Broker (API NGSIv2).
 - MongoDB (persistencia de Orion).
-- Tutorial Context Provider.
+- Providers externos NGSI (weather/tweets) expuestos por Flask.
 
 ### EN
-The system runs as a Flask app connected to Orion Context Broker and MongoDB in Docker. It also consumes external providers from the tutorial container to enrich Stores with temperature, relativeHumidity, and tweets.
+The system runs as a Flask app connected to Orion Context Broker and MongoDB in Docker. Store external context providers are exposed by the Flask app itself (`routes/providers.py`) and queried by Orion to enrich `temperature`, `relativeHumidity`, and `tweets`.
 
 External actors:
 - Operator/supervisor web browser.
 - Orion Context Broker (NGSIv2 API).
 - MongoDB (Orion persistence).
-- Tutorial Context Provider.
+- NGSI external providers (weather/tweets) exposed by Flask.
 
 ## 4. Logical architecture
 
@@ -84,6 +88,7 @@ Capas y componentes:
   - routes/employees.py
   - routes/inventory.py
   - routes/notifications.py
+  - routes/providers.py
 - Servicio de i18n para ES/EN.
 - Servicio de tema para dark/light mode.
 
@@ -115,6 +120,7 @@ Layers and components:
   - routes/employees.py
   - routes/inventory.py
   - routes/notifications.py
+  - routes/providers.py
 - i18n service for ES/EN.
 - Theme service for dark/light mode.
 
@@ -159,7 +165,7 @@ Critical connectivity rule:
 - Orion disponible -> modo ORION
 - Orion no disponible -> modo SQLITE
 4. Si modo ORION:
-- Registrar context providers externos (temperature, relativeHumidity, tweets).
+- Registrar context providers externos por Store (temperature, relativeHumidity, tweets).
 - Crear/validar subscriptions:
   - Price change on Product
   - Low stock on InventoryItem por Store
@@ -173,7 +179,7 @@ Critical connectivity rule:
 - Orion reachable -> ORION mode
 - Orion unreachable -> SQLITE mode
 4. If ORION mode:
-- Register external context providers (temperature, relativeHumidity, tweets).
+- Register per-Store external context providers (temperature, relativeHumidity, tweets).
 - Create/validate subscriptions:
   - Price change on Product
   - Low stock on InventoryItem per Store
@@ -851,3 +857,46 @@ Test levels:
 - Continuity status: ✅ MAINTAINED - Orion-first preserved without synchronization, SQLite fallback unchanged, backward compatible.
 - Merge status: ✅ COMPLETED (commit 327b906 from feature/issue-9-modelo-ampliado to main, commit 34ecec7 for Mermaid improvements)
 - Test status: ✅ 108/108 PASSING without regressions.
+
+## 30. Implementation progress (Issue #11 NGSIv2 Store context providers)
+
+### ES
+- Estado: implementacion completada en rama para separar el registro de providers externos de Store en dos contratos NGSIv2 dedicados.
+- Decisiones arquitectonicas aplicadas:
+  - Punto de integracion mantenido en `DataSourceSelector._register_external_integrations()` invocado por `bootstrap()` al arrancar.
+  - Se preserva estrategia Orion-first: los registros se ejecutan solo cuando `health_check()` de Orion es exitoso.
+  - Se preserva fallback SQLite sin sincronizacion cruzada.
+  - `OrionClient.register_provider()` conserva contrato idempotente (exito en `201` o `409`).
+- Contratos de registrations en startup:
+  - Registration weather para `Store` con `attrs: [temperature, relativeHumidity]`.
+  - Registration tweets para `Store` con `attrs: [tweets]`.
+  - Ambos por entidad `Store` usando `id` explicito por tienda existente en startup, con `status: active` y `legacyForwarding: true`.
+- Configuracion de integracion:
+  - `PROVIDER_BASE_URL` + endpoints explicitos `WEATHER_PROVIDER_URL` y `TWEETS_PROVIDER_URL`.
+  - Provider propio en app Flask (`/providers/weather`, `/providers/tweets`) con respuesta compatible para forwarding de Orion.
+  - Se evita URL generica de tutorial cuando no expone endpoints NGSI activos.
+- Capas afectadas:
+  - Integration/Data access: `models/data_source.py`.
+  - Quality: `tests/unit/test_data_source.py`.
+  - Operational docs: `README.md`.
+
+### EN
+- Status: implementation completed in branch to split external Store provider registration into two dedicated NGSIv2 contracts.
+- Applied architectural decisions:
+  - Integration point remains `DataSourceSelector._register_external_integrations()` called by `bootstrap()` at startup.
+  - Orion-first strategy is preserved: registrations run only when Orion `health_check()` succeeds.
+  - SQLite fallback is preserved without cross-source synchronization.
+  - `OrionClient.register_provider()` keeps idempotent semantics (success on `201` or `409`).
+- Startup registration contracts:
+  - Weather registration for `Store` with `attrs: [temperature, relativeHumidity]`.
+  - Tweets registration for `Store` with `attrs: [tweets]`.
+  - Both are created per `Store` entity using explicit store `id` at startup, with `status: active` and `legacyForwarding: true`.
+- Integration configuration:
+  - `PROVIDER_BASE_URL` + explicit endpoints `WEATHER_PROVIDER_URL` and `TWEETS_PROVIDER_URL`.
+  - In-app custom provider (`/providers/weather`, `/providers/tweets`) returning Orion-compatible forwarding responses.
+  - Generic tutorial URL is avoided when NGSI endpoints are not active.
+- Affected layers:
+  - Integration/Data access: `models/data_source.py`.
+  - Application/Integration: `routes/providers.py`, `app.py`.
+  - Quality: `tests/unit/test_data_source.py`.
+  - Operational docs: `README.md`.
