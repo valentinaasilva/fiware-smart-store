@@ -18,7 +18,7 @@
 
 <section class="dashboard-metrics">
   <article class="metric-card">
-    <span class="metric-icon stores">◉</span>
+    <span class="metric-icon stores" aria-hidden="true">◉</span>
     <div>
       <h3>{{ _('Stores') }}</h3>
       <p class="metric-value">{{ stats.stores }}</p>
@@ -26,7 +26,7 @@
   </article>
 
   <article class="metric-card">
-    <span class="metric-icon products">◼</span>
+    <span class="metric-icon products" aria-hidden="true">◼</span>
     <div>
       <h3>{{ _('Products') }}</h3>
       <p class="metric-value">{{ stats.products }}</p>
@@ -34,7 +34,7 @@
   </article>
 
   <article class="metric-card">
-    <span class="metric-icon employees">◍</span>
+    <span class="metric-icon employees" aria-hidden="true">◍</span>
     <div>
       <h3>{{ _('Employees') }}</h3>
       <p class="metric-value">{{ stats.employees }}</p>
@@ -42,7 +42,7 @@
   </article>
 
   <article class="metric-card">
-    <span class="metric-icon alert">▲</span>
+    <span class="metric-icon alert" aria-hidden="true">▲</span>
     <div>
       <h3>{{ _('Low Stock') }}</h3>
       <p class="metric-value">{{ low_stock_count }}</p>
@@ -50,7 +50,7 @@
   </article>
 
   <article class="metric-card">
-    <span class="metric-icon value">€</span>
+    <span class="metric-icon value" aria-hidden="true">€</span>
     <div>
       <h3>{{ _('Estimated Value') }}</h3>
       <p class="metric-value">{{ '%.2f'|format(estimated_stock_value) }}€</p>
@@ -65,7 +65,7 @@
     <article class="featured-card">
       <div class="featured-media">
         {% if offer.image %}
-        <img src="{{ offer.image }}" alt="{{ offer.title }}" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
+        <img data-fallback-image src="{{ offer.image }}" alt="{{ offer.title }}" loading="lazy">
         <span class="img-fallback is-hidden">No image</span>
         {% else %}
         <span class="img-fallback">No image</span>

@@ -11,7 +11,7 @@
   <article class="detail-media">
     {% if store.image %}
       <div class="media-frame media-frame-large">
-        <img src="{{ store.image }}" alt="{{ store.name }}" width="520" height="300" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
+        <img data-fallback-image src="{{ store.image }}" alt="{{ store.name }}" width="520" height="300" loading="lazy">
         <div class="img-fallback large is-hidden">No image</div>
       </div>
     {% else %}

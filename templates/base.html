@@ -21,19 +21,19 @@
 
       <nav class="sidebar-nav">
         <a href="{{ url_for('dashboard') }}" class="{% if request.path == '/' %}active{% endif %}">
-          <span class="nav-icon">◫</span>{{ _('Dashboard') }}
+           <span class="nav-icon" aria-hidden="true">◫</span>{{ _('Dashboard') }}
         </a>
         <a href="{{ url_for('products.list_products') }}" class="{% if request.path.startswith('/products') %}active{% endif %}">
-          <span class="nav-icon">◼</span>{{ _('Products') }}
+           <span class="nav-icon" aria-hidden="true">◼</span>{{ _('Products') }}
         </a>
         <a href="{{ url_for('stores.list_stores') }}" class="{% if request.path.startswith('/stores') %}active{% endif %}">
-          <span class="nav-icon">◉</span>{{ _('Stores') }}
+           <span class="nav-icon" aria-hidden="true">◉</span>{{ _('Stores') }}
         </a>
         <a href="{{ url_for('employees.list_employees') }}" class="{% if request.path.startswith('/employees') %}active{% endif %}">
-          <span class="nav-icon">◍</span>{{ _('Employees') }}
+           <span class="nav-icon" aria-hidden="true">◍</span>{{ _('Employees') }}
         </a>
         <a href="{{ url_for('dashboard') }}#stores-map" class="{% if request.path == '/' %}active-soft{% endif %}">
-          <span class="nav-icon">⌖</span>{{ _('Stores Map') }}
+           <span class="nav-icon" aria-hidden="true">⌖</span>{{ _('Stores Map') }}
         </a>
       </nav>
 
@@ -47,8 +47,8 @@
 
     <div class="main-shell">
       <div class="support-strip">
-        <p><span>☎</span> {{ _('Customer Support') }}: 900 123 456</p>
-        <p><span>✉</span> atencion@xantadis.es</p>
+        <p><span aria-hidden="true">☎</span> {{ _('Customer Support') }}: 900 123 456</p>
+        <p><span aria-hidden="true">✉</span> atencion@xantadis.es</p>
       </div>
 
       <header class="top-header">
@@ -77,6 +77,8 @@
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <!-- Flask-SocketIO client library (served automatically by Flask) -->
   <script src="/socket.io/socket.io.js"></script>
+  <!-- Image Fallback Handler -->
+  <script src="{{ url_for('static', filename='js/image-fallback.js') }}"></script>
   <!-- Custom SocketIO notification handler -->
   <script src="{{ url_for('static', filename='js/socketio-client.js') }}"></script>
   <script src="{{ url_for('static', filename='js/app.js') }}"></script>

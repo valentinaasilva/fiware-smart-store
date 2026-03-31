@@ -12,7 +12,7 @@
 <section class="table-shell">
   <table>
     <thead>
-      <tr>
+      <tr role="alert" aria-live="polite">
         <th>{{ _('Image') }}</th>
         <th>{{ _('ID') }}</th>
         <th>{{ _('Name') }}</th>
@@ -33,7 +33,7 @@
         <td>
           {% if employee.image %}
             <div class="media-frame">
-              <img class="table-thumb product-thumb" src="{{ employee.image }}" alt="{{ employee.name }}" width="72" height="72" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
+              <img class="table-thumb product-thumb" data-fallback-image src="{{ employee.image }}" alt="{{ employee.name }}" width="72" height="72" loading="lazy">
               <span class="img-fallback is-hidden">No image</span>
             </div>
           {% else %}

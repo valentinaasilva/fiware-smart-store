@@ -18,7 +18,7 @@
   } %}
   <table>
     <thead>
-      <tr>
+      <tr role="alert" aria-live="polite">
         <th>{{ _('Image') }}</th>
         <th>{{ _('ID') }}</th>
         <th>{{ _('Name') }}</th>
@@ -38,7 +38,7 @@
         <td>
           {% if store.image %}
             <div class="media-frame">
-              <img class="table-thumb" src="{{ store.image }}" alt="{{ store.name }}" width="96" height="64" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
+              <img class="table-thumb" data-fallback-image src="{{ store.image }}" alt="{{ store.name }}" width="96" height="64" loading="lazy">
               <span class="img-fallback is-hidden">No image</span>
             </div>
           {% else %}
