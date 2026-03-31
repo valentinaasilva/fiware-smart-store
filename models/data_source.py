@@ -106,8 +106,11 @@ class DataSourceSelector:
 
             for provider in self._store_provider_payloads(store_id, weather_provider_url, tweets_provider_url):
                 self.orion.register_provider(provider)
+        
         for subscription in subscriptions:
-            self.orion.register_subscription(subscription)
+            result = self.orion.register_subscription(subscription)
+            sub_desc = subscription.get("description", "Unknown")
+            logger.info("Subscription '%s' registration result: %s", sub_desc, result)
 
     def _fallback_to_sqlite(self, reason: str) -> None:
         if self.mode != "SQLITE":

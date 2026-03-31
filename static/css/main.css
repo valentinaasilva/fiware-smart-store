@@ -812,3 +812,51 @@ textarea:focus {
     min-width: 100%;
   }
 }
+
+/* ============================================================================
+ * Real-time notifications styling
+ * ============================================================================ */
+
+/**
+ * highlight-flash: Animación de resaltado para cambios dinámicos
+ * Se aplica a celdas que reciben actualización en tiempo real
+ * Duración: 2 segundos con fade-in/out amarillo
+ */
+@keyframes flash-highlight {
+  0% {
+    background-color: transparent;
+  }
+  25% {
+    background-color: rgba(255, 193, 7, 0.6);
+  }
+  50% {
+    background-color: rgba(255, 193, 7, 0.8);
+  }
+  75% {
+    background-color: rgba(255, 193, 7, 0.4);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.highlight-flash {
+  animation: flash-highlight 2s ease-in-out;
+}
+
+/**
+ * alert-low-stock: Estilo para filas/elementos con bajo stock
+ * Fondo rojo suave + borde rojo izquierdo + texto rojo
+ */
+.alert-low-stock {
+  background-color: rgba(244, 67, 54, 0.08) !important;
+  border-left: 3px solid #d63939 !important;
+  color: #d63939;
+  font-weight: 600;
+}
+
+/* En modo dark theme, ajustar los colores */
+body.theme-dark .alert-low-stock {
+  background-color: rgba(244, 67, 54, 0.12) !important;
+  color: #ff6b6b;
+}

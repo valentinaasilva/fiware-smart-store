@@ -41,7 +41,7 @@
     </thead>
     <tbody>
     {% for product in products %}
-      <tr>
+      <tr data-product-id="{{ product.id }}">
         <td>
           {% if product.image %}
             <div class="media-frame">
@@ -68,7 +68,7 @@
         </td>
         {% set origin_country = product.originCountry if product.originCountry is string else '' %}
         <td>{{ _(country_names.get(origin_country, origin_country if origin_country else '-')) }}</td>
-        <td class="price-cell">{{ product.price }}</td>
+        <td class="price-cell product-price">{{ product.price }}</td>
         <td class="actions-cell">
           <a class="button-link" href="{{ url_for('products.edit_product_page', entity_id=product.id) }}">{{ _('Update') }}</a>
           <form method="post" action="{{ url_for('products.delete_product_form', entity_id=product.id) }}" onsubmit="return confirm('{{ _('Delete') }} {{ product.name }}?');">
