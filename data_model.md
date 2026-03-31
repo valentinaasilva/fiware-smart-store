@@ -17,6 +17,7 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-03-31: Issue #16: se documenta operacion incremental de compra sobre InventoryItem mediante PATCH NGSIv2 en Orion para `stockCount` y `shelfCount`, con degradacion funcional a SQLite cuando Orion no esta disponible.
 - 2026-03-31: Issue #14: sin cambios estructurales en entidades NGSIv2 ni en relaciones. Las mejoras front-end (accesibilidad ARIA, handlers JS centralizados, CSS reusable) no alteran esquema, atributos, tipos ni contratos Orion.
 - 2026-03-31: Issue #13: sin cambios en modelo de datos. Documentados eventos de notificacion NGSIv2 (price_changed, low_stock) para referencias y debugging con scripts/check_subscriptions.py.
 - 2026-03-30: Issue #11: integracion de atributos externos de Store separada en dos providers NGSIv2 (weather: `temperature` + `relativeHumidity`; social: `tweets`) con registro por `Store.id`.
@@ -27,6 +28,7 @@
 - 2026-03-29: Se añade atributo `Product.category` y se amplian datos semilla de Employee a 12 registros con `dateOfContract` y `username` consistentes.
 
 ### EN
+- 2026-03-31: Issue #16: documented InventoryItem buy incremental operation via NGSIv2 PATCH in Orion for `stockCount` and `shelfCount`, with functional fallback to SQLite when Orion is unavailable.
 - 2026-03-31: Issue #14: no structural changes to NGSIv2 entities or relationships. Front-end improvements (ARIA accessibility, centralized JS handlers, reusable CSS) do not modify schema, attributes, types, or Orion contracts.
 - 2026-03-31: Issue #13: no data model changes. Documented NGSIv2 notification events (price_changed, low_stock) for reference and debugging with scripts/check_subscriptions.py.
 - 2026-03-30: Issue #11: Store external attributes integrated through two NGSIv2 providers (weather: `temperature` + `relativeHumidity`; social: `tweets`) registered by `Store.id`.
@@ -266,6 +268,7 @@ Constraints:
 - IR-005: Al borrar Store se debe impedir borrado si existen Shelf/Employee/InventoryItem relacionados, salvo borrado en cascada explicitamente habilitado.
 - IR-006: Al borrar Product se debe impedir borrado si existen InventoryItem asociados, salvo reasignacion previa.
 - IR-007: countryCode debe mapear a bandera valida en frontend.
+- IR-008: Operacion de compra sobre InventoryItem no puede dejar `stockCount` o `shelfCount` en valores negativos.
 
 ### EN
 - IR-001: InventoryItem(refShelf) must belong to InventoryItem(refStore).
@@ -275,6 +278,39 @@ Constraints:
 - IR-005: Deleting Store must be blocked if related Shelf/Employee/InventoryItem exist, unless cascade delete is explicitly enabled.
 - IR-006: Deleting Product must be blocked when related InventoryItem records exist, unless reassigned first.
 - IR-007: countryCode must map to a valid frontend flag.
+- IR-008: InventoryItem buy operation must not produce negative `stockCount` or `shelfCount` values.
+
+## 6.2 Incremental buy operation contract
+
+### ES
+- Entidad objetivo: `InventoryItem`
+- Endpoint Orion: `PATCH /v2/entities/<inventoryitem_id>/attrs`
+- Payload incremental esperado:
+
+```json
+{
+  "shelfCount": {"type": "Integer", "value": {"$inc": -1}},
+  "stockCount": {"type": "Integer", "value": {"$inc": -1}}
+}
+```
+
+- Regla operacional: aplicar decrementos atomicos en Orion cuando este disponible.
+- Regla de resiliencia: si Orion no responde, ejecutar decremento equivalente en SQLite fallback.
+
+### EN
+- Target entity: `InventoryItem`
+- Orion endpoint: `PATCH /v2/entities/<inventoryitem_id>/attrs`
+- Expected incremental payload:
+
+```json
+{
+  "shelfCount": {"type": "Integer", "value": {"$inc": -1}},
+  "stockCount": {"type": "Integer", "value": {"$inc": -1}}
+}
+```
+
+- Operational rule: apply atomic decrements in Orion when available.
+- Resilience rule: if Orion is unavailable, execute equivalent decrement in SQLite fallback.
 
 ## 6.1 Derived dashboard metrics
 

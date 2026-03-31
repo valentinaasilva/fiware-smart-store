@@ -8,7 +8,7 @@
 - Estado: Baseline para implementacion
 - Producto: fiware-smart-store
 - Tipo de documento: Product Requirements Document
-- Última actualización: 2026-03-31 (Issue #13 implementation closure)
+- Última actualización: 2026-03-31 (Issue #16 implementation closure)
 
 ### EN
 - Version: 1.0
@@ -16,11 +16,12 @@
 - Status: Baseline for implementation
 - Product: fiware-smart-store
 - Document type: Product Requirements Document
-- Last updated: 2026-03-31 (Issue #13 implementation closure)
+- Last updated: 2026-03-31 (Issue #16 implementation closure)
 
 ## 1.1 Change log
 
 ### ES
+- 2026-03-31: Issue #16 completado: refinamiento integral de vista Store con inventario agrupado por Shelf (barra de llenado), seccion ambiental con iconografia y semaforo de color, lista de tweets con icono X, panel de notificaciones en vivo, boton de compra por InventoryItem con decremento de `stockCount` y `shelfCount`, fallback Orion->SQLite para operaciones incrementales y cobertura realtime de `price_changed` en vistas de lista/detalle/dashboard/store.
 - 2026-03-31: Issue #14 completado: refinamiento front-end orientado a best practices. Eliminados handlers inline en templates, nuevo modulo `static/js/image-fallback.js`, clases CSS reusables (`.color-swatch`), sincronizacion de animaciones via `animationend`, y mejoras de accesibilidad ARIA.
 - 2026-03-31: Issue #13 completado: suscripciones Orion NGSIv2 y notificaciones en tiempo real. Webhooks mejorados con normalización de payloads, cliente SocketIO para escuchar eventos (price_changed, low_stock), actualización dinámica del DOM sin reload, estilos de animación de resaltado y alerta de bajo stock. Script check_subscriptions.py para validar suscripciones activas.
 - 2026-03-30: Issue #11 completado: providers externos de Store separados por atributo (weather: temperature/relativeHumidity, social: tweets) con registro automatico en bootstrap Orion y en alta de nuevas tiendas.
@@ -31,6 +32,7 @@
 - 2026-03-29: Mejoras operativas: buscador funcional de productos, selector de tema con modo sistema, CRUD directo en listados, categoria de producto y ampliacion de dataset de empleados.
 
 ### EN
+- 2026-03-31: Issue #16 completed: full Store view refinement with Shelf-grouped inventory (fill progress bar), environmental section with iconography and traffic-light colors, tweets list with X icon, live notifications panel, per-InventoryItem buy action decrementing `stockCount` and `shelfCount`, Orion->SQLite fallback for incremental operations, and broader `price_changed` realtime coverage across list/detail/dashboard/store views.
 - 2026-03-31: Issue #14 completed: front-end best-practices refinement. Inline handlers removed from templates, new `static/js/image-fallback.js` module, reusable CSS classes (`.color-swatch`), animation synchronization via `animationend`, and ARIA accessibility improvements.
 - 2026-03-31: Issue #13 completed: Orion NGSIv2 subscriptions and real-time notifications. Enhanced webhooks with payload normalization, SocketIO client for event listening (price_changed, low_stock), dynamic DOM updates without reload, highlight animation and low-stock alert styles. check_subscriptions.py script for validating active subscriptions.
 - 2026-03-30: Issue #11 completed: Store external providers split by attribute (weather: temperature/relativeHumidity, social: tweets) with automatic registration at Orion bootstrap and on new store creation.
@@ -183,6 +185,7 @@ Out of scope:
 - FR-052: Navbar fija en scroll con seccion activa resaltada.
 - FR-053: Efectos visuales priorizan CSS sobre JS.
 - FR-054: JS cliente no crea HTML nuevo; solo actualiza atributos en nodos existentes.
+- FR-054: JS cliente evita mutaciones estructurales arbitrarias; se permite insercion controlada de items en panel de notificaciones en tiempo real.
 - FR-055: Vistas de listado de tiendas, productos y empleados deben permitir alta/edicion/borrado sin depender de vistas detalle.
 
 #### 6.7 Real-time notifications
@@ -243,6 +246,7 @@ Out of scope:
 - FR-052: Sticky navbar with active section highlight.
 - FR-053: Visual effects should prioritize CSS over JS.
 - FR-054: Client JS must not generate new HTML; only update existing node attributes.
+- FR-054: Client JS should avoid arbitrary structural mutations; controlled insertion of items in the real-time notifications panel is allowed.
 - FR-055: Store, product, and employee list views must allow create/update/delete without relying only on detail pages.
 
 #### 6.7 Real-time notifications
@@ -284,6 +288,9 @@ Out of scope:
 - AC-007: Toggle dark/light cambia tema completo y se mantiene durante la sesion.
 - AC-008: Dashboard muestra conteos correctos para stores/products/employees/inventory items.
 - AC-009: Stores map permite hover informativo y click navegable a detalle store.
+- AC-010: La vista Store expone seccion de inventario agrupada por shelf con barra de llenado y accion de compra por item.
+- AC-011: La accion de compra ejecuta decremento de conteos y aplica fallback a SQLite si Orion no esta disponible.
+- AC-012: El evento `price_changed` actualiza precio en listado de productos, detalle de producto, cards del dashboard y tabla de inventario del Store.
 
 ### EN
 - AC-001: On startup, the app detects Orion and automatically switches between Orion and SQLite.
@@ -295,6 +302,9 @@ Out of scope:
 - AC-007: Dark/light toggle updates full theme and remains during session.
 - AC-008: Dashboard shows correct counts for stores/products/employees/inventory items.
 - AC-009: Stores map supports informative hover and clickable navigation to store detail.
+- AC-010: Store detail exposes Shelf-grouped inventory with fill bar and per-item buy action.
+- AC-011: Buy action decrements counters and applies SQLite fallback when Orion is unavailable.
+- AC-012: `price_changed` updates prices in product list, product detail, dashboard featured cards, and Store inventory table.
 
 ## 9. Dependencies and assumptions
 

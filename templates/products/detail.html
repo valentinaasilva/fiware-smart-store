@@ -42,7 +42,7 @@
         {% endif %}
       </dd>
       <dt>{{ _('Origin Country') }}</dt><dd>{{ _(country_names.get(origin_country, origin_country if origin_country else '-')) }}</dd>
-      <dt>{{ _('Price') }}</dt><dd class="price-cell">{{ product.price }}</dd>
+      <dt>{{ _('Price') }}</dt><dd class="price-cell product-price" data-product-id="{{ product.id }}" data-product-short="{{ product.id.split(':')[-1] if product.id is string else product.id }}">{{ product.price }}</dd>
     </dl>
   </article>
 </section>

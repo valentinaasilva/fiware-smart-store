@@ -96,6 +96,39 @@ class SQLiteRepository:
             )
         return current
 
+    @staticmethod
+    def _attr_int_value(value: Any, default: int = 0) -> int:
+        raw = value
+        if isinstance(value, dict) and "value" in value:
+            raw = value.get("value")
+        try:
+            return int(raw)
+        except (TypeError, ValueError):
+            return default
+
+    def increment_entity_attrs(self, entity_id: str, increments: dict[str, int]) -> dict[str, Any] | None:
+        current = self.get_entity(entity_id)
+        if not current:
+            return None
+
+        updated = dict(current)
+        for field, delta in increments.items():
+            previous = updated.get(field)
+            next_value = self._attr_int_value(previous, default=0) + int(delta)
+            if isinstance(previous, dict):
+                next_attr = dict(previous)
+                next_attr["value"] = next_value
+            else:
+                next_attr = {"type": "Integer", "value": next_value}
+            updated[field] = next_attr
+
+        with self._connect() as conn:
+            conn.execute(
+                "UPDATE entities SET payload = ?, type = ? WHERE id = ?",
+                (json.dumps(updated), updated.get("type", "Unknown"), entity_id),
+            )
+        return updated
+
     def delete_entity(self, entity_id: str) -> bool:
         with self._connect() as conn:
             cur = conn.execute("DELETE FROM entities WHERE id = ?", (entity_id,))

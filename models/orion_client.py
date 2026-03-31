@@ -79,6 +79,25 @@ class OrionClient:
         entity = self.get_entity(entity_id)
         return entity
 
+    def increment_entity_attrs(self, entity_id: str, increments: dict[str, int]) -> dict[str, Any] | None:
+        payload = {
+            field: {
+                "type": "Integer",
+                "value": {"$inc": int(delta)},
+            }
+            for field, delta in increments.items()
+        }
+        response = requests.patch(
+            f"{self.base_url}/v2/entities/{entity_id}/attrs",
+            json=payload,
+            headers={**self.headers, "Content-Type": "application/json"},
+            timeout=self.timeout,
+        )
+        if response.status_code == 404:
+            return None
+        response.raise_for_status()
+        return self.get_entity(entity_id)
+
     def delete_entity(self, entity_id: str) -> bool:
         response = requests.delete(
             f"{self.base_url}/v2/entities/{entity_id}",
