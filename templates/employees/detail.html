@@ -10,7 +10,7 @@
   <article class="detail-media">
     {% if employee.image %}
       <div class="media-frame media-frame-large">
-        <img src="{{ employee.image }}" alt="{{ employee.name }}" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
+        <img data-fallback-image src="{{ employee.image }}" alt="{{ employee.name }}" loading="lazy">
         <div class="img-fallback large is-hidden">No image</div>
       </div>
     {% else %}

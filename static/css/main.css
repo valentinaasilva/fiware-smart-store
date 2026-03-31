@@ -629,6 +629,16 @@ textarea:focus {
   align-items: center;
 }
 
+.inline-form-compact {
+  display: inline-flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.inline-form-inline {
+  display: inline;
+}
+
 .search-inline-form {
   margin-bottom: 0.8rem;
 }
@@ -718,6 +728,22 @@ textarea:focus {
   margin: 0.35rem 0;
   color: #0f8f4f;
   font-weight: 800;
+}
+
+.color-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.color-swatch-dot {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background-color: var(--swatch-color);
+  flex-shrink: 0;
 }
 
 @media (max-width: 1120px) {

@@ -1,5 +1,5 @@
 (function () {
-	var THEME_KEY = "smartstore-theme-mode";
+	const THEME_KEY = "smartstore-theme-mode";
 
 	function getSystemTheme() {
 		if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
@@ -9,7 +9,7 @@
 	}
 
 	function applyThemeMode(mode) {
-		var effective = mode === "system" ? getSystemTheme() : mode;
+		const effective = mode === "system" ? getSystemTheme() : mode;
 		if (effective === "dark") {
 			document.body.classList.add("theme-dark");
 		} else {
@@ -18,18 +18,18 @@
 	}
 
 	function initThemeToggle() {
-		var selector = document.getElementById("theme-mode");
+		const selector = document.getElementById("theme-mode");
 		if (!selector) {
 			return;
 		}
 
-		var savedMode = localStorage.getItem(THEME_KEY);
-		var mode = savedMode === "dark" || savedMode === "light" || savedMode === "system" ? savedMode : "system";
+		const savedMode = localStorage.getItem(THEME_KEY);
+		let mode = savedMode === "dark" || savedMode === "light" || savedMode === "system" ? savedMode : "system";
 		selector.value = mode;
 		applyThemeMode(mode);
 
 		selector.addEventListener("change", function () {
-			var nextMode = selector.value;
+			const nextMode = selector.value;
 			localStorage.setItem(THEME_KEY, nextMode);
 			applyThemeMode(nextMode);
 		});
@@ -44,14 +44,14 @@
 	}
 
 	function initStoreMap() {
-		var mapNode = document.getElementById("store-map");
+		const mapNode = document.getElementById("store-map");
 		if (!mapNode || typeof window.L === "undefined") {
 			return;
 		}
 
-		var lat = parseFloat(mapNode.dataset.lat || "");
-		var lng = parseFloat(mapNode.dataset.lng || "");
-		var title = mapNode.dataset.title || "Store";
+		const lat = parseFloat(mapNode.dataset.lat || "");
+		const lng = parseFloat(mapNode.dataset.lng || "");
+		const title = mapNode.dataset.title || "Store";
 
 		if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
 			return;
@@ -61,7 +61,7 @@
 			return;
 		}
 
-		var map = window.L.map(mapNode).setView([lat, lng], 14);
+		const map = window.L.map(mapNode).setView([lat, lng], 14);
 		window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 			maxZoom: 19,
 			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -71,13 +71,13 @@
 	}
 
 	function initDashboardStoresMap() {
-		var mapNode = document.getElementById("dashboard-stores-map");
+		const mapNode = document.getElementById("dashboard-stores-map");
 		if (!mapNode || typeof window.L === "undefined") {
 			return;
 		}
 
-		var rawMarkers = mapNode.dataset.markers || "[]";
-		var markers;
+		const rawMarkers = mapNode.dataset.markers || "[]";
+		let markers;
 
 		try {
 			markers = JSON.parse(rawMarkers);
@@ -89,14 +89,14 @@
 			return;
 		}
 
-		var first = markers[0];
-		var map = window.L.map(mapNode).setView([first.lat, first.lng], 5);
+		const first = markers[0];
+		const map = window.L.map(mapNode).setView([first.lat, first.lng], 5);
 		window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 			maxZoom: 19,
 			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 		}).addTo(map);
 
-		var bounds = [];
+		const bounds = [];
 		markers.forEach(function (marker) {
 			if (
 				!marker ||
@@ -145,10 +145,23 @@
 		}
 	}
 
+	function initConfirmForms() {
+		const forms = document.querySelectorAll("form[data-confirm-message]");
+		forms.forEach(function (form) {
+			form.addEventListener("submit", function (event) {
+				const message = form.getAttribute("data-confirm-message") || "";
+				if (message && !window.confirm(message)) {
+					event.preventDefault();
+				}
+			});
+		});
+	}
+
 	document.addEventListener("DOMContentLoaded", function () {
 		initThemeToggle();
 		initStoreMap();
 		initDashboardStoresMap();
 		initMermaidDiagrams();
+		initConfirmForms();
 	});
 })();

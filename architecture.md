@@ -17,6 +17,7 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-03-31: Issue #14 completado: refinamiento de arquitectura de presentacion front-end con separacion estricta HTML/CSS/JS, modulo `static/js/image-fallback.js`, patron CSS reusable `.color-swatch`, animaciones sincronizadas por evento `animationend`, y atributos ARIA para accesibilidad.
 - 2026-03-31: Issue #13 completado: arquitectura de notificaciones en tiempo real con suscripciones Orion->webhooks normalizados->SocketIO->actualizacion dinamica DOM. Flujos detallados de price_changed y low_stock con eventos NGSIv2, normalizacion de payloads y animaciones visuales (highlight-flash, alert-low-stock).
 - 2026-03-30: Issue #11: providers externos de Store desacoplados por atributo y servidos por blueprint interno `routes/providers.py`; registro por Store en bootstrap Orion y alta de tienda.
 - 2026-03-30: `start.sh` endurecido con secuencia determinista stack -> seed ORION -> app para eliminar carreras de arranque y estados sin datos.
@@ -26,6 +27,7 @@
 - 2026-03-29: Se incorporan busqueda de productos por query, selector de tema dark/light/system y formularios CRUD en listados para Store/Product/Employee.
 
 ### EN
+- 2026-03-31: Issue #14 completed: presentation-layer architecture refinement with strict HTML/CSS/JS separation, `static/js/image-fallback.js` module, reusable `.color-swatch` CSS pattern, `animationend`-driven animation synchronization, and ARIA accessibility attributes.
 - 2026-03-31: Issue #13 completed: real-time notification architecture with Orion subscriptions->normalized webhooks->SocketIO->dynamic DOM updates. Detailed flows for price_changed and low_stock with NGSIv2 events, payload normalization, and visual animations (highlight-flash, alert-low-stock).
 - 2026-03-30: Issue #11: Store external providers split by attribute and served by internal `routes/providers.py` blueprint; registrations created per Store on Orion bootstrap and store creation.
 - 2026-03-30: `start.sh` hardened with deterministic sequence stack -> ORION seed -> app to eliminate startup races and empty-data states.
@@ -81,6 +83,9 @@ Capas y componentes:
 - Librerias visuales Leaflet, Three.js, Mermaid y Font Awesome.
 - Shell UI desacoplado en `templates/base.html` con sidebar fijo, support strip y top header de controles.
 - Header con formulario de busqueda global (`GET /products?q=...`) y selector de tema de tres modos.
+- Reglas de calidad front-end de Issue #14: sin handlers inline, prioridad CSS para comportamiento visual y sin generacion HTML dinamica desde JavaScript.
+- Fallback de imagenes centralizado en `static/js/image-fallback.js` usando atributo `data-fallback-image`.
+- Actualizaciones dinamicas limitadas a nodos existentes mediante `textContent`, atributos y `classList`.
 
 2. Application layer
 - app.py como punto de entrada Flask y configuracion SocketIO.
@@ -113,6 +118,9 @@ Layers and components:
 - Visual libraries Leaflet, Three.js, Mermaid, and Font Awesome.
 - Decoupled UI shell in `templates/base.html` with fixed sidebar, support strip, and control-oriented top header.
 - Header with global search form (`GET /products?q=...`) and three-mode theme selector.
+- Front-end quality rules from Issue #14: no inline event handlers, CSS-first visual behavior, and no dynamic HTML generation from JavaScript.
+- Image fallback handling delegated to `static/js/image-fallback.js` using `data-fallback-image` attributes.
+- Dynamic UI updates constrained to existing nodes via `textContent`, attributes, and `classList`.
 
 2. Application layer
 - app.py as Flask entrypoint and SocketIO bootstrap.

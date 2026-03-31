@@ -138,16 +138,16 @@ socket.on("low_stock", (eventData) => {
  * @param {string} className - Clase CSS a aplicar (default: 'highlight-flash')
  * @param {number} durationMs - Duración de la animación en ms (default: 2000)
  */
-function applyHighlightFlash(element, className = "highlight-flash", durationMs = 2000) {
+function applyHighlightFlash(element, className = "highlight-flash") {
   if (!element) return;
   
   // Agregar clase
   element.classList.add(className);
   
   // Remover clase después de que termine la animación
-  setTimeout(() => {
+  element.addEventListener('animationend', function removeHighlight() {
     element.classList.remove(className);
-  }, durationMs);
+  }, { once: true });
 }
 
 // ============================================================================

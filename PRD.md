@@ -21,6 +21,7 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-03-31: Issue #14 completado: refinamiento front-end orientado a best practices. Eliminados handlers inline en templates, nuevo modulo `static/js/image-fallback.js`, clases CSS reusables (`.color-swatch`), sincronizacion de animaciones via `animationend`, y mejoras de accesibilidad ARIA.
 - 2026-03-31: Issue #13 completado: suscripciones Orion NGSIv2 y notificaciones en tiempo real. Webhooks mejorados con normalización de payloads, cliente SocketIO para escuchar eventos (price_changed, low_stock), actualización dinámica del DOM sin reload, estilos de animación de resaltado y alerta de bajo stock. Script check_subscriptions.py para validar suscripciones activas.
 - 2026-03-30: Issue #11 completado: providers externos de Store separados por atributo (weather: temperature/relativeHumidity, social: tweets) con registro automatico en bootstrap Orion y en alta de nuevas tiendas.
 - 2026-03-30: Arranque endurecido en `start.sh`: secuencia obligatoria stack Docker -> seed ORION (`SEED_ON_START=1`) -> app Flask, para evitar estados vacios tras reinicio.
@@ -30,6 +31,7 @@
 - 2026-03-29: Mejoras operativas: buscador funcional de productos, selector de tema con modo sistema, CRUD directo en listados, categoria de producto y ampliacion de dataset de empleados.
 
 ### EN
+- 2026-03-31: Issue #14 completed: front-end best-practices refinement. Inline handlers removed from templates, new `static/js/image-fallback.js` module, reusable CSS classes (`.color-swatch`), animation synchronization via `animationend`, and ARIA accessibility improvements.
 - 2026-03-31: Issue #13 completed: Orion NGSIv2 subscriptions and real-time notifications. Enhanced webhooks with payload normalization, SocketIO client for event listening (price_changed, low_stock), dynamic DOM updates without reload, highlight animation and low-stock alert styles. check_subscriptions.py script for validating active subscriptions.
 - 2026-03-30: Issue #11 completed: Store external providers split by attribute (weather: temperature/relativeHumidity, social: tweets) with automatic registration at Orion bootstrap and on new store creation.
 - 2026-03-30: Hardened startup in `start.sh`: mandatory sequence Docker stack -> ORION seed (`SEED_ON_START=1`) -> Flask app, preventing empty-state runs after restart.

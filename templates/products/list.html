@@ -41,11 +41,11 @@
     </thead>
     <tbody>
     {% for product in products %}
-      <tr data-product-id="{{ product.id }}">
+      <tr data-product-id="{{ product.id }}" role="alert" aria-live="polite">
         <td>
           {% if product.image %}
             <div class="media-frame">
-              <img class="table-thumb product-thumb" src="{{ product.image }}" alt="{{ product.name }}" width="72" height="72" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
+              <img class="table-thumb product-thumb" data-fallback-image src="{{ product.image }}" alt="{{ product.name }}" width="72" height="72" loading="lazy">
               <span class="img-fallback is-hidden">No image</span>
             </div>
           {% else %}
@@ -58,8 +58,8 @@
         <td>{{ product.size or '-' }}</td>
         <td>
           {% if product.color %}
-            <span style="display:inline-flex; align-items:center; gap:.4rem;">
-              <span style="display:inline-block; width:1rem; height:1rem; border-radius:999px; border:1px solid #d1d5db; background:{{ product.color }};"></span>
+            <span class="color-swatch" style="--swatch-color: {{ product.color }};" aria-label="Color: {{ product.color }}">
+              <span class="color-swatch-dot"></span>
               <span class="mono">{{ product.color }}</span>
             </span>
           {% else %}
@@ -71,7 +71,7 @@
         <td class="price-cell product-price">{{ product.price }}</td>
         <td class="actions-cell">
           <a class="button-link" href="{{ url_for('products.edit_product_page', entity_id=product.id) }}">{{ _('Update') }}</a>
-          <form method="post" action="{{ url_for('products.delete_product_form', entity_id=product.id) }}" onsubmit="return confirm('{{ _('Delete') }} {{ product.name }}?');">
+          <form method="post" action="{{ url_for('products.delete_product_form', entity_id=product.id) }}" data-confirm-message="{{ _('Delete') }} {{ product.name }}?">
             <button type="submit">{{ _('Delete') }}</button>
           </form>
         </td>
