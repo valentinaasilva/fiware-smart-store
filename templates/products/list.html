@@ -41,7 +41,7 @@
     </thead>
     <tbody>
     {% for product in products %}
-      <tr data-product-id="{{ product.id }}" role="alert" aria-live="polite">
+      <tr data-product-id="{{ product.id }}" data-product-short="{{ product.id.split(':')[-1] if product.id is string else product.id }}" role="alert" aria-live="polite">
         <td>
           {% if product.image %}
             <div class="media-frame">

@@ -81,11 +81,13 @@ def _build_store_detail_context(store_id: str) -> dict:
     inventory_items = selector.list_entities_filtered("InventoryItem", "refStore", store_id)
     products = selector.list_entities("Product")
 
-    product_by_id = {product.get("id"): product for product in products}
+    denorm_products = [maybe_denormalize_for_view(product) for product in products]
+    product_by_id = {product.get("id"): product for product in denorm_products}
     shelf_by_id = {shelf.get("id"): shelf for shelf in shelves}
 
     denorm_shelves = denormalize_ngsi_entities(shelves)
     denorm_inventory = denormalize_ngsi_entities(inventory_items)
+    all_products = sorted(denorm_products, key=lambda row: row.get("name", ""))
 
     products_in_store = {}
     for item in denorm_inventory:
@@ -95,49 +97,82 @@ def _build_store_detail_context(store_id: str) -> dict:
         product = product_by_id.get(product_id)
         if not product:
             continue
-        denorm_product = maybe_denormalize_for_view(product)
         key = product_id
         if key not in products_in_store:
             products_in_store[key] = {
                 "id": product_id,
-                "name": denorm_product.get("name", product_id),
+                "name": product.get("name", product_id),
                 "stockCount": 0,
                 "shelfCount": 0,
             }
         products_in_store[key]["stockCount"] += _as_int(item.get("stockCount"), 0)
         products_in_store[key]["shelfCount"] += _as_int(item.get("shelfCount"), 0)
 
+    inventory_rows = []
+    inventory_by_shelf: dict[str, list[dict]] = {}
+    for item in denorm_inventory:
+        product = product_by_id.get(item.get("refProduct"))
+        shelf_raw = shelf_by_id.get(item.get("refShelf"))
+        row = {
+            **item,
+            "productName": product.get("name") if product else item.get("refProduct"),
+            "productImage": product.get("image") if product else None,
+            "productPrice": product.get("price") if product else None,
+            "productSize": product.get("size") if product else None,
+            "productColor": product.get("color") if product else None,
+            "shelfName": maybe_denormalize_for_view(shelf_raw).get("name") if shelf_raw else item.get("refShelf"),
+        }
+        inventory_rows.append(row)
+        shelf_key = item.get("refShelf")
+        if isinstance(shelf_key, str):
+            inventory_by_shelf.setdefault(shelf_key, []).append(row)
+
     shelf_rows = []
     for shelf in denorm_shelves:
         shelf_id = shelf.get("id")
+        shelf_items = sorted(inventory_by_shelf.get(shelf_id, []), key=lambda row: row.get("productName", ""))
         capacity = _as_int(shelf.get("maxCapacity"), 0)
-        shelf_total = sum(_as_int(item.get("shelfCount"), 0) for item in denorm_inventory if item.get("refShelf") == shelf_id)
+        shelf_total = sum(_as_int(item.get("shelfCount"), 0) for item in shelf_items)
         fill_percent = int((shelf_total * 100 / capacity)) if capacity > 0 else 0
+        present_products = {item.get("refProduct") for item in shelf_items}
+        available_products = [
+            product for product in all_products if product.get("id") not in present_products
+        ]
         shelf_rows.append(
             {
                 **shelf,
                 "currentLoad": shelf_total,
                 "fillPercent": min(fill_percent, 100),
+                "inventoryItems": shelf_items,
+                "availableProducts": available_products,
             }
         )
 
-    inventory_rows = []
-    for item in denorm_inventory:
-        product = product_by_id.get(item.get("refProduct"))
-        shelf_raw = shelf_by_id.get(item.get("refShelf"))
-        inventory_rows.append(
-            {
-                **item,
-                "productName": maybe_denormalize_for_view(product).get("name") if product else item.get("refProduct"),
-                "shelfName": maybe_denormalize_for_view(shelf_raw).get("name") if shelf_raw else item.get("refShelf"),
-            }
-        )
+    scene_layout = [
+        {
+            "id": shelf.get("id"),
+            "name": shelf.get("name"),
+            "maxCapacity": shelf.get("maxCapacity"),
+            "currentLoad": shelf.get("currentLoad"),
+            "fillPercent": shelf.get("fillPercent"),
+            "products": [
+                {
+                    "name": item.get("productName"),
+                    "shelfCount": _as_int(item.get("shelfCount"), 0),
+                    "stockCount": _as_int(item.get("stockCount"), 0),
+                }
+                for item in shelf.get("inventoryItems", [])
+            ],
+        }
+        for shelf in shelf_rows
+    ]
 
     return {
         "shelves": sorted(shelf_rows, key=lambda row: row.get("id", "")),
+        "scene_layout": scene_layout,
         "inventory_items": sorted(inventory_rows, key=lambda row: row.get("id", "")),
         "products_in_store": sorted(products_in_store.values(), key=lambda row: row.get("name", "")),
-        "all_products": sorted([maybe_denormalize_for_view(product) for product in products], key=lambda row: row.get("name", "")),
+        "all_products": all_products,
     }
 
 
@@ -385,6 +420,53 @@ def delete_store_inventory(store_id: str, inventory_id: str):
         return jsonify({"error": "Inventory item not found for store"}), 404
     selector.delete_entity(inventory_id)
     return "", 204
+
+
+@stores_bp.post("/<path:store_id>/inventory/<path:inventory_id>/buy")
+def buy_store_inventory_item(store_id: str, inventory_id: str):
+    selector = current_app.extensions["data_selector"]
+    current = selector.get_entity(inventory_id)
+    if not current or _extract_attr_value(current.get("refStore")) != store_id:
+        if _is_html_form_request():
+            return redirect(url_for("stores.get_store", entity_id=store_id))
+        return jsonify({"error": "Inventory item not found for store"}), 404
+
+    current_stock = _as_int(current.get("stockCount"), 0)
+    current_shelf = _as_int(current.get("shelfCount"), 0)
+    if current_stock <= 0 or current_shelf <= 0:
+        if _is_html_form_request():
+            return redirect(url_for("stores.get_store", entity_id=store_id))
+        return jsonify({"error": "Inventory item out of stock"}), 409
+
+    updated = selector.increment_entity_attrs(
+        inventory_id,
+        {
+            "shelfCount": -1,
+            "stockCount": -1,
+        },
+    )
+    if not updated:
+        if _is_html_form_request():
+            return redirect(url_for("stores.get_store", entity_id=store_id))
+        return jsonify({"error": "Inventory item not found"}), 404
+
+    updated_stock = _as_int(updated.get("stockCount"), 0)
+    updated_shelf = _as_int(updated.get("shelfCount"), 0)
+    if updated_stock < 0 or updated_shelf < 0:
+        selector.increment_entity_attrs(
+            inventory_id,
+            {
+                "shelfCount": 1,
+                "stockCount": 1,
+            },
+        )
+        if _is_html_form_request():
+            return redirect(url_for("stores.get_store", entity_id=store_id))
+        return jsonify({"error": "Inventory item out of stock"}), 409
+
+    if _is_html_form_request():
+        return redirect(url_for("stores.get_store", entity_id=store_id))
+    return jsonify(updated)
 
 
 @stores_bp.post("/<path:store_id>/inventory/<path:inventory_id>/update")

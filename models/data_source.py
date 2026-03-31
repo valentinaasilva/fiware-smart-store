@@ -180,6 +180,17 @@ class DataSourceSelector:
             self._fallback_to_sqlite(f"delete_entity failed ({exc})")
             return self.sqlite.delete_entity(entity_id)
 
+    def increment_entity_attrs(self, entity_id: str, increments: dict[str, int]) -> dict[str, Any] | None:
+        try:
+            active = self._active()
+            increment_fn = getattr(active, "increment_entity_attrs", None)
+            if callable(increment_fn):
+                return increment_fn(entity_id, increments)
+            return active.update_entity(entity_id, increments)
+        except Exception as exc:
+            self._fallback_to_sqlite(f"increment_entity_attrs failed ({exc})")
+            return self.sqlite.increment_entity_attrs(entity_id, increments)
+
     def get_dashboard_stats(self) -> dict[str, int]:
         if self.mode == "ORION":
             entities = self.list_entities()

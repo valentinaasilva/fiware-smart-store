@@ -42,8 +42,12 @@ socket.on("price_changed", (eventData) => {
     return;
   }
   
-  // Buscar elemento en la tabla que corresponde a este producto
-  const productRows = document.querySelectorAll(`[data-product-id="${product_id}"]`);
+  // Buscar elementos compatibles con ID corto o URN completo
+  const selectors = [
+    `[data-product-id="${product_id}"]`,
+    `[data-product-short="${product_id}"]`,
+  ];
+  const productRows = document.querySelectorAll(selectors.join(","));
   
   if (productRows.length === 0) {
     console.warn(`⚠️ No se encontró elemento con data-product-id="${product_id}"`);
@@ -51,23 +55,23 @@ socket.on("price_changed", (eventData) => {
   }
   
   productRows.forEach((row) => {
-    // Buscar la celda de precio dentro de esta fila
-    const priceCell = row.querySelector(".product-price");
-    
-    if (priceCell) {
+    const priceTargets = row.classList.contains("product-price")
+      ? [row]
+      : row.querySelectorAll(".product-price");
+
+    priceTargets.forEach((priceCell) => {
       const oldPrice = priceCell.textContent;
-      
-      // Actualizar precio
-      priceCell.textContent = new_price.toFixed(2);
-      
-      // Aplicar animación de resaltado
+      const prefix = priceCell.dataset.pricePrefix || "";
+      const suffix = priceCell.dataset.priceSuffix || "";
+
+      priceCell.textContent = `${prefix}${new_price.toFixed(2)}${suffix}`;
       applyHighlightFlash(priceCell);
-      
+
       console.log(`💰 Producto: ${product_name} (${product_id})`);
       console.log(`   Precio anterior: ${oldPrice}`);
       console.log(`   Precio nuevo: ${new_price.toFixed(2)}`);
       console.log(`   Cambio registrado a las: ${new Date(timestamp).toLocaleTimeString()}`);
-    }
+    });
   });
 });
 
@@ -86,7 +90,11 @@ socket.on("low_stock", (eventData) => {
   }
   
   // Buscar elemento en la tabla que corresponde a este inventario
-  const inventoryRows = document.querySelectorAll(`[data-inventory-id="${inventory_id}"]`);
+  const selectors = [
+    `[data-inventory-id="${inventory_id}"]`,
+    `[data-inventory-short="${inventory_id}"]`,
+  ];
+  const inventoryRows = document.querySelectorAll(selectors.join(","));
   
   if (inventoryRows.length === 0) {
     console.warn(`⚠️ No se encontró elemento con data-inventory-id="${inventory_id}"`);
@@ -125,6 +133,13 @@ socket.on("low_stock", (eventData) => {
       console.log(`   Cambio registrado a las: ${new Date(timestamp).toLocaleTimeString()}`);
     }
   });
+
+  appendStoreNotification({
+    storeId: store_id,
+    productId: product_id,
+    stockCount: stock_count,
+    timestamp,
+  });
 });
 
 // ============================================================================
@@ -148,6 +163,35 @@ function applyHighlightFlash(element, className = "highlight-flash") {
   element.addEventListener('animationend', function removeHighlight() {
     element.classList.remove(className);
   }, { once: true });
+}
+
+function appendStoreNotification({ storeId, productId, stockCount, timestamp }) {
+  const lists = document.querySelectorAll("[data-store-notifications]");
+  if (lists.length === 0) {
+    return;
+  }
+
+  lists.forEach((listNode) => {
+    const listStore = listNode.dataset.storeShort || "";
+    if (storeId && listStore && storeId !== listStore) {
+      return;
+    }
+
+    const muted = listNode.querySelector(".notification-muted");
+    if (muted) {
+      muted.remove();
+    }
+
+    const item = document.createElement("li");
+    item.className = "notification-item";
+    item.innerHTML = `<span class="notification-dot" aria-hidden="true">!</span><span>Low stock en producto ${productId || "N/A"} (${stockCount})</span><time>${new Date(timestamp).toLocaleTimeString()}</time>`;
+    listNode.prepend(item);
+    applyHighlightFlash(item);
+
+    while (listNode.children.length > 6) {
+      listNode.removeChild(listNode.lastElementChild);
+    }
+  });
 }
 
 // ============================================================================

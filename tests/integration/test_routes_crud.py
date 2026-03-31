@@ -189,3 +189,30 @@ def test_product_nested_inventory_crud(client, sample_store, sample_product, sam
 
     deleted = client.delete(f"/products/{sample_product['id']}/inventory/{inv_payload['id']}")
     assert deleted.status_code == 204
+
+
+def test_store_inventory_buy_decrements_counts(client, sample_store, sample_product, sample_shelf):
+    client.post("/stores/", json=sample_store)
+    client.post("/products/", json=sample_product)
+    client.post(f"/stores/{sample_store['id']}/shelves", json=sample_shelf)
+
+    inv_payload = {
+        "id": "urn:ngsi-ld:InventoryItem:TESTBUY001",
+        "type": "InventoryItem",
+        "refProduct": {"type": "Relationship", "value": sample_product["id"]},
+        "refShelf": {"type": "Relationship", "value": sample_shelf["id"]},
+        "stockCount": {"type": "Integer", "value": 6},
+        "shelfCount": {"type": "Integer", "value": 3},
+    }
+    created = client.post(f"/stores/{sample_store['id']}/inventory", json=inv_payload)
+    assert created.status_code == 201
+
+    buy = client.post(f"/stores/{sample_store['id']}/inventory/{inv_payload['id']}/buy", json={})
+    assert buy.status_code == 200
+
+    detail = client.get(f"/stores/{sample_store['id']}/inventory")
+    assert detail.status_code == 200
+    rows = detail.get_json()
+    bought = next(item for item in rows if item["id"] == inv_payload["id"])
+    assert bought["stockCount"]["value"] == 5
+    assert bought["shelfCount"]["value"] == 2

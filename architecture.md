@@ -17,6 +17,7 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-03-31: Issue #16 completado: vista Store reorganizada en bloques funcionales (mapa, condiciones ambientales, tweets, notificaciones, inventario por shelf y escena 3D basica con Three.js). Se introduce endpoint de compra por InventoryItem y operacion incremental Orion-first con fallback SQLite.
 - 2026-03-31: Issue #14 completado: refinamiento de arquitectura de presentacion front-end con separacion estricta HTML/CSS/JS, modulo `static/js/image-fallback.js`, patron CSS reusable `.color-swatch`, animaciones sincronizadas por evento `animationend`, y atributos ARIA para accesibilidad.
 - 2026-03-31: Issue #13 completado: arquitectura de notificaciones en tiempo real con suscripciones Orion->webhooks normalizados->SocketIO->actualizacion dinamica DOM. Flujos detallados de price_changed y low_stock con eventos NGSIv2, normalizacion de payloads y animaciones visuales (highlight-flash, alert-low-stock).
 - 2026-03-30: Issue #11: providers externos de Store desacoplados por atributo y servidos por blueprint interno `routes/providers.py`; registro por Store en bootstrap Orion y alta de tienda.
@@ -27,6 +28,7 @@
 - 2026-03-29: Se incorporan busqueda de productos por query, selector de tema dark/light/system y formularios CRUD en listados para Store/Product/Employee.
 
 ### EN
+- 2026-03-31: Issue #16 completed: Store view reorganized into functional blocks (map, environmental conditions, tweets, notifications, shelf-grouped inventory, and basic Three.js 3D scene). A per-InventoryItem buy endpoint and Orion-first incremental operation with SQLite fallback were added.
 - 2026-03-31: Issue #14 completed: presentation-layer architecture refinement with strict HTML/CSS/JS separation, `static/js/image-fallback.js` module, reusable `.color-swatch` CSS pattern, `animationend`-driven animation synchronization, and ARIA accessibility attributes.
 - 2026-03-31: Issue #13 completed: real-time notification architecture with Orion subscriptions->normalized webhooks->SocketIO->dynamic DOM updates. Detailed flows for price_changed and low_stock with NGSIv2 events, payload normalization, and visual animations (highlight-flash, alert-low-stock).
 - 2026-03-30: Issue #11: Store external providers split by attribute and served by internal `routes/providers.py` blueprint; registrations created per Store on Orion bootstrap and store creation.
@@ -101,8 +103,9 @@ Capas y componentes:
 
 3. Data access layer
 - Adapter OrionClient (NGSIv2 CRUD y subscriptions).
+- Adapter OrionClient (NGSIv2 CRUD, subscriptions e incrementos atomicos por atributo).
 - Adapter SQLiteRepository (fallback local).
-- DataSourceSelector (estrategia Orion first + fallback).
+- DataSourceSelector (estrategia Orion first + fallback, incluyendo operacion incremental).
 
 4. Integration layer
 - Client HTTP hacia Orion /v2/entities, /v2/subscriptions, /v2/registrations.
@@ -136,8 +139,9 @@ Layers and components:
 
 3. Data access layer
 - OrionClient adapter (NGSIv2 CRUD and subscriptions).
+- OrionClient adapter (NGSIv2 CRUD, subscriptions, and atomic per-attribute increments).
 - SQLiteRepository adapter (local fallback).
-- DataSourceSelector (Orion-first + fallback strategy).
+- DataSourceSelector (Orion-first + fallback strategy, including incremental operations).
 
 4. Integration layer
 - HTTP client to Orion /v2/entities, /v2/subscriptions, /v2/registrations.
@@ -287,6 +291,14 @@ Critical connectivity rule:
 7. Actualiza `.stock-count` y aplica clase `.alert-low-stock` (fondo rojo suave) si stock < 5.
 8. Tabla de inventario se actualiza en tiempo real sin reload.
 
+#### 7.5 Buy InventoryItem flow (Store UI -> Orion/SQLite)
+1. Usuario pulsa boton Buy en una fila de InventoryItem dentro de detalle Store.
+2. `routes/stores.py` valida pertenencia del item a la Store y confirma stock/shelfCount > 0.
+3. Se invoca `DataSourceSelector.increment_entity_attrs()` con decrementos `{shelfCount: -1, stockCount: -1}`.
+4. En modo ORION, `OrionClient` ejecuta PATCH `/v2/entities/<inventory_id>/attrs` con payload incremental.
+5. Si Orion falla, selector conmuta a SQLite y aplica decremento equivalente de manera local.
+6. Backend devuelve estado actualizado y la UI refleja conteos en tabla; eventos SocketIO mantienen consistencia visual.
+
 ### EN
 
 #### 7.1 CRUD flow (normal)
@@ -331,6 +343,14 @@ Critical connectivity rule:
 6. static/js/socketio-client.js finds element with `data-inventory-id`.
 7. Updates `.stock-count` and applies `.alert-low-stock` class (soft red bg) if stock < 5.
 8. Inventory table updates in real time without reload.
+
+#### 7.5 Buy InventoryItem flow (Store UI -> Orion/SQLite)
+1. User clicks Buy on an InventoryItem row in Store detail.
+2. `routes/stores.py` validates that the item belongs to the Store and checks stock/shelfCount > 0.
+3. `DataSourceSelector.increment_entity_attrs()` is called with decrements `{shelfCount: -1, stockCount: -1}`.
+4. In ORION mode, `OrionClient` sends PATCH `/v2/entities/<inventory_id>/attrs` with incremental payload.
+5. If Orion fails, the selector switches to SQLite and applies an equivalent local decrement.
+6. Backend returns updated state and UI reflects new counters; SocketIO events keep visual consistency.
 
 ## 8. Module decomposition
 

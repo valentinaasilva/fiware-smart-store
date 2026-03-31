@@ -62,7 +62,7 @@
   <h3>{{ _('Featured Products') }}</h3>
   <div class="featured-grid">
     {% for offer in featured_offers %}
-    <article class="featured-card">
+    <article class="featured-card" data-product-id="{{ offer.product_id }}" data-product-short="{{ offer.product_id.split(':')[-1] if offer.product_id is string else offer.product_id }}">
       <div class="featured-media">
         {% if offer.image %}
         <img data-fallback-image src="{{ offer.image }}" alt="{{ offer.title }}" loading="lazy">
@@ -73,7 +73,7 @@
       </div>
       <div class="featured-body">
         <h4>{{ offer.title }}</h4>
-        <p class="featured-price">Desde {{ '%.2f'|format(offer.from_price) }}€</p>
+        <p class="featured-price product-price" data-price-prefix="Desde " data-price-suffix="€">{{ '%.2f'|format(offer.from_price) }}</p>
         <p>{{ offer.description }}</p>
       </div>
     </article>
