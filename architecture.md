@@ -17,6 +17,7 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-03-31: Issue #13 completado: arquitectura de notificaciones en tiempo real con suscripciones Orion->webhooks normalizados->SocketIO->actualizacion dinamica DOM. Flujos detallados de price_changed y low_stock con eventos NGSIv2, normalizacion de payloads y animaciones visuales (highlight-flash, alert-low-stock).
 - 2026-03-30: Issue #11: providers externos de Store desacoplados por atributo y servidos por blueprint interno `routes/providers.py`; registro por Store en bootstrap Orion y alta de tienda.
 - 2026-03-30: `start.sh` endurecido con secuencia determinista stack -> seed ORION -> app para eliminar carreras de arranque y estados sin datos.
 - 2026-03-30: Capa de presentacion de Stores actualizada para separar visualmente nombre de pais y countryCode en listado y detalle.
@@ -25,6 +26,7 @@
 - 2026-03-29: Se incorporan busqueda de productos por query, selector de tema dark/light/system y formularios CRUD en listados para Store/Product/Employee.
 
 ### EN
+- 2026-03-31: Issue #13 completed: real-time notification architecture with Orion subscriptions->normalized webhooks->SocketIO->dynamic DOM updates. Detailed flows for price_changed and low_stock with NGSIv2 events, payload normalization, and visual animations (highlight-flash, alert-low-stock).
 - 2026-03-30: Issue #11: Store external providers split by attribute and served by internal `routes/providers.py` blueprint; registrations created per Store on Orion bootstrap and store creation.
 - 2026-03-30: `start.sh` hardened with deterministic sequence stack -> ORION seed -> app to eliminate startup races and empty-data states.
 - 2026-03-30: Stores presentation layer updated to separate country name and countryCode in list/detail views.
@@ -202,18 +204,80 @@ Critical connectivity rule:
 2. `templates/dashboard.html` serializa los marcadores en atributo de datos del contenedor Leaflet.
 3. `static/js/app.js` inicializa mapa agregado y ajusta bounds para mostrar todas las tiendas.
 
-#### 7.2 Price-change event flow
-1. Cambio de price en Product ocurre via CRUD.
-2. Orion detecta condicion de subscription y emite notificacion HTTP.
-3. routes/notifications.py recibe evento y lo normaliza.
-4. SocketIO emite evento product_price_changed.
-5. JS cliente actualiza atributo de precio en vistas activas (sin regenerar HTML).
+### ES
+1. Load configuration (.env) and start Flask + SocketIO.
+2. Execute Orion health-check.
+3. Select active source:
+- Orion reachable -> ORION mode
+- Orion unreachable -> SQLITE mode
+4. If ORION mode:
+- Register per-Store external context providers (temperature, relativeHumidity, tweets).
+- Create/validate subscriptions:
+  - Price change on Product
+  - Low stock on InventoryItem per Store
+5. Initialize lightweight cache for catalogs (stores, products, shelves) if applicable.
+6. Expose web endpoints and API interna para formularios dinamicos.
 
-#### 7.3 Low-stock event flow
-1. stockCount/shelfCount desciende por debajo de umbral definido.
-2. Orion emite notificacion low_stock.
-3. Backend registra evento y lo publica por SocketIO.
-4. UI Store detail actualiza panel de alertas en tiempo real.
+### EN
+1. Load configuration (.env) and start Flask + SocketIO.
+2. Execute Orion health-check.
+3. Select active source:
+- Orion reachable -> ORION mode
+- Orion unreachable -> SQLITE mode
+4. If ORION mode:
+- Register per-Store external context providers (temperature, relativeHumidity, tweets).
+- Create/validate subscriptions:
+  - Price change on Product
+  - Low stock on InventoryItem per Store
+5. Initialize lightweight cache for catalogs (stores, products, shelves) if applicable.
+6. Expose web endpoints and internal API for dynamic forms.
+
+## 7. Runtime data flows
+
+### ES
+
+#### 7.1 CRUD flow (normal)
+1. Usuario interactua con formulario en UI.
+2. Blueprint valida payload y aplica reglas de dominio.
+3. DataSourceSelector enruta a OrionClient o SQLiteRepository.
+4. Persistencia en origen activo.
+5. Respuesta a UI y refresco de atributos visibles.
+
+#### 7.4 Dashboard map flow
+1. `app.py` agrega datos de ubicacion validos de Store en `stores_map` para el dashboard.
+2. `templates/dashboard.html` serializa los marcadores en atributo de datos del contenedor Leaflet.
+3. `static/js/app.js` inicializa mapa agregado y ajusta bounds para mostrar todas las tiendas.
+
+#### 7.2 Price-change event flow (NGSIv2 -> SocketIO -> Frontend)
+1. Cambio de price en Product ocurre via CRUD.
+2. Orion detecta condicion de subscription (attrs: ["price"]) y emite notificacion HTTP POST.
+3. routes/notifications.py::price_change_webhook() recibe payload NGSIv2 complejo:
+   ```
+   {
+     "subscriptionId": "...",
+     "data": [{
+       "id": "urn:ngsi-ld:Product:PROD-001",
+       "type": "Product",
+       "price": {"type": "Number", "value": 29.99},
+       "name": {"type": "Text", "value": "Yogur"}
+     }]
+   }
+   ```
+4. Funciones auxiliares extraen y normalizan: `{product_id, product_name, new_price, timestamp}`.
+5. SocketIO emite evento `price_changed` a todos los clientes conectados.
+6. static/js/socketio-client.js escucha evento y busca elemento con `data-product-id`.
+7. Actualiza `.product-price` dinámicamente y aplica animacion `highlight-flash` (2 segundos).
+8. Usuario ve resaltado amarillo en celda de precio sin reload de pagina.
+
+#### 7.3 Low-stock event flow (NGSIv2 -> SocketIO -> Frontend)
+1. stockCount/shelfCount baja por cambio de inventario.
+2. Orion detecta condicion de subscription (attrs: ["stockCount", "shelfCount"]) y emite notificacion.
+3. routes/notifications.py::low_stock_webhook() recibe y normaliza payload NGSIv2.
+4. Extrae: `{inventory_id, store_id, product_id, stock_count, shelf_id, timestamp}`.
+5. SocketIO emite evento `low_stock` a clientes.
+6. static/js/socketio-client.js busca elemento con `data-inventory-id`.
+7. Actualiza `.stock-count` y aplica clase `.alert-low-stock` (fondo rojo suave) si stock < 5.
+8. Tabla de inventario se actualiza en tiempo real sin reload.
 
 ### EN
 
@@ -229,18 +293,36 @@ Critical connectivity rule:
 2. `templates/dashboard.html` serializes markers into a Leaflet container data attribute.
 3. `static/js/app.js` initializes the aggregate map and fits bounds to show all stores.
 
-#### 7.2 Price-change event flow
+#### 7.2 Price-change event flow (NGSIv2 -> SocketIO -> Frontend)
 1. Product price change occurs through CRUD.
-2. Orion matches subscription condition and sends HTTP notification.
-3. routes/notifications.py receives and normalizes the event.
-4. SocketIO emits product_price_changed event.
-5. Client JS updates price attribute in active views (no HTML regeneration).
+2. Orion matches subscription condition (attrs: ["price"]) and sends HTTP POST notification.
+3. routes/notifications.py::price_change_webhook() receives complex NGSIv2 payload:
+   ```
+   {
+     "subscriptionId": "...",
+     "data": [{
+       "id": "urn:ngsi-ld:Product:PROD-001",
+       "type": "Product",
+       "price": {"type": "Number", "value": 29.99},
+       "name": {"type": "Text", "value": "Yogur"}
+     }]
+   }
+   ```
+4. Helper functions extract and normalize: `{product_id, product_name, new_price, timestamp}`.
+5. SocketIO emits `price_changed` event to all connected clients.
+6. static/js/socketio-client.js listens for event and finds element with `data-product-id`.
+7. Updates `.product-price` dynamically and applies `highlight-flash` animation (2 seconds).
+8. User sees yellow highlight on price cell without page reload.
 
-#### 7.3 Low-stock event flow
-1. stockCount/shelfCount drops below configured threshold.
-2. Orion emits low_stock notification.
-3. Backend stores event and publishes via SocketIO.
-4. Store detail UI updates alerts panel in real time.
+#### 7.3 Low-stock event flow (NGSIv2 -> SocketIO -> Frontend)
+1. stockCount/shelfCount drops due to inventory change.
+2. Orion matches subscription condition (attrs: ["stockCount", "shelfCount"]) and sends notification.
+3. routes/notifications.py::low_stock_webhook() receives and normalizes NGSIv2 payload.
+4. Extracts: `{inventory_id, store_id, product_id, stock_count, shelf_id, timestamp}`.
+5. SocketIO emits `low_stock` event to clients.
+6. static/js/socketio-client.js finds element with `data-inventory-id`.
+7. Updates `.stock-count` and applies `.alert-low-stock` class (soft red bg) if stock < 5.
+8. Inventory table updates in real time without reload.
 
 ## 8. Module decomposition
 
