@@ -63,7 +63,7 @@
         <td>{{ store.relativeHumidity if store.relativeHumidity is not none else '-' }}</td>
         <td class="actions-cell">
           <a class="button-link" href="{{ url_for('stores.edit_store_page', entity_id=store.id) }}">{{ _('Update') }}</a>
-          <form method="post" action="{{ url_for('stores.delete_store_form', entity_id=store.id) }}" onsubmit="return confirm('{{ _('Delete') }} {{ store.name }}?');">
+          <form method="post" action="{{ url_for('stores.delete_store_form', entity_id=store.id) }}" data-confirm-message="{{ _('Delete') }} {{ store.name }}?">
             <button type="submit">{{ _('Delete') }}</button>
           </form>
         </td>

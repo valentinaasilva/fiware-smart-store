@@ -71,7 +71,7 @@
         <td class="price-cell product-price">{{ product.price }}</td>
         <td class="actions-cell">
           <a class="button-link" href="{{ url_for('products.edit_product_page', entity_id=product.id) }}">{{ _('Update') }}</a>
-          <form method="post" action="{{ url_for('products.delete_product_form', entity_id=product.id) }}" onsubmit="return confirm('{{ _('Delete') }} {{ product.name }}?');">
+          <form method="post" action="{{ url_for('products.delete_product_form', entity_id=product.id) }}" data-confirm-message="{{ _('Delete') }} {{ product.name }}?">
             <button type="submit">{{ _('Delete') }}</button>
           </form>
         </td>

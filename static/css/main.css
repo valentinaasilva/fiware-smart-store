@@ -629,6 +629,16 @@ textarea:focus {
   align-items: center;
 }
 
+.inline-form-compact {
+  display: inline-flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.inline-form-inline {
+  display: inline;
+}
+
 .search-inline-form {
   margin-bottom: 0.8rem;
 }

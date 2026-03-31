@@ -127,12 +127,12 @@
         <td>{{ shelf.maxCapacity }}</td>
         <td>{{ shelf.currentLoad }} ({{ shelf.fillPercent }}%)</td>
         <td>
-          <form method="post" action="{{ url_for('stores.update_store_shelf_form', store_id=store.id, shelf_id=shelf.id) }}" style="display:inline-flex; gap:0.25rem;">
+          <form method="post" action="{{ url_for('stores.update_store_shelf_form', store_id=store.id, shelf_id=shelf.id) }}" class="inline-form-compact">
             <input type="text" name="name" value="{{ shelf.name }}" required>
             <input type="number" name="maxCapacity" value="{{ shelf.maxCapacity }}" min="1" required>
             <button type="submit">{{ _('Update') }}</button>
           </form>
-          <form method="post" action="{{ url_for('stores.delete_store_shelf_form', store_id=store.id, shelf_id=shelf.id) }}" style="display:inline;">
+          <form method="post" action="{{ url_for('stores.delete_store_shelf_form', store_id=store.id, shelf_id=shelf.id) }}" class="inline-form-inline">
             <button type="submit">{{ _('Delete') }}</button>
           </form>
         </td>
@@ -174,7 +174,7 @@
         <td>{{ item.stockCount }}</td>
         <td>{{ item.shelfCount }}</td>
         <td>
-          <form method="post" action="{{ url_for('stores.update_store_inventory_form', store_id=store.id, inventory_id=item.id) }}" style="display:inline-flex; gap:0.25rem;">
+          <form method="post" action="{{ url_for('stores.update_store_inventory_form', store_id=store.id, inventory_id=item.id) }}" class="inline-form-compact">
             <select name="refProduct" required>
               {% for product in all_products %}
               <option value="{{ product.id }}" {% if product.id == item.refProduct %}selected{% endif %}>{{ product.name }}</option>
@@ -189,7 +189,7 @@
             <input type="number" name="shelfCount" value="{{ item.shelfCount }}" min="0" required>
             <button type="submit">{{ _('Update') }}</button>
           </form>
-          <form method="post" action="{{ url_for('stores.delete_store_inventory_form', store_id=store.id, inventory_id=item.id) }}" style="display:inline;">
+          <form method="post" action="{{ url_for('stores.delete_store_inventory_form', store_id=store.id, inventory_id=item.id) }}" class="inline-form-inline">
             <button type="submit">{{ _('Delete') }}</button>
           </form>
         </td>

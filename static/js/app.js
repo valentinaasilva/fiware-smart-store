@@ -145,10 +145,23 @@
 		}
 	}
 
+	function initConfirmForms() {
+		const forms = document.querySelectorAll("form[data-confirm-message]");
+		forms.forEach(function (form) {
+			form.addEventListener("submit", function (event) {
+				const message = form.getAttribute("data-confirm-message") || "";
+				if (message && !window.confirm(message)) {
+					event.preventDefault();
+				}
+			});
+		});
+	}
+
 	document.addEventListener("DOMContentLoaded", function () {
 		initThemeToggle();
 		initStoreMap();
 		initDashboardStoresMap();
 		initMermaidDiagrams();
+		initConfirmForms();
 	});
 })();

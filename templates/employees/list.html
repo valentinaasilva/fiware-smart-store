@@ -58,7 +58,7 @@
         <td class="mono">{{ employee.refStore.split(':')[-1] if employee.refStore is string else (employee.refStore or '-') }}</td>
         <td class="actions-cell">
           <a class="button-link" href="{{ url_for('employees.edit_employee_page', entity_id=employee.id) }}">{{ _('Update') }}</a>
-          <form method="post" action="{{ url_for('employees.delete_employee_form', entity_id=employee.id) }}" onsubmit="return confirm('{{ _('Delete') }} {{ employee.name }}?');">
+          <form method="post" action="{{ url_for('employees.delete_employee_form', entity_id=employee.id) }}" data-confirm-message="{{ _('Delete') }} {{ employee.name }}?">
             <button type="submit">{{ _('Delete') }}</button>
           </form>
         </td>
