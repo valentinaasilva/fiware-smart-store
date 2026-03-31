@@ -94,10 +94,10 @@
     </thead>
     <tbody>
       {% for product in products_in_store %}
-      <tr>
+      <tr data-inventory-id="{{ product.id }}">
         <td class="mono">{{ product.id.split(':')[-1] if product.id is string else product.id }}</td>
         <td>{{ product.name }}</td>
-        <td>{{ product.stockCount }}</td>
+        <td class="stock-count" data-stock-count="{{ product.stockCount }}">{{ product.stockCount }}</td>
         <td>{{ product.shelfCount }}</td>
       </tr>
       {% else %}

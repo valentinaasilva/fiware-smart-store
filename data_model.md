@@ -17,6 +17,7 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-03-31: Issue #13: sin cambios en modelo de datos. Documentados eventos de notificacion NGSIv2 (price_changed, low_stock) para referencias y debugging con scripts/check_subscriptions.py.
 - 2026-03-30: Issue #11: integracion de atributos externos de Store separada en dos providers NGSIv2 (weather: `temperature` + `relativeHumidity`; social: `tweets`) con registro por `Store.id`.
 - 2026-03-30: Operacion de datos endurecida: `start.sh` fuerza seed ORION previo al arranque para garantizar minimos (4 Store, 10 Product, 4 Employee, 16 Shelf, 64 InventoryItem).
 - 2026-03-30: Presentacion de `Store.countryCode` separada del nombre de pais en UI (listado y detalle) para lectura operativa.
@@ -25,6 +26,7 @@
 - 2026-03-29: Se añade atributo `Product.category` y se amplian datos semilla de Employee a 12 registros con `dateOfContract` y `username` consistentes.
 
 ### EN
+- 2026-03-31: Issue #13: no data model changes. Documented NGSIv2 notification events (price_changed, low_stock) for reference and debugging with scripts/check_subscriptions.py.
 - 2026-03-30: Issue #11: Store external attributes integrated through two NGSIv2 providers (weather: `temperature` + `relativeHumidity`; social: `tweets`) registered by `Store.id`.
 - 2026-03-30: Data operations hardened: `start.sh` enforces ORION seed before app startup to guarantee minimum counts (4 Store, 10 Product, 4 Employee, 16 Shelf, 64 InventoryItem).
 - 2026-03-30: `Store.countryCode` presentation split from country-name field in UI (list/detail) for clearer operations.
