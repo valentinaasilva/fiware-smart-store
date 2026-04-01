@@ -10,21 +10,18 @@
 {%- endmacro %}
 
 {% macro country_chip(code, label='') -%}
-  {% set country_label = label or code or '-' %}
-  {% set flag_map = {
-    'ES': '🇪🇸',
-    'DE': '🇩🇪',
-    'FR': '🇫🇷',
-    'EC': '🇪🇨'
-  } %}
-  {% set code_upper = code.upper() if code is string else '' %}
-  {% if code %}
+  {% set code_upper = (code or '')|upper %}
+  {% set code_lower = code_upper|lower %}
+  {% set country_label = label or code_upper or '-' %}
+  {% if code_upper %}
     <span class="attribute-chip country-chip" title="{{ country_label }}">
-      {% if flag_map.get(code_upper) %}
-        <span class="country-flag-emoji" aria-hidden="true">{{ flag_map.get(code_upper) }}</span>
-      {% else %}
-        <i class="fa-solid fa-flag" aria-hidden="true"></i>
-      {% endif %}
+      <img
+        class="country-flag-img"
+        src="https://flagcdn.com/w40/{{ code_lower }}.png"
+        srcset="https://flagcdn.com/w80/{{ code_lower }}.png 2x"
+        alt="{{ country_label }}"
+        loading="lazy"
+      >
       <span>{{ country_label }}</span>
     </span>
   {% else %}
