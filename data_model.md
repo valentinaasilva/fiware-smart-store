@@ -18,6 +18,8 @@
 
 ### ES
 - 2026-03-31: Issue #16: se documenta operacion incremental de compra sobre InventoryItem mediante PATCH NGSIv2 en Orion para `stockCount` y `shelfCount`, con degradacion funcional a SQLite cuando Orion no esta disponible.
+- 2026-04-01: Sin cambios en el esquema NGSIv2; la vista de Store trata `temperature`, `relativeHumidity` y `tweets` como atributos opcionales al renderizar cuando el provider externo no responde.
+- 2026-04-01: Issue #17: sin cambios en el esquema NGSIv2. Las mejoras visuales reutilizan `Store.image`, `Store.location`, `Store.countryCode`, `Product.color`, `Product.category`, `Employee.skills` y el calculo derivado de `Shelf.fillPercent` sin introducir entidades ni atributos nuevos.
 - 2026-03-31: Issue #14: sin cambios estructurales en entidades NGSIv2 ni en relaciones. Las mejoras front-end (accesibilidad ARIA, handlers JS centralizados, CSS reusable) no alteran esquema, atributos, tipos ni contratos Orion.
 - 2026-03-31: Issue #13: sin cambios en modelo de datos. Documentados eventos de notificacion NGSIv2 (price_changed, low_stock) para referencias y debugging con scripts/check_subscriptions.py.
 - 2026-03-30: Issue #11: integracion de atributos externos de Store separada en dos providers NGSIv2 (weather: `temperature` + `relativeHumidity`; social: `tweets`) con registro por `Store.id`.
@@ -29,6 +31,8 @@
 
 ### EN
 - 2026-03-31: Issue #16: documented InventoryItem buy incremental operation via NGSIv2 PATCH in Orion for `stockCount` and `shelfCount`, with functional fallback to SQLite when Orion is unavailable.
+- 2026-04-01: No NGSIv2 schema changes; Store view treats `temperature`, `relativeHumidity`, and `tweets` as optional at render time when the external provider is unavailable.
+- 2026-04-01: Issue #17: no NGSIv2 schema changes. The visual work reuses `Store.image`, `Store.location`, `Store.countryCode`, `Product.color`, `Product.category`, `Employee.skills`, and derived `Shelf.fillPercent` without adding new entities or attributes.
 - 2026-03-31: Issue #14: no structural changes to NGSIv2 entities or relationships. Front-end improvements (ARIA accessibility, centralized JS handlers, reusable CSS) do not modify schema, attributes, types, or Orion contracts.
 - 2026-03-31: Issue #13: no data model changes. Documented NGSIv2 notification events (price_changed, low_stock) for reference and debugging with scripts/check_subscriptions.py.
 - 2026-03-30: Issue #11: Store external attributes integrated through two NGSIv2 providers (weather: `temperature` + `relativeHumidity`; social: `tweets`) registered by `Store.id`.

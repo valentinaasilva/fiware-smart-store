@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
+{% from 'macros/visuals.html' import country_chip, color_swatch %}
 
 {% block content %}
-{% set coords = store.location.coordinates if store.location and store.location.coordinates is defined else none %}
-{% set simplified_id = store.id.split(':')[-1] if store.id is string else store.id %}
-{% set temp = store.temperature if store.temperature is not none else none %}
-{% set humidity = store.relativeHumidity if store.relativeHumidity is not none else none %}
+{% set store_data = store if store is mapping else {} %}
+{% set location = store_data.get('location') %}
+{% set coords = location.get('coordinates') if location is mapping else none %}
+{% set simplified_id = store_data.get('id').split(':')[-1] if store_data.get('id') is string else store_data.get('id') %}
+{% set temp = store_data.get('temperature') %}
+{% set humidity = store_data.get('relativeHumidity') %}
 {% set temp_num = temp|float if temp is not none else none %}
 {% set humidity_num = humidity|float if humidity is not none else none %}
 {% set temp_state = 'normal' %}
@@ -18,10 +21,10 @@
 </section>
 
 <section class="detail-grid">
-  <article class="detail-media">
-    {% if store.image %}
-      <div class="media-frame media-frame-large">
-        <img data-fallback-image src="{{ store.image }}" alt="{{ store.name }}" width="520" height="300" loading="lazy">
+  <article class="detail-media zoom-figure store-hero-frame">
+    {% if store_data.get('image') %}
+      <div class="media-frame media-frame-large zoom-rotate-frame">
+        <img data-fallback-image src="{{ store_data.get('image') }}" alt="{{ store_data.get('name') }}" width="520" height="300" loading="lazy">
         <div class="img-fallback large is-hidden">No image</div>
       </div>
     {% else %}
@@ -29,30 +32,30 @@
     {% endif %}
   </article>
   <article class="detail-card">
-    <h3>{{ store.name }}</h3>
-    {% set country_code = store.countryCode if store.countryCode is string else '' %}
+    <h3>{{ store_data.get('name') }}</h3>
     {% set country_names = {
       'ES': 'Spain',
       'DE': 'Germany',
       'FR': 'France',
       'EC': 'Ecuador'
     } %}
-    {% set addr = store.address if store.address is mapping else none %}
+    {% set country_code = store_data.get('countryCode') if store_data.get('countryCode') is string else '' %}
+    {% set addr = store_data.get('address') if store_data.get('address') is mapping else none %}
     <dl>
       <dt>{{ _('ID') }}</dt><dd class="mono">{{ simplified_id }}</dd>
-      <dt>{{ _('Country') }}</dt><dd>{{ _(country_names.get(country_code, country_code if country_code else '-')) }}</dd>
+      <dt>{{ _('Country') }}</dt><dd>{{ country_chip(country_code, _(country_names.get(country_code, country_code if country_code else '-'))) }}</dd>
       <dt>{{ _('Country Code') }}</dt><dd class="mono">{{ country_code if country_code else '-' }}</dd>
       <dt>{{ _('URL') }}</dt>
       <dd>
-        {% if store.url %}
-          <a href="{{ store.url }}" target="_blank" rel="noopener noreferrer">{{ store.url }}</a>
+        {% if store_data.get('url') %}
+          <a href="{{ store_data.get('url') }}" target="_blank" rel="noopener noreferrer">{{ store_data.get('url') }}</a>
         {% else %}
           -
         {% endif %}
       </dd>
-      <dt>{{ _('Telephone') }}</dt><dd>{{ store.telephone or '-' }}</dd>
-      <dt>Capacity (m3)</dt><dd>{{ store.capacity if store.capacity is not none else '-' }}</dd>
-      <dt>{{ _('Description') }}</dt><dd>{{ store.description or '-' }}</dd>
+      <dt>{{ _('Telephone') }}</dt><dd>{{ store_data.get('telephone') or '-' }}</dd>
+      <dt>Capacity (m3)</dt><dd>{{ store_data.get('capacity') if store_data.get('capacity') is not none else '-' }}</dd>
+      <dt>{{ _('Description') }}</dt><dd>{{ store_data.get('description') or '-' }}</dd>
       <dt>{{ _('Address') }}</dt>
       <dd>
         {% if addr %}
@@ -89,12 +92,13 @@
   <article class="table-shell tweets-shell">
     <h3>Tweets</h3>
     <ul class="tweet-list">
-      {% if store.tweets is sequence and store.tweets is not string and store.tweets|length > 0 %}
-        {% for tweet in store.tweets %}
+      {% set tweets = store_data.get('tweets') %}
+      {% if tweets is sequence and tweets is not string and tweets|length > 0 %}
+        {% for tweet in tweets %}
         <li><span class="tweet-icon" aria-hidden="true">𝕏</span><span>{{ tweet }}</span></li>
         {% endfor %}
-      {% elif store.tweets %}
-        <li><span class="tweet-icon" aria-hidden="true">𝕏</span><span>{{ store.tweets }}</span></li>
+      {% elif tweets %}
+        <li><span class="tweet-icon" aria-hidden="true">𝕏</span><span>{{ tweets }}</span></li>
       {% else %}
         <li>{{ _('No records') }}</li>
       {% endif %}
@@ -117,7 +121,7 @@
       class="store-map"
       data-lng="{{ coords[0] }}"
       data-lat="{{ coords[1] }}"
-      data-title="{{ store.name }}"
+      data-title="{{ store_data.get('name') }}"
     ></div>
   {% else %}
     <div class="img-fallback large">{{ _('Location unavailable') }}</div>
@@ -158,18 +162,18 @@
       <div class="shelf-actions">
         <details>
           <summary class="button-link secondary">{{ _('Edit Shelf') }}</summary>
-          <form method="post" action="{{ url_for('stores.update_store_shelf_form', store_id=store.id, shelf_id=shelf.id) }}" class="inline-form form-stack">
+          <form method="post" action="{{ url_for('stores.update_store_shelf_form', store_id=store_data.get('id'), shelf_id=shelf.id) }}" class="inline-form form-stack">
             <input type="text" name="name" value="{{ shelf.name }}" required>
             <input type="number" name="maxCapacity" value="{{ shelf.maxCapacity }}" min="1" required>
             <button type="submit">{{ _('Update') }}</button>
           </form>
-          <form method="post" action="{{ url_for('stores.delete_store_shelf_form', store_id=store.id, shelf_id=shelf.id) }}" class="inline-form-inline top-spaced">
+          <form method="post" action="{{ url_for('stores.delete_store_shelf_form', store_id=store_data.get('id'), shelf_id=shelf.id) }}" class="inline-form-inline top-spaced">
             <button type="submit">{{ _('Delete') }}</button>
           </form>
         </details>
         <details>
           <summary class="button-link">{{ _('Add Inventory Item') }}</summary>
-          <form method="post" action="{{ url_for('stores.create_store_inventory', store_id=store.id) }}" class="inline-form form-stack">
+          <form method="post" action="{{ url_for('stores.create_store_inventory', store_id=store_data.get('id')) }}" class="inline-form form-stack">
             <input type="text" name="id" placeholder="urn:ngsi-ld:InventoryItem:NEW001" required>
             <input type="hidden" name="refShelf" value="{{ shelf.id }}">
             <select name="refProduct" required>
@@ -191,8 +195,9 @@
         <span>{{ _('Current Load') }}: <strong>{{ shelf.currentLoad }}</strong> / {{ shelf.maxCapacity }}</span>
         <span>{{ shelf.fillPercent }}%</span>
       </div>
+      {% set shelf_fill_state = 'low' if shelf.fillPercent < 50 else 'mid' if shelf.fillPercent <= 80 else 'high' %}
       <div class="capacity-track" role="progressbar" aria-valuenow="{{ shelf.fillPercent }}" aria-valuemin="0" aria-valuemax="100">
-        <span class="capacity-fill" style="width: {{ shelf.fillPercent }}%;"></span>
+        <span class="capacity-fill {{ shelf_fill_state }}" style="width: {{ shelf.fillPercent }}%;"></span>
       </div>
     </div>
 
@@ -227,7 +232,7 @@
           <td>{{ item.productName }}</td>
           <td class="price-cell product-price" data-product-id="{{ item.refProduct }}" data-product-short="{{ product_short }}">{{ item.productPrice if item.productPrice is not none else '-' }}</td>
           <td>{{ item.productSize or '-' }}</td>
-          <td>{{ item.productColor or '-' }}</td>
+          <td>{{ color_swatch(item.productColor) }}</td>
           <td class="stock-count" data-stock-count="{{ item.stockCount }}">{{ item.stockCount }}</td>
           <td>{{ item.shelfCount }}</td>
           <td class="actions-cell">
