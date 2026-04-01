@@ -38,8 +38,8 @@
       <tr>
         <td>
           {% if store.image %}
-            <div class="media-frame">
-              <img class="table-thumb" data-fallback-image src="{{ store.image }}" alt="{{ store.name }}" width="96" height="64" loading="lazy">
+            <div class="media-frame store-list-zoom-spin-frame">
+              <img class="table-thumb store-list-zoom-spin-image" data-fallback-image src="{{ store.image }}" alt="{{ store.name }}" width="96" height="64" loading="lazy">
               <span class="img-fallback is-hidden">No image</span>
             </div>
           {% else %}
