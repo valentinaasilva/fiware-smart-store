@@ -11,10 +11,21 @@
 
 {% macro country_chip(code, label='') -%}
   {% set country_label = label or code or '-' %}
+  {% set flag_map = {
+    'ES': '🇪🇸',
+    'DE': '🇩🇪',
+    'FR': '🇫🇷',
+    'EC': '🇪🇨'
+  } %}
+  {% set code_upper = code.upper() if code is string else '' %}
   {% if code %}
     <span class="attribute-chip country-chip" title="{{ country_label }}">
-      <i class="fa-solid fa-flag" aria-hidden="true"></i>
-      <span>{{ code }}</span>
+      {% if flag_map.get(code_upper) %}
+        <span class="country-flag-emoji" aria-hidden="true">{{ flag_map.get(code_upper) }}</span>
+      {% else %}
+        <i class="fa-solid fa-flag" aria-hidden="true"></i>
+      {% endif %}
+      <span>{{ country_label }}</span>
     </span>
   {% else %}
     <span class="muted-pill">-</span>
