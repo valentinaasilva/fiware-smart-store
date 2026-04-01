@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'macros/visuals.html' import color_swatch, country_chip, category_chip %}
 
 {% block content %}
 <section class="page-header page-header-inline">
@@ -54,20 +55,11 @@
         </td>
         <td class="mono">{{ product.id.split(':')[-1] if product.id is string else product.id }}</td>
         <td><a class="entity-link" href="{{ url_for('products.get_product', entity_id=product.id) }}">{{ product.name }}</a></td>
-        <td>{{ product.category or '-' }}</td>
+        <td>{{ category_chip(product.category) }}</td>
         <td>{{ product.size or '-' }}</td>
-        <td>
-          {% if product.color %}
-            <span class="color-swatch" style="--swatch-color: {{ product.color }};" aria-label="Color: {{ product.color }}">
-              <span class="color-swatch-dot"></span>
-              <span class="mono">{{ product.color }}</span>
-            </span>
-          {% else %}
-            -
-          {% endif %}
-        </td>
+        <td>{{ color_swatch(product.color) }}</td>
         {% set origin_country = product.originCountry if product.originCountry is string else '' %}
-        <td>{{ _(country_names.get(origin_country, origin_country if origin_country else '-')) }}</td>
+        <td>{{ country_chip(origin_country, _(country_names.get(origin_country, origin_country if origin_country else '-'))) }}</td>
         <td class="price-cell product-price">{{ product.price }}</td>
         <td class="actions-cell">
           <a class="button-link" href="{{ url_for('products.edit_product_page', entity_id=product.id) }}">{{ _('Update') }}</a>

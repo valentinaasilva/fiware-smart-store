@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="page-header page-header-inline">
+  <div>
+    <p class="eyebrow">{{ _('Network view') }}</p>
+    <h2>{{ _('Stores Map') }}</h2>
+    <p class="page-subtitle">{{ _('Leaflet view with clickable store markers and image hover cards.') }}</p>
+  </div>
+  <a class="button-link" href="{{ url_for('stores.list_stores') }}">{{ _('Stores') }}</a>
+</section>
+
+<section class="map-shell map-shell-wide">
+  {% if stores_map %}
+    <div id="stores-map-page" class="stores-map-page" data-markers='{{ stores_map|tojson|safe }}' data-open-store-label="{{ _('Open store detail') }}"></div>
+  {% else %}
+    <div class="img-fallback large">{{ _('No records') }}</div>
+  {% endif %}
+</section>
+{% endblock %}

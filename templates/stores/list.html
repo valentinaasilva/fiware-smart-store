@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'macros/visuals.html' import country_chip %}
 
 {% block content %}
 <section class="page-header page-header-inline">
@@ -48,7 +49,7 @@
         <td class="mono">{{ store.id.split(':')[-1] if store.id is string else store.id }}</td>
         <td><a class="entity-link" href="{{ url_for('stores.get_store', entity_id=store.id) }}">{{ store.name }}</a></td>
         {% set country_code = store.countryCode if store.countryCode is string else '' %}
-        <td>{{ _(country_names.get(country_code, country_code if country_code else '-')) }}</td>
+        <td>{{ country_chip(country_code, _(country_names.get(country_code, country_code if country_code else '-'))) }}</td>
         <td class="mono">{{ country_code if country_code else '-' }}</td>
         <td>
           {% if store.url %}
@@ -59,8 +60,8 @@
         </td>
         <td>{{ store.telephone or '-' }}</td>
         <td>{{ store.capacity if store.capacity is not none else '-' }}</td>
-        <td>{{ store.temperature if store.temperature is not none else '-' }}</td>
-        <td>{{ store.relativeHumidity if store.relativeHumidity is not none else '-' }}</td>
+        <td><span class="mini-metric"><i class="fa-solid fa-temperature-half" aria-hidden="true"></i><span>{{ store.temperature if store.temperature is not none else '-' }}</span></span></td>
+        <td><span class="mini-metric"><i class="fa-solid fa-droplet" aria-hidden="true"></i><span>{{ store.relativeHumidity if store.relativeHumidity is not none else '-' }}</span></span></td>
         <td class="actions-cell">
           <a class="button-link" href="{{ url_for('stores.edit_store_page', entity_id=store.id) }}">{{ _('Update') }}</a>
           <form method="post" action="{{ url_for('stores.delete_store_form', entity_id=store.id) }}" data-confirm-message="{{ _('Delete') }} {{ store.name }}?">

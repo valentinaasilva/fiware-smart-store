@@ -57,6 +57,7 @@ body.theme-dark {
   position: sticky;
   top: 0;
   height: 100vh;
+  overflow-y: auto;
 }
 
 .brand-link {
@@ -119,6 +120,8 @@ body.theme-dark {
 
 .nav-icon {
   font-size: 0.95rem;
+  width: 1rem;
+  text-align: center;
 }
 
 .sidebar-footer {
@@ -180,6 +183,9 @@ body.theme-dark {
   justify-content: space-between;
   gap: 1rem;
   padding: 0.8rem 1.3rem;
+  position: sticky;
+  top: 0;
+  z-index: 20;
 }
 
 .search-wrap {
@@ -472,6 +478,28 @@ tr:last-child td {
   height: 72px;
 }
 
+.media-frame {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.media-frame img {
+  transition: transform 220ms ease;
+}
+
+.zoom-figure .media-frame:hover img,
+.zoom-figure-inner:hover img {
+  transform: scale(1.08);
+}
+
+.store-hero-frame .media-frame:hover img {
+  animation: store-zoom-spin 750ms ease-out 1;
+  transform: scale(1.1) rotate(360deg);
+}
+
 .entity-link {
   color: var(--green-900);
   text-decoration: none;
@@ -561,11 +589,115 @@ dd {
   padding: 0.8rem;
 }
 
+.map-shell-wide {
+  padding: 0.8rem;
+}
+
 .store-map {
   width: 100%;
   min-height: 340px;
   border: 1px solid var(--line);
   border-radius: 12px;
+}
+
+.stores-map-page {
+  width: 100%;
+  min-height: 72vh;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.leaflet-container {
+  font: inherit;
+}
+
+.store-map-marker-icon {
+  background: transparent;
+  border: 0;
+}
+
+.store-map-marker-frame {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+  box-shadow: 0 12px 24px rgba(15, 28, 22, 0.28);
+  background: var(--surface);
+}
+
+.store-map-marker-frame img,
+.store-map-marker-fallback {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.store-map-marker-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--green-100), var(--surface));
+  color: var(--green-900);
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.store-map-popup .leaflet-popup-content-wrapper {
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 0;
+  background: transparent;
+  box-shadow: var(--shadow);
+}
+
+.store-map-popup .leaflet-popup-content {
+  margin: 0;
+}
+
+.store-marker-card {
+  width: 250px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.store-marker-media {
+  width: 100%;
+  height: 136px;
+  overflow: hidden;
+}
+
+.store-marker-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.store-marker-body {
+  padding: 0.85rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.store-marker-body h4 {
+  margin: 0;
+  color: var(--green-900);
+  font-size: 1rem;
+}
+
+.store-marker-meta {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+.store-marker-actions {
+  margin-top: 0.2rem;
+  color: var(--green-700);
+  font-weight: 800;
 }
 
 .img-fallback {
@@ -598,6 +730,67 @@ dd {
 
 .is-hidden {
   display: none !important;
+}
+
+.page-subtitle {
+  margin: 0.25rem 0 0;
+  color: var(--text-muted);
+}
+
+.mini-metric,
+.attribute-chip,
+.muted-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.mini-metric {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.attribute-chip,
+.muted-pill {
+  border-radius: 999px;
+  padding: 0.28rem 0.58rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.attribute-chip {
+  border: 1px solid var(--line);
+  background: var(--surface-soft);
+  color: var(--green-900);
+  white-space: nowrap;
+}
+
+.chip-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.country-chip i,
+.category-chip i,
+.skill-chip i {
+  font-size: 0.88rem;
+}
+
+.color-swatch.compact {
+  gap: 0.3rem;
+  padding: 0.1rem 0;
+}
+
+.color-swatch.compact .color-swatch-dot {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.muted-pill {
+  border: 1px dashed var(--line);
+  background: transparent;
+  color: var(--text-muted);
 }
 
 form {
@@ -1060,6 +1253,29 @@ textarea:focus {
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, #2fc77b 0%, #0aa64f 100%);
+  transition: width 220ms ease, background 220ms ease, transform 220ms ease;
+}
+
+.capacity-fill.low {
+  background: linear-gradient(90deg, #7bd68f 0%, #2f9d58 100%);
+}
+
+.capacity-fill.mid {
+  background: linear-gradient(90deg, #ffd36b 0%, #f0a91a 100%);
+}
+
+.capacity-fill.high {
+  background: linear-gradient(90deg, #ff9b90 0%, #d63939 100%);
+}
+
+@keyframes store-zoom-spin {
+  from {
+    transform: scale(1) rotate(0deg);
+  }
+
+  to {
+    transform: scale(1.1) rotate(360deg);
+  }
 }
 
 @media (max-width: 1120px) {

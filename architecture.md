@@ -18,6 +18,8 @@
 
 ### ES
 - 2026-03-31: Issue #16 completado: vista Store reorganizada en bloques funcionales (mapa, condiciones ambientales, tweets, notificaciones, inventario por shelf y escena 3D basica con Three.js). Se introduce endpoint de compra por InventoryItem y operacion incremental Orion-first con fallback SQLite.
+- 2026-04-01: La vista Store usa acceso seguro a atributos opcionales de telemetria externa para evitar errores 500 cuando `temperature`, `relativeHumidity` o `tweets` no estan presentes.
+- 2026-04-01: Issue #17 completado: se añade una ruta dedicada `/stores-map` con marcadores Leaflet enriquecidos por imagen, tarjetas flotantes y click-through al detalle; la navegacion lateral pasa a usar Font Awesome global; los efectos de hover y los estados de progreso de Shelf quedan resueltos por CSS compartido sin cambiar la capa NGSI.
 - 2026-03-31: Issue #14 completado: refinamiento de arquitectura de presentacion front-end con separacion estricta HTML/CSS/JS, modulo `static/js/image-fallback.js`, patron CSS reusable `.color-swatch`, animaciones sincronizadas por evento `animationend`, y atributos ARIA para accesibilidad.
 - 2026-03-31: Issue #13 completado: arquitectura de notificaciones en tiempo real con suscripciones Orion->webhooks normalizados->SocketIO->actualizacion dinamica DOM. Flujos detallados de price_changed y low_stock con eventos NGSIv2, normalizacion de payloads y animaciones visuales (highlight-flash, alert-low-stock).
 - 2026-03-30: Issue #11: providers externos de Store desacoplados por atributo y servidos por blueprint interno `routes/providers.py`; registro por Store en bootstrap Orion y alta de tienda.
@@ -29,6 +31,8 @@
 
 ### EN
 - 2026-03-31: Issue #16 completed: Store view reorganized into functional blocks (map, environmental conditions, tweets, notifications, shelf-grouped inventory, and basic Three.js 3D scene). A per-InventoryItem buy endpoint and Orion-first incremental operation with SQLite fallback were added.
+- 2026-04-01: Store view now uses safe access to optional external telemetry attributes to prevent 500 errors when `temperature`, `relativeHumidity`, or `tweets` are absent.
+- 2026-04-01: Issue #17 completed: a dedicated `/stores-map` route adds Leaflet markers enriched with images, hover cards, and click-through navigation to store details; the sidebar navigation now uses global Font Awesome; shelf fill states and hover effects are handled through shared CSS without changing the NGSI layer.
 - 2026-03-31: Issue #14 completed: presentation-layer architecture refinement with strict HTML/CSS/JS separation, `static/js/image-fallback.js` module, reusable `.color-swatch` CSS pattern, `animationend`-driven animation synchronization, and ARIA accessibility attributes.
 - 2026-03-31: Issue #13 completed: real-time notification architecture with Orion subscriptions->normalized webhooks->SocketIO->dynamic DOM updates. Detailed flows for price_changed and low_stock with NGSIv2 events, payload normalization, and visual animations (highlight-flash, alert-low-stock).
 - 2026-03-30: Issue #11: Store external providers split by attribute and served by internal `routes/providers.py` blueprint; registrations created per Store on Orion bootstrap and store creation.

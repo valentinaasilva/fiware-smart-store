@@ -18,7 +18,7 @@ def test_dashboard_loads():
     assert b"fiware-smart-store" in response.data
 
 
-def test_main_navigation_has_four_primary_views():
+def test_main_navigation_has_five_primary_views():
     app = create_app()
     client = app.test_client()
 
@@ -29,6 +29,7 @@ def test_main_navigation_has_four_primary_views():
     assert b'href="/stores' in body
     assert b'href="/products' in body
     assert b'href="/employees' in body
+    assert b'href="/stores-map"' in body
 
 
 def test_stores_endpoint_json():
@@ -63,6 +64,16 @@ def test_store_detail_contains_leaflet_map_container():
     detail = client.get(f"/stores/{store_id}")
     assert detail.status_code == 200
     assert b'id="store-map"' in detail.data
+
+
+def test_stores_map_page_loads():
+    app = create_app()
+    client = app.test_client()
+
+    response = client.get("/stores-map")
+
+    assert response.status_code == 200
+    assert b'id="stores-map-page"' in response.data
 
 
 def test_language_toggle_spanish_persists_in_session():

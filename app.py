@@ -49,6 +49,9 @@ def _build_store_markers(selector: DataSourceSelector) -> list[dict]:
         store_id = store.get("id")
         name = _unwrap_attr(store.get("name"))
         address = _unwrap_attr(store.get("address"))
+        country_code = _unwrap_attr(store.get("countryCode")) or ""
+        image = _unwrap_attr(store.get("image")) or ""
+        description = _unwrap_attr(store.get("description")) or ""
         location = _unwrap_attr(store.get("location"))
         coords = location.get("coordinates") if isinstance(location, dict) else None
         if not isinstance(coords, list) or len(coords) != 2:
@@ -66,6 +69,10 @@ def _build_store_markers(selector: DataSourceSelector) -> list[dict]:
                 "id": store_id,
                 "name": name or store_id,
                 "address": address,
+                "countryCode": country_code,
+                "image": image,
+                "description": description,
+                "detailUrl": url_for("stores.get_store", entity_id=store_id),
                 "lat": lat,
                 "lng": lng,
             }
@@ -244,6 +251,13 @@ def create_app() -> Flask:
             stores_map=_build_store_markers(selector),
             managed_stores=_build_store_management_rows(selector),
             featured_offers=_build_featured_offers(selector),
+        )
+
+    @app.get("/stores-map")
+    def stores_map():
+        return render_template(
+            "stores/map.html",
+            stores_map=_build_store_markers(selector),
         )
 
     return app

@@ -43,6 +43,150 @@
 		}
 	}
 
+	function escapeHtml(value) {
+		return String(value || "").replace(/[&<>"']/g, function (character) {
+			const entities = {
+				"&": "&amp;",
+				"<": "&lt;",
+				">": "&gt;",
+				'"': "&quot;",
+				"'": "&#39;",
+			};
+			return entities[character] || character;
+		});
+	}
+
+	function buildStoreAddressLine(marker) {
+		if (!marker || !marker.address) {
+			return "";
+		}
+
+		if (typeof marker.address === "string") {
+			return marker.address;
+		}
+
+		const parts = [];
+		if (marker.address.streetAddress) {
+			parts.push(marker.address.streetAddress);
+		}
+		if (marker.address.addressLocality) {
+			parts.push(marker.address.addressLocality);
+		}
+		if (marker.address.addressRegion) {
+			parts.push(marker.address.addressRegion);
+		}
+		return parts.join(", ");
+	}
+
+	function getStoreMarkerIcon(marker) {
+		const image = marker && marker.image ? escapeHtml(marker.image) : "";
+		const name = marker && marker.name ? escapeHtml(marker.name) : "Store";
+		const fallback = escapeHtml(String(name).slice(0, 1).toUpperCase() || "S");
+		const content = image
+			? `<img src="${image}" alt="${name}">`
+			: `<span class="store-map-marker-fallback">${fallback}</span>`;
+
+		return window.L.divIcon({
+			className: "store-map-marker-icon",
+			html: `<div class="store-map-marker-frame">${content}</div>`,
+			iconSize: [58, 58],
+			iconAnchor: [29, 50],
+			popupAnchor: [0, -44],
+		});
+	}
+
+	function buildStorePopupHtml(marker, openLabel) {
+		const name = escapeHtml((marker && marker.name) || "Store");
+		const detailUrl = escapeHtml((marker && marker.detailUrl) || "#");
+		const image = marker && marker.image ? `<div class="store-marker-media"><img src="${escapeHtml(marker.image)}" alt="${name}"></div>` : "";
+		const address = escapeHtml(buildStoreAddressLine(marker) || "-");
+		const countryCode = escapeHtml((marker && marker.countryCode) || "-");
+		const description = escapeHtml((marker && marker.description) || "");
+ 		const linkLabel = escapeHtml(openLabel || "Open store detail");
+
+		return `
+			<div class="store-marker-card">
+				${image}
+				<div class="store-marker-body">
+					<h4>${name}</h4>
+					<div class="store-marker-meta">
+						<span><i class="fa-solid fa-location-dot" aria-hidden="true"></i> ${address}</span>
+						<span><i class="fa-solid fa-flag" aria-hidden="true"></i> ${countryCode}</span>
+						${description ? `<span>${description}</span>` : ""}
+					</div>
+					<div class="store-marker-actions"><a href="${detailUrl}">${linkLabel}</a></div>
+				</div>
+			</div>
+		`;
+	}
+
+	function initLeafletStoreMap(mapNode, options) {
+		if (!mapNode || typeof window.L === "undefined") {
+			return;
+		}
+
+		let markers;
+		try {
+			markers = JSON.parse(mapNode.dataset.markers || "[]");
+		} catch (_error) {
+			return;
+		}
+
+		if (!Array.isArray(markers) || markers.length === 0) {
+			return;
+		}
+
+		const firstMarker = markers[0];
+		const map = window.L.map(mapNode).setView([firstMarker.lat, firstMarker.lng], options.defaultZoom || 5);
+		window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+			maxZoom: 19,
+			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+		}).addTo(map);
+
+		const bounds = [];
+		markers.forEach(function (marker) {
+			if (
+				!marker ||
+				typeof marker.lat !== "number" ||
+				typeof marker.lng !== "number" ||
+				marker.lat < -90 || marker.lat > 90 ||
+				marker.lng < -180 || marker.lng > 180
+			) {
+				return;
+			}
+
+			bounds.push([marker.lat, marker.lng]);
+			const leafletMarker = window.L.marker([marker.lat, marker.lng], {
+				icon: getStoreMarkerIcon(marker),
+				riseOnHover: true,
+			}).addTo(map);
+
+			leafletMarker.bindPopup(buildStorePopupHtml(marker, options.openLabel), {
+				closeButton: false,
+				autoPan: true,
+				className: "store-map-popup",
+			});
+
+			leafletMarker.on("mouseover", function () {
+				this.openPopup();
+			});
+			leafletMarker.on("mouseout", function () {
+				this.closePopup();
+			});
+			leafletMarker.on("click", function () {
+				if (marker.detailUrl) {
+					window.location.href = marker.detailUrl;
+				}
+			});
+		});
+
+		if (options.fitBounds !== false && bounds.length > 1) {
+			map.fitBounds(bounds, { padding: [20, 20] });
+		}
+
+		return map;
+	}
+
 	function initStoreMap() {
 		const mapNode = document.getElementById("store-map");
 		if (!mapNode || typeof window.L === "undefined") {
@@ -72,51 +216,20 @@
 
 	function initDashboardStoresMap() {
 		const mapNode = document.getElementById("dashboard-stores-map");
-		if (!mapNode || typeof window.L === "undefined") {
-			return;
-		}
-
-		const rawMarkers = mapNode.dataset.markers || "[]";
-		let markers;
-
-		try {
-			markers = JSON.parse(rawMarkers);
-		} catch (error) {
-			return;
-		}
-
-		if (!Array.isArray(markers) || markers.length === 0) {
-			return;
-		}
-
-		const first = markers[0];
-		const map = window.L.map(mapNode).setView([first.lat, first.lng], 5);
-		window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-			maxZoom: 19,
-			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-		}).addTo(map);
-
-		const bounds = [];
-		markers.forEach(function (marker) {
-			if (
-				!marker ||
-				typeof marker.lat !== "number" ||
-				typeof marker.lng !== "number"
-			) {
-				return;
-			}
-
-			if (marker.lat < -90 || marker.lat > 90 || marker.lng < -180 || marker.lng > 180) {
-				return;
-			}
-
-			bounds.push([marker.lat, marker.lng]);
-			window.L.marker([marker.lat, marker.lng]).addTo(map).bindPopup(marker.name || "Store");
+		initLeafletStoreMap(mapNode, {
+			defaultZoom: 5,
+			fitBounds: true,
+			openLabel: mapNode ? mapNode.dataset.openStoreLabel : "",
 		});
+	}
 
-		if (bounds.length > 1) {
-			map.fitBounds(bounds, { padding: [20, 20] });
-		}
+	function initStoresMapPage() {
+		const mapNode = document.getElementById("stores-map-page");
+		initLeafletStoreMap(mapNode, {
+			defaultZoom: 6,
+			fitBounds: true,
+			openLabel: mapNode ? mapNode.dataset.openStoreLabel : "",
+		});
 	}
 
 	function initStoreImmersiveScene() {
@@ -1001,6 +1114,7 @@
 		initThemeToggle();
 		initStoreMap();
 		initDashboardStoresMap();
+		initStoresMapPage();
 		initStoreImmersiveScene();
 		initMermaidDiagrams();
 		initConfirmForms();
