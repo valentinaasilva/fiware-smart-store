@@ -95,14 +95,13 @@
 		});
 	}
 
-	function buildStorePopupHtml(marker, openLabel) {
+	function buildStoreHoverCardHtml(marker, openLabel) {
 		const name = escapeHtml((marker && marker.name) || "Store");
-		const detailUrl = escapeHtml((marker && marker.detailUrl) || "#");
 		const image = marker && marker.image ? `<div class="store-marker-media"><img src="${escapeHtml(marker.image)}" alt="${name}"></div>` : "";
 		const address = escapeHtml(buildStoreAddressLine(marker) || "-");
 		const countryCode = escapeHtml((marker && marker.countryCode) || "-");
 		const description = escapeHtml((marker && marker.description) || "");
- 		const linkLabel = escapeHtml(openLabel || "Open store detail");
+		const hintLabel = escapeHtml(openLabel || "Open store detail");
 
 		return `
 			<div class="store-marker-card">
@@ -114,10 +113,47 @@
 						<span><i class="fa-solid fa-flag" aria-hidden="true"></i> ${countryCode}</span>
 						${description ? `<span>${description}</span>` : ""}
 					</div>
-					<div class="store-marker-actions"><a href="${detailUrl}">${linkLabel}</a></div>
+					<div class="store-marker-actions"><span>${hintLabel}</span></div>
 				</div>
 			</div>
 		`;
+	}
+
+	function positionStoreHoverCard(cardNode, map, lat, lng) {
+		if (!cardNode || !map) {
+			return;
+		}
+
+		const mapSize = map.getSize();
+		const point = map.latLngToContainerPoint([lat, lng]);
+		const pad = 10;
+		const gap = 14;
+
+		cardNode.classList.add("is-visible");
+		cardNode.style.left = "0px";
+		cardNode.style.top = "0px";
+
+		const cardWidth = cardNode.offsetWidth;
+		const cardHeight = cardNode.offsetHeight;
+
+		let left = point.x + gap;
+		if (left + cardWidth > mapSize.x - pad) {
+			left = point.x - cardWidth - gap;
+		}
+		if (left < pad) {
+			left = pad;
+		}
+
+		let top = point.y - cardHeight - gap;
+		if (top < pad) {
+			top = point.y + gap;
+		}
+		if (top + cardHeight > mapSize.y - pad) {
+			top = Math.max(pad, mapSize.y - cardHeight - pad);
+		}
+
+		cardNode.style.left = `${Math.round(left)}px`;
+		cardNode.style.top = `${Math.round(top)}px`;
 	}
 
 	function initLeafletStoreMap(mapNode, options) {
@@ -143,6 +179,11 @@
 			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 		}).addTo(map);
 
+		const hoverCard = document.createElement("div");
+		hoverCard.className = "store-map-hover-card";
+		mapNode.appendChild(hoverCard);
+		let activeMarkerData = null;
+
 		const bounds = [];
 		markers.forEach(function (marker) {
 			if (
@@ -161,24 +202,26 @@
 				riseOnHover: true,
 			}).addTo(map);
 
-			leafletMarker.bindPopup(buildStorePopupHtml(marker, options.openLabel), {
-				closeButton: false,
-				autoPan: false,
-				keepInView: false,
-				className: "store-map-popup",
-			});
-
 			leafletMarker.on("mouseover", function () {
-				this.openPopup();
+				activeMarkerData = marker;
+				hoverCard.innerHTML = buildStoreHoverCardHtml(marker, options.openLabel);
+				positionStoreHoverCard(hoverCard, map, marker.lat, marker.lng);
 			});
 			leafletMarker.on("mouseout", function () {
-				this.closePopup();
+				activeMarkerData = null;
+				hoverCard.classList.remove("is-visible");
 			});
 			leafletMarker.on("click", function () {
 				if (marker.detailUrl) {
 					window.location.href = marker.detailUrl;
 				}
 			});
+		});
+
+		map.on("zoom move", function () {
+			if (activeMarkerData) {
+				positionStoreHoverCard(hoverCard, map, activeMarkerData.lat, activeMarkerData.lng);
+			}
 		});
 
 		if (options.fitBounds !== false && bounds.length > 1) {

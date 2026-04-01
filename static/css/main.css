@@ -698,16 +698,19 @@ dd {
   font-weight: 900;
 }
 
-.store-map-popup .leaflet-popup-content-wrapper {
-  border-radius: 16px;
-  overflow: hidden;
-  padding: 0;
-  background: transparent;
-  box-shadow: var(--shadow);
+.store-map-hover-card {
+  position: absolute;
+  z-index: 850;
+  width: 250px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 140ms ease, transform 140ms ease;
 }
 
-.store-map-popup .leaflet-popup-content {
-  margin: 0;
+.store-map-hover-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .store-marker-card {
