@@ -21,9 +21,9 @@
 </section>
 
 <section class="detail-grid">
-  <article class="detail-media zoom-figure store-hero-frame">
+  <article class="detail-media store-hero-frame">
     {% if store_data.get('image') %}
-      <div class="media-frame media-frame-large zoom-rotate-frame">
+      <div class="media-frame media-frame-large">
         <img data-fallback-image src="{{ store_data.get('image') }}" alt="{{ store_data.get('name') }}" width="520" height="300" loading="lazy">
         <div class="img-fallback large is-hidden">No image</div>
       </div>
