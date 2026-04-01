@@ -78,9 +78,9 @@
 		return parts.join(", ");
 	}
 
-	function getStoreMarkerIcon(marker) {
+	function getStoreMarkerIcon(marker, storeLabel) {
 		const image = marker && marker.image ? escapeHtml(marker.image) : "";
-		const name = marker && marker.name ? escapeHtml(marker.name) : "Store";
+		const name = marker && marker.name ? escapeHtml(marker.name) : escapeHtml(storeLabel || "Store");
 		const fallback = escapeHtml(String(name).slice(0, 1).toUpperCase() || "S");
 		const content = image
 			? `<img src="${image}" alt="${name}">`
@@ -95,8 +95,8 @@
 		});
 	}
 
-	function buildStoreHoverCardHtml(marker, openLabel) {
-		const name = escapeHtml((marker && marker.name) || "Store");
+	function buildStoreHoverCardHtml(marker, openLabel, storeLabel) {
+		const name = escapeHtml((marker && marker.name) || storeLabel || "Store");
 		const image = marker && marker.image ? `<div class="store-marker-media"><img src="${escapeHtml(marker.image)}" alt="${name}"></div>` : "";
 		const address = escapeHtml(buildStoreAddressLine(marker) || "-");
 		const countryCode = escapeHtml((marker && marker.countryCode) || "-");
@@ -198,13 +198,13 @@
 
 			bounds.push([marker.lat, marker.lng]);
 			const leafletMarker = window.L.marker([marker.lat, marker.lng], {
-				icon: getStoreMarkerIcon(marker),
+				icon: getStoreMarkerIcon(marker, options.storeLabel),
 				riseOnHover: true,
 			}).addTo(map);
 
 			leafletMarker.on("mouseover", function () {
 				activeMarkerData = marker;
-				hoverCard.innerHTML = buildStoreHoverCardHtml(marker, options.openLabel);
+				hoverCard.innerHTML = buildStoreHoverCardHtml(marker, options.openLabel, options.storeLabel);
 				positionStoreHoverCard(hoverCard, map, marker.lat, marker.lng);
 			});
 			leafletMarker.on("mouseout", function () {
@@ -239,7 +239,7 @@
 
 		const lat = parseFloat(mapNode.dataset.lat || "");
 		const lng = parseFloat(mapNode.dataset.lng || "");
-		const title = mapNode.dataset.title || "Store";
+		const title = mapNode.dataset.title || mapNode.dataset.storeLabel || "Store";
 
 		if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
 			return;
@@ -264,6 +264,7 @@
 			defaultZoom: 5,
 			fitBounds: true,
 			openLabel: mapNode ? mapNode.dataset.openStoreLabel : "",
+			storeLabel: mapNode ? mapNode.dataset.storeLabel : "",
 		});
 	}
 
@@ -273,6 +274,7 @@
 			defaultZoom: 6,
 			fitBounds: true,
 			openLabel: mapNode ? mapNode.dataset.openStoreLabel : "",
+			storeLabel: mapNode ? mapNode.dataset.storeLabel : "",
 		});
 	}
 
@@ -281,6 +283,47 @@
 		if (!sceneNode) {
 			return;
 		}
+		const t = function (key, fallback) {
+			const value = sceneNode.dataset[key];
+			return value ? value : fallback;
+		};
+		const labels = {
+			loadingScene: t("loadingScene", "Loading 3D scene..."),
+			unableLayout: t("unableLayout", "Unable to load 3D layout."),
+			webglDisabled: t("webglDisabled", "WebGL is disabled in this browser. Enable hardware acceleration to view 3D."),
+			rendererError: t("rendererError", "Unable to initialize 3D renderer in this browser."),
+			threejsError: t("threejsError", "Unable to load Three.js assets. Check network/CSP configuration."),
+			unavailableBrowserNote: t("unavailableBrowserNote", "3D unavailable in this browser. Inventory overview remains available."),
+			rendererFailedNote: t("rendererFailedNote", "3D renderer initialization failed. Inventory overview remains available."),
+			assetsUnavailableNote: t("assetsUnavailableNote", "3D assets unavailable. Inventory overview remains available."),
+			mainAisle: t("mainAisle", "Main aisle"),
+			shelfPrefix: t("shelfPrefix", "Shelf"),
+			productLabel: t("productLabel", "Product"),
+			resume: t("resume", "Resume"),
+			pause: t("pause", "Pause"),
+			firstPersonOn: t("firstPersonOn", "First-Person: On"),
+			firstPersonOff: t("firstPersonOff", "First-Person: Off"),
+			tourRunning: t("tourRunning", "Tour running"),
+			stopLabel: t("stop", "Stop"),
+			tourPaused: t("tourPaused", "Tour paused"),
+			tourIdle: t("tourIdle", "Tour idle"),
+			tourStoppedFirstPerson: t("tourStoppedFirstPerson", "Tour stopped (first-person mode)"),
+			firstPersonEnabled: t("firstPersonEnabled", "First-person mode enabled (WASD move, Q/E turn)"),
+			orbitEnabled: t("orbitEnabled", "Orbit mode enabled"),
+			tourStoppedManualCamera: t("tourStoppedManualCamera", "Tour stopped (manual camera control)"),
+			tourStoppedManualZoom: t("tourStoppedManualZoom", "Tour stopped (manual zoom)"),
+			firstPersonNavigationActive: t("firstPersonNavigationActive", "First-person navigation active"),
+			orbitNavigationActive: t("orbitNavigationActive", "Orbit manual navigation active"),
+			controlsHint: t("controlsHint", "Controls: drag to orbit, wheel to zoom, Start Tour for cinematic route, or enable first-person (WASD move, Q/E turn)."),
+			shelfUnits: t("shelfUnits", "Shelf units"),
+			totalStock: t("totalStock", "Total stock"),
+			shelfKey: t("shelfKey", "Shelf"),
+			stockKey: t("stockKey", "Stock"),
+			inspectorHeading: t("inspectorHeading", "Shelf Product Overview"),
+			emptyShelvesProducts: t("emptyShelvesProducts", "No shelves or products available."),
+			loadFormat: t("loadFormat", "Load {current} / {max} ({percent}%)"),
+			noProductsOnShelf: t("noProductsOnShelf", "No products on this shelf."),
+		};
 		const inspectorNode = document.getElementById("immersive-inspector");
 		const tourStartButton = document.getElementById("immersive-tour-start");
 		const tourPauseButton = document.getElementById("immersive-tour-pause");
@@ -290,27 +333,27 @@
 
 		const loadLabel = sceneNode.querySelector(".scene-loading");
 		if (loadLabel) {
-			loadLabel.textContent = "Loading 3D scene...";
+			loadLabel.textContent = labels.loadingScene;
 		}
 
 		let layout = [];
 		try {
 			layout = JSON.parse(sceneNode.dataset.layout || "[]");
 		} catch (_error) {
-			sceneNode.innerHTML = '<p class="scene-loading">Unable to load 3D layout.</p>';
-			renderImmersiveInspector(inspectorNode, []);
+			sceneNode.innerHTML = `<p class="scene-loading">${escapeHtml(labels.unableLayout)}</p>`;
+			renderImmersiveInspector(inspectorNode, [], null, labels);
 			return;
 		}
 
-		renderImmersiveInspector(inspectorNode, layout);
+		renderImmersiveInspector(inspectorNode, layout, null, labels);
 
 		loadThreeWithFallback(sceneNode)
 			.then(function () {
 				if (!isWebGLAvailable()) {
-					sceneNode.innerHTML = '<p class="scene-loading">WebGL is disabled in this browser. Enable hardware acceleration to view 3D.</p>';
+					sceneNode.innerHTML = `<p class="scene-loading">${escapeHtml(labels.webglDisabled)}</p>`;
 					renderImmersiveInspector(inspectorNode, layout, {
-						note: "3D unavailable in this browser. Inventory overview remains available.",
-					});
+						note: labels.unavailableBrowserNote,
+					}, labels);
 					return;
 				}
 
@@ -320,10 +363,10 @@
 				try {
 					renderer = new window.THREE.WebGLRenderer({ antialias: true, alpha: true });
 				} catch (_error) {
-					sceneNode.innerHTML = '<p class="scene-loading">Unable to initialize 3D renderer in this browser.</p>';
+					sceneNode.innerHTML = `<p class="scene-loading">${escapeHtml(labels.rendererError)}</p>`;
 					renderImmersiveInspector(inspectorNode, layout, {
-						note: "3D renderer initialization failed. Inventory overview remains available.",
-					});
+						note: labels.rendererFailedNote,
+					}, labels);
 					return;
 				}
 
@@ -529,7 +572,7 @@
 						theta: 0,
 						radius: 14,
 						phi: 0.95,
-						shelfName: "Main aisle",
+						shelfName: labels.mainAisle,
 					});
 				}
 
@@ -591,7 +634,7 @@
 					if (!tourPauseButton) {
 						return;
 					}
-					tourPauseButton.textContent = tourState.paused ? "Resume" : "Pause";
+					tourPauseButton.textContent = tourState.paused ? labels.resume : labels.pause;
 				}
 
 				function updateCameraModeButton() {
@@ -599,7 +642,7 @@
 						return;
 					}
 					const isFirstPerson = cameraMode === "first-person";
-					cameraModeButton.textContent = isFirstPerson ? "First-Person: On" : "First-Person: Off";
+					cameraModeButton.textContent = isFirstPerson ? labels.firstPersonOn : labels.firstPersonOff;
 					cameraModeButton.classList.toggle("is-active", isFirstPerson);
 				}
 
@@ -629,7 +672,7 @@
 					setPauseLabel();
 					const current = waypoints[tourState.index] || waypoints[0];
 					beginTourSegment(current);
-					setTourStatus(`Tour running - stop ${tourState.index + 1}/${waypoints.length}: ${current.shelfName}`);
+					setTourStatus(`${labels.tourRunning} - ${labels.stopLabel.toLowerCase()} ${tourState.index + 1}/${waypoints.length}: ${current.shelfName}`);
 				}
 
 				function pauseOrResumeTour() {
@@ -640,11 +683,11 @@
 					tourState.paused = !tourState.paused;
 					setPauseLabel();
 					if (tourState.paused) {
-						setTourStatus("Tour paused");
+						setTourStatus(labels.tourPaused);
 						return;
 					}
 					const current = waypoints[tourState.index] || waypoints[0];
-					setTourStatus(`Tour running - stop ${tourState.index + 1}/${waypoints.length}: ${current.shelfName}`);
+					setTourStatus(`${labels.tourRunning} - ${labels.stopLabel.toLowerCase()} ${tourState.index + 1}/${waypoints.length}: ${current.shelfName}`);
 				}
 
 				function resetTour() {
@@ -668,7 +711,7 @@
 					firstPerson.yaw = initialCamera.fpYaw;
 					syncCamera();
 					setPauseLabel();
-					setTourStatus("Tour idle");
+					setTourStatus(labels.tourIdle);
 				}
 
 				if (tourStartButton) {
@@ -686,20 +729,20 @@
 						cameraMode = cameraMode === "first-person" ? "orbit" : "first-person";
 						updateCameraModeButton();
 						if (cameraMode === "first-person") {
-							stopTour("Tour stopped (first-person mode)");
-							setTourStatus("First-person mode enabled (WASD move, Q/E turn)");
+							stopTour(labels.tourStoppedFirstPerson);
+							setTourStatus(labels.firstPersonEnabled);
 						} else {
-							setTourStatus("Orbit mode enabled");
+							setTourStatus(labels.orbitEnabled);
 						}
 						syncCamera();
 					});
 				}
 				updateCameraModeButton();
-				setTourStatus("Tour idle");
+				setTourStatus(labels.tourIdle);
 
 				const label = document.createElement("p");
 				label.className = "scene-hint";
-				label.textContent = "Controls: drag to orbit, wheel to zoom, Start Tour for cinematic route, or enable first-person (WASD move, Q/E turn).";
+				label.textContent = labels.controlsHint;
 				sceneNode.appendChild(label);
 
 				const raycaster = new window.THREE.Raycaster();
@@ -752,7 +795,7 @@
 
 				renderer.domElement.addEventListener("mousemove", function (event) {
 					if (isDragging) {
-						stopTour("Tour stopped (manual camera control)");
+						stopTour(labels.tourStoppedManualCamera);
 						const dx = event.clientX - dragState.x;
 						const dy = event.clientY - dragState.y;
 						hasMoved = hasMoved || Math.abs(dx) > 1 || Math.abs(dy) > 1;
@@ -771,10 +814,10 @@
 					const hit = pointerFromEvent(event);
 					if (hit && hit.object && hit.object.userData) {
 						const meta = hit.object.userData;
-						label.textContent = `${meta.shelfName} | ${meta.name} - shelf: ${meta.shelfCount} | stock: ${meta.stockCount}`;
+						label.textContent = `${meta.shelfName} | ${meta.name} - ${labels.shelfKey.toLowerCase()}: ${meta.shelfCount} | ${labels.stockKey.toLowerCase()}: ${meta.stockCount}`;
 						return;
 					}
-					label.textContent = "Controls: drag to orbit, wheel to zoom, Start Tour for cinematic route, or enable first-person (WASD move, Q/E turn).";
+					label.textContent = labels.controlsHint;
 				});
 
 				renderer.domElement.addEventListener("mousedown", function (event) {
@@ -791,7 +834,7 @@
 
 				renderer.domElement.addEventListener("wheel", function (event) {
 					event.preventDefault();
-					stopTour("Tour stopped (manual zoom)");
+					stopTour(labels.tourStoppedManualZoom);
 					if (cameraMode === "first-person") {
 						return;
 					}
@@ -827,7 +870,7 @@
 					if (hit && hit.object) {
 						updateActiveProduct(hit.object);
 						const meta = hit.object.userData || {};
-						label.textContent = `${meta.shelfName} | ${meta.name} - shelf: ${meta.shelfCount} | stock: ${meta.stockCount}`;
+						label.textContent = `${meta.shelfName} | ${meta.name} - ${labels.shelfKey.toLowerCase()}: ${meta.shelfCount} | ${labels.stockKey.toLowerCase()}: ${meta.stockCount}`;
 						return;
 					}
 					updateActiveProduct(null);
@@ -894,7 +937,7 @@
 					}
 					if (moved) {
 						syncCamera();
-						setTourStatus(cameraMode === "first-person" ? "First-person navigation active" : "Orbit manual navigation active");
+						setTourStatus(cameraMode === "first-person" ? labels.firstPersonNavigationActive : labels.orbitNavigationActive);
 					}
 				}
 
@@ -928,7 +971,7 @@
 					cameraControl.phi = lerp(from.phi, to.phi, eased);
 					syncCamera();
 
-					setTourStatus(`Tour running - stop ${tourState.index + 1}/${waypoints.length}: ${targetWaypoint.shelfName}`);
+					setTourStatus(`${labels.tourRunning} - ${labels.stopLabel.toLowerCase()} ${tourState.index + 1}/${waypoints.length}: ${targetWaypoint.shelfName}`);
 
 					if (progress >= 1) {
 						tourState.segmentActive = false;
@@ -958,23 +1001,32 @@
 				});
 			})
 			.catch(function () {
-				sceneNode.innerHTML = '<p class="scene-loading">Unable to load Three.js assets. Check network/CSP configuration.</p>';
+				sceneNode.innerHTML = `<p class="scene-loading">${escapeHtml(labels.threejsError)}</p>`;
 				renderImmersiveInspector(inspectorNode, layout, {
-					note: "3D assets unavailable. Inventory overview remains available.",
-				});
+					note: labels.assetsUnavailableNote,
+				}, labels);
 			});
 	}
 
-	function renderImmersiveInspector(inspectorNode, layout, options) {
+	function renderImmersiveInspector(inspectorNode, layout, options, labels) {
 		if (!inspectorNode) {
 			return;
 		}
+		const i18n = labels || {};
+		const headingLabel = i18n.inspectorHeading || "Shelf Product Overview";
+		const emptyLabel = i18n.emptyShelvesProducts || "No shelves or products available.";
+		const shelfPrefix = i18n.shelfPrefix || "Shelf";
+		const loadFormat = i18n.loadFormat || "Load {current} / {max} ({percent}%)";
+		const noProductsOnShelf = i18n.noProductsOnShelf || "No products on this shelf.";
+		const productLabel = i18n.productLabel || "Product";
+		const shelfUnitsLabel = i18n.shelfUnits || "Shelf units";
+		const totalStockLabel = i18n.totalStock || "Total stock";
 
 		const note = options && options.note ? options.note : "";
 		inspectorNode.innerHTML = "";
 
 		const heading = document.createElement("h4");
-		heading.textContent = "Shelf Product Overview";
+		heading.textContent = headingLabel;
 		inspectorNode.appendChild(heading);
 
 		if (note) {
@@ -987,7 +1039,7 @@
 		if (!Array.isArray(layout) || layout.length === 0) {
 			const emptyNode = document.createElement("p");
 			emptyNode.className = "scene-loading";
-			emptyNode.textContent = "No shelves or products available.";
+			emptyNode.textContent = emptyLabel;
 			inspectorNode.appendChild(emptyNode);
 			return;
 		}
@@ -998,19 +1050,22 @@
 
 			const title = document.createElement("h5");
 			title.className = "immersive-shelf-title";
-			title.textContent = shelf.name || `Shelf ${shelfIndex + 1}`;
+			title.textContent = shelf.name || `${shelfPrefix} ${shelfIndex + 1}`;
 			shelfCard.appendChild(title);
 
 			const meta = document.createElement("p");
 			meta.className = "immersive-shelf-meta";
-			meta.textContent = `Load ${Number(shelf.currentLoad || 0)} / ${Number(shelf.maxCapacity || 0)} (${Number(shelf.fillPercent || 0)}%)`;
+			meta.textContent = loadFormat
+				.replace("{current}", String(Number(shelf.currentLoad || 0)))
+				.replace("{max}", String(Number(shelf.maxCapacity || 0)))
+				.replace("{percent}", String(Number(shelf.fillPercent || 0)));
 			shelfCard.appendChild(meta);
 
 			const products = Array.isArray(shelf.products) ? shelf.products : [];
 			if (products.length === 0) {
 				const none = document.createElement("p");
 				none.className = "immersive-shelf-meta";
-				none.textContent = "No products on this shelf.";
+				none.textContent = noProductsOnShelf;
 				shelfCard.appendChild(none);
 				inspectorNode.appendChild(shelfCard);
 				return;
@@ -1025,11 +1080,11 @@
 				item.dataset.productKey = key;
 
 				const nameNode = document.createElement("strong");
-				nameNode.textContent = product.name || "Product";
+				nameNode.textContent = product.name || productLabel;
 				item.appendChild(nameNode);
 
 				const countsNode = document.createElement("span");
-				countsNode.textContent = `Shelf units: ${Number(product.shelfCount || 0)} | Total stock: ${Number(product.stockCount || 0)}`;
+				countsNode.textContent = `${shelfUnitsLabel}: ${Number(product.shelfCount || 0)} | ${totalStockLabel}: ${Number(product.stockCount || 0)}`;
 				item.appendChild(countsNode);
 				list.appendChild(item);
 			});

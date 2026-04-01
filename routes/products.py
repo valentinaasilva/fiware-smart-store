@@ -1,5 +1,6 @@
-from flask import Blueprint, current_app, jsonify, redirect, render_template, request, url_for
+from flask import Blueprint, current_app, g, jsonify, redirect, render_template, request, url_for
 
+from models.i18n import DEFAULT_LOCALE, translate
 from routes.utils import (
     PRODUCT_CATEGORIES,
     denormalize_ngsi_entities,
@@ -26,21 +27,55 @@ def _as_int(value, default=0):
         return default
 
 
-def _filter_products(products: list[dict], query: str) -> list[dict]:
+def _filter_products(products: list[dict], query: str, locale: str) -> list[dict]:
     q = (query or "").strip().lower()
     if not q:
         return products
 
     filtered = []
     for product in products:
+        translated_name = translate(str(product.get("name", "")), locale)
+        translated_category = translate(str(product.get("category", "")), locale)
         values = [
             str(product.get("id", "")),
             str(product.get("name", "")),
+            translated_name,
             str(product.get("category", "")),
+            translated_category,
             str(product.get("originCountry", "")),
         ]
         if any(q in value.lower() for value in values):
             filtered.append(product)
+    return filtered
+
+
+def _filter_stores(stores: list[dict], query: str) -> list[dict]:
+    q = (query or "").strip().lower()
+    if not q:
+        return stores
+
+    filtered = []
+    for store in stores:
+        address = store.get("address")
+        if isinstance(address, dict):
+            address_text = " ".join(
+                [
+                    str(address.get("streetAddress", "")),
+                    str(address.get("addressLocality", "")),
+                    str(address.get("addressRegion", "")),
+                ]
+            )
+        else:
+            address_text = str(address or "")
+
+        values = [
+            str(store.get("id", "")),
+            str(store.get("name", "")),
+            str(store.get("countryCode", "")),
+            address_text,
+        ]
+        if any(q in value.lower() for value in values):
+            filtered.append(store)
     return filtered
 
 
@@ -143,14 +178,47 @@ def _build_product_detail_context(product_id: str) -> dict:
 
 @products_bp.get("/")
 def list_products():
-    products = denormalize_ngsi_entities(current_app.extensions["data_selector"].list_entities("Product"))
+    selector = current_app.extensions["data_selector"]
+    products = denormalize_ngsi_entities(selector.list_entities("Product"))
     query = request.args.get("q", "").strip()
-    filtered = _filter_products(products, query)
+    locale = getattr(g, "lang", DEFAULT_LOCALE)
+    filtered_products = _filter_products(products, query, locale)
+
+    search_results: list[dict] = []
+    if query:
+        stores = denormalize_ngsi_entities(selector.list_entities("Store"))
+        filtered_stores = _filter_stores(stores, query)
+        search_results = [
+            {
+                "id": product.get("id"),
+                "name": product.get("name") or product.get("id"),
+                "display_name": translate(str(product.get("name") or product.get("id")), locale),
+                "type": "Product",
+                "detail_url": url_for("products.get_product", entity_id=product.get("id")),
+            }
+            for product in filtered_products
+        ] + [
+            {
+                "id": store.get("id"),
+                "name": store.get("name") or store.get("id"),
+                "display_name": store.get("name") or store.get("id"),
+                "type": "Store",
+                "detail_url": url_for("stores.get_store", entity_id=store.get("id")),
+            }
+            for store in filtered_stores
+        ]
+
+        search_results = sorted(
+            search_results,
+            key=lambda row: (row.get("display_name") or row.get("name") or "").lower(),
+        )
+
     if wants_json(request):
-        return jsonify(filtered)
+        return jsonify(filtered_products)
     return render_template(
         "products/list.html",
-        products=filtered,
+        products=filtered_products,
+        search_results=search_results,
         query=query,
         product_categories=sorted(PRODUCT_CATEGORIES),
     )

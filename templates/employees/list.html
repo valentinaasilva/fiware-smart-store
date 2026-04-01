@@ -4,7 +4,7 @@
 {% block content %}
 <section class="page-header page-header-inline">
   <div>
-    <p class="eyebrow">Workforce management</p>
+    <p class="eyebrow">{{ _('Workforce management') }}</p>
     <h2>{{ _('Employees') }}</h2>
   </div>
   <a class="button-link" href="{{ url_for('employees.new_employee_page') }}">{{ _('Add Employee') }}</a>
@@ -17,11 +17,11 @@
         <th>{{ _('Image') }}</th>
         <th>{{ _('ID') }}</th>
         <th>{{ _('Name') }}</th>
-        <th>Email</th>
+        <th>{{ _('Email') }}</th>
         <th>{{ _('Skills') }}</th>
-        <th>Date of Contract</th>
-        <th>Username</th>
-        <th>Password</th>
+        <th>{{ _('Date of Contract') }}</th>
+        <th>{{ _('Username') }}</th>
+        <th>{{ _('Password') }}</th>
         <th>{{ _('Role') }}</th>
         <th>{{ _('Salary') }}</th>
         <th>{{ _('Ref Store') }}</th>
@@ -35,10 +35,10 @@
           {% if employee.image %}
             <div class="media-frame employee-list-zoom-frame">
               <img class="table-thumb product-thumb employee-list-zoom-image" data-fallback-image src="{{ employee.image }}" alt="{{ employee.name }}" width="72" height="72" loading="lazy">
-              <span class="img-fallback is-hidden">No image</span>
+              <span class="img-fallback is-hidden">{{ _('No image') }}</span>
             </div>
           {% else %}
-            <span class="img-fallback">No image</span>
+            <span class="img-fallback">{{ _('No image') }}</span>
           {% endif %}
         </td>
         <td class="mono">{{ employee.id.split(':')[-1] if employee.id is string else employee.id }}</td>
@@ -49,7 +49,7 @@
         <td>{{ employee.username or '-' }}</td>
         <td>{{ employee.password or '-' }}</td>
         <td>{{ employee.role or '-' }}</td>
-        <td class="price-cell">{{ employee.salary if employee.salary is not none else '-' }}</td>
+        <td class="price-cell">{{ '%.2f'|format(employee.salary|float) }}€</td>
         <td class="mono">{{ employee.refStore.split(':')[-1] if employee.refStore is string else (employee.refStore or '-') }}</td>
         <td class="actions-cell">
           <a class="button-link" href="{{ url_for('employees.edit_employee_page', entity_id=employee.id) }}">{{ _('Update') }}</a>

@@ -4,7 +4,7 @@
 {% block content %}
 <section class="page-header page-header-inline">
   <div>
-    <p class="eyebrow">Retail network overview</p>
+    <p class="eyebrow">{{ _('Retail network overview') }}</p>
     <h2>{{ _('Stores') }}</h2>
   </div>
   <a class="button-link" href="{{ url_for('stores.new_store_page') }}">{{ _('Add Store') }}</a>
@@ -17,6 +17,13 @@
     'FR': 'France',
     'EC': 'Ecuador'
   } %}
+  <form method="get" action="{{ url_for('stores.list_stores') }}" class="inline-form search-inline-form">
+    <input type="search" name="q" value="{{ query or '' }}" placeholder="{{ _('Search stores...') }}">
+    <button type="submit">{{ _('Search') }}</button>
+    {% if query %}
+      <a class="button-link secondary" href="{{ url_for('stores.list_stores') }}">{{ _('Clear') }}</a>
+    {% endif %}
+  </form>
   <table>
     <thead>
       <tr role="alert" aria-live="polite">
@@ -27,7 +34,7 @@
         <th>{{ _('Country Code') }}</th>
         <th>{{ _('URL') }}</th>
         <th>{{ _('Telephone') }}</th>
-        <th>Capacity (m3)</th>
+        <th>{{ _('Capacity (m3)') }}</th>
         <th>{{ _('Temperature (°C)') }}</th>
         <th>{{ _('Relative Humidity (%)') }}</th>
         <th>{{ _('Actions') }}</th>
@@ -40,10 +47,10 @@
           {% if store.image %}
             <div class="media-frame store-list-zoom-spin-frame">
               <img class="table-thumb store-list-zoom-spin-image" data-fallback-image src="{{ store.image }}" alt="{{ store.name }}" width="96" height="64" loading="lazy">
-              <span class="img-fallback is-hidden">No image</span>
+              <span class="img-fallback is-hidden">{{ _('No image') }}</span>
             </div>
           {% else %}
-            <span class="img-fallback">No image</span>
+            <span class="img-fallback">{{ _('No image') }}</span>
           {% endif %}
         </td>
         <td class="mono">{{ store.id.split(':')[-1] if store.id is string else store.id }}</td>

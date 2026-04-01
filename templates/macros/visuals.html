@@ -29,7 +29,7 @@
   {% endif %}
 {%- endmacro %}
 
-{% macro category_chip(category) -%}
+{% macro category_chip(category, label='') -%}
   {% set icon_map = {
     'Lacteos': 'fa-solid fa-cheese',
     'Despensa': 'fa-solid fa-boxes-stacked',
@@ -41,7 +41,7 @@
   {% if category %}
     <span class="attribute-chip category-chip">
       <i class="{{ icon_map.get(category, 'fa-solid fa-tag') }}" aria-hidden="true"></i>
-      <span>{{ category }}</span>
+      <span>{{ label or category }}</span>
     </span>
   {% else %}
     <span class="muted-pill">-</span>

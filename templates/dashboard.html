@@ -13,7 +13,7 @@
 </section>
 
 <section class="dashboard-intro">
-  <h3>Panel de Control — Resumen general del estado de la cadena y productos destacados.</h3>
+  <h3>{{ _('Control Panel Title') }}</h3>
 </section>
 
 <section class="dashboard-metrics">
@@ -66,15 +66,15 @@
       <div class="featured-media">
         {% if offer.image %}
         <img data-fallback-image src="{{ offer.image }}" alt="{{ offer.title }}" loading="lazy">
-        <span class="img-fallback is-hidden">No image</span>
+        <span class="img-fallback is-hidden">{{ _('No image') }}</span>
         {% else %}
-        <span class="img-fallback">No image</span>
+        <span class="img-fallback">{{ _('No image') }}</span>
         {% endif %}
       </div>
       <div class="featured-body">
-        <h4>{{ offer.title }}</h4>
-        <p class="featured-price product-price" data-price-prefix="Desde " data-price-suffix="€">{{ '%.2f'|format(offer.from_price) }}</p>
-        <p>{{ offer.description }}</p>
+        <h4>{{ _(offer.title) }}</h4>
+        <p class="featured-price product-price" data-price-prefix="{{ _('From ') }}" data-price-suffix="€">{{ _('From ') }}{{ '%.2f'|format(offer.from_price|float) }}€</p>
+        <p>{{ _(offer.description) }}</p>
       </div>
     </article>
     {% else %}
@@ -111,12 +111,12 @@
 
 <section class="map-shell" id="stores-map">
   <h3>{{ _('Stores Map') }}</h3>
-  <div id="dashboard-stores-map" class="store-map" data-markers='{{ stores_map|tojson|safe }}' data-open-store-label="{{ _('Open store detail') }}"></div>
+  <div id="dashboard-stores-map" class="store-map" data-markers='{{ stores_map|tojson|safe }}' data-open-store-label="{{ _('Open store detail') }}" data-store-label="{{ _('Store') }}"></div>
 </section>
 
 <section class="data-model-uml">
-  <h3>{{ _('Data Model') }} — Entity Relationship Diagram</h3>
-  <p class="subtitle">Schema v1.0 (NGSIv2) — Orion-first Architecture</p>
+  <h3>{{ _('Data Model') }} - {{ _('Entity Relationship Diagram') }}</h3>
+  <p class="subtitle">{{ _('Schema v1.0 (NGSIv2) - Orion-first Architecture') }}</p>
   <div class="mermaid-container">
     <div class="mermaid">
 erDiagram

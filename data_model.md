@@ -17,6 +17,11 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-04-01: Hotfix operativo Linux sin cambios de esquema: se asegura resolucion de `host.docker.internal` en Orion Docker para recuperar flujo de atributos externos de Store (`temperature`, `relativeHumidity`, `tweets`) y eventos NGSIv2 hacia webhooks.
+- 2026-04-01: Issue #20: sin cambios estructurales NGSIv2. El formato con sufijo € se aplica solo en la presentacion para precios de Product, ofertas del dashboard, precios derivados de InventoryItem y salarios de Employee.
+- 2026-04-01: Issue #19: sin cambios estructurales NGSIv2. La UI traduce dinamicamente `Store.description`, `Product.category` y `Product.name` segun idioma, usando mapeos de presentacion y sin modificar datos persistidos.
+- 2026-04-01: Issue #18: sin cambios estructurales NGSIv2. Se documenta nueva capacidad de busqueda transversal Product/Store sobre atributos existentes (`Product.id/name/category/originCountry` y `Store.id/name/countryCode/address`) con etiquetado de tipo en resultados de UI.
+- 2026-04-01: Issue #18: sin cambios de entidades/relaciones. La internacionalizacion completa de UI reutiliza claves de traduccion; no introduce atributos persistidos adicionales en Orion/SQLite.
 - 2026-03-31: Issue #16: se documenta operacion incremental de compra sobre InventoryItem mediante PATCH NGSIv2 en Orion para `stockCount` y `shelfCount`, con degradacion funcional a SQLite cuando Orion no esta disponible.
 - 2026-04-01: Sin cambios en el esquema NGSIv2; la vista de Store trata `temperature`, `relativeHumidity` y `tweets` como atributos opcionales al renderizar cuando el provider externo no responde.
 - 2026-04-01: Issue #17: sin cambios en el esquema NGSIv2. Las mejoras visuales reutilizan `Store.image`, `Store.location`, `Store.countryCode`, `Product.color`, `Product.category`, `Employee.skills` y el calculo derivado de `Shelf.fillPercent` sin introducir entidades ni atributos nuevos.
@@ -30,6 +35,11 @@
 - 2026-03-29: Se añade atributo `Product.category` y se amplian datos semilla de Employee a 12 registros con `dateOfContract` y `username` consistentes.
 
 ### EN
+- 2026-04-01: Linux operational hotfix with no schema changes: `host.docker.internal` resolution is ensured in Orion Docker to restore Store external attributes flow (`temperature`, `relativeHumidity`, `tweets`) and NGSIv2 events to webhooks.
+- 2026-04-01: Issue #20: no NGSIv2 structural changes. The trailing € format is presentation-only for Product prices, dashboard offers, InventoryItem-derived prices, and Employee salaries.
+- 2026-04-01: Issue #19: no NGSIv2 structural changes. The UI dynamically translates `Store.description`, `Product.category`, and `Product.name` by language using presentation-layer mappings only, without modifying persisted data.
+- 2026-04-01: Issue #18: no NGSIv2 structural changes. Added documentation for cross-entity Product/Store search over existing attributes (`Product.id/name/category/originCountry` and `Store.id/name/countryCode/address`) with typed labels in UI results.
+- 2026-04-01: Issue #18: no entity/relationship changes. Full UI internationalization uses translation keys only and introduces no additional persisted attributes in Orion/SQLite.
 - 2026-03-31: Issue #16: documented InventoryItem buy incremental operation via NGSIv2 PATCH in Orion for `stockCount` and `shelfCount`, with functional fallback to SQLite when Orion is unavailable.
 - 2026-04-01: No NGSIv2 schema changes; Store view treats `temperature`, `relativeHumidity`, and `tweets` as optional at render time when the external provider is unavailable.
 - 2026-04-01: Issue #17: no NGSIv2 schema changes. The visual work reuses `Store.image`, `Store.location`, `Store.countryCode`, `Product.color`, `Product.category`, `Employee.skills`, and derived `Shelf.fillPercent` without adding new entities or attributes.

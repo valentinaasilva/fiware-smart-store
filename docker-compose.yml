@@ -27,6 +27,8 @@ services:
     container_name: fiware-orion
     depends_on:
       - mongo-db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - default
     ports:

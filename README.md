@@ -86,3 +86,15 @@ python scripts/load_test_data.py --target sqlite --sqlite-path instance/fiware.d
 - `PROVIDER_BASE_URL`: base del provider externo (NGSI). Default: `http://host.docker.internal:5000`.
 - `WEATHER_PROVIDER_URL`: endpoint NGSI para weather provider de `Store`. Default: `${PROVIDER_BASE_URL}/providers/weather`.
 - `TWEETS_PROVIDER_URL`: endpoint NGSI para tweets provider de `Store`. Default: `${PROVIDER_BASE_URL}/providers/tweets`.
+
+## Troubleshooting Linux
+
+- Si en modo ORION no aparecen `temperature`, `relativeHumidity`, `tweets` o notificaciones realtime, normalmente Orion no puede alcanzar los endpoints de Flask.
+- Este repositorio ya define `extra_hosts: host.docker.internal:host-gateway` en `orion-v2` para resolver ese host en Linux.
+- Tras cambios de compose, reinicia Orion para aplicar networking:
+
+```bash
+docker compose up -d --force-recreate orion-v2
+```
+
+- Si Flask no corre en `:5000`, ajusta `CALLBACK_BASE_URL` y `PROVIDER_BASE_URL` al host/puerto correctos antes de iniciar la app.

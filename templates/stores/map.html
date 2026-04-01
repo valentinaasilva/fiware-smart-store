@@ -12,7 +12,7 @@
 
 <section class="map-shell map-shell-wide">
   {% if stores_map %}
-    <div id="stores-map-page" class="stores-map-page" data-markers='{{ stores_map|tojson|safe }}' data-open-store-label="{{ _('Open store detail') }}"></div>
+    <div id="stores-map-page" class="stores-map-page" data-markers='{{ stores_map|tojson|safe }}' data-open-store-label="{{ _('Open store detail') }}" data-store-label="{{ _('Store') }}"></div>
   {% else %}
     <div class="img-fallback large">{{ _('No records') }}</div>
   {% endif %}

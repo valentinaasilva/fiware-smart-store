@@ -25,6 +25,36 @@ def _as_int(value, default=0):
         return default
 
 
+def _filter_stores(stores: list[dict], query: str) -> list[dict]:
+    q = (query or "").strip().lower()
+    if not q:
+        return stores
+
+    filtered = []
+    for store in stores:
+        address = store.get("address")
+        if isinstance(address, dict):
+            address_text = " ".join(
+                [
+                    str(address.get("streetAddress", "")),
+                    str(address.get("addressLocality", "")),
+                    str(address.get("addressRegion", "")),
+                ]
+            )
+        else:
+            address_text = str(address or "")
+
+        values = [
+            str(store.get("id", "")),
+            str(store.get("name", "")),
+            str(store.get("countryCode", "")),
+            address_text,
+        ]
+        if any(q in value.lower() for value in values):
+            filtered.append(store)
+    return filtered
+
+
 def _is_html_form_request() -> bool:
     return not request.is_json and not wants_json(request)
 
@@ -178,10 +208,12 @@ def _build_store_detail_context(store_id: str) -> dict:
 
 @stores_bp.get("/")
 def list_stores():
-    stores = current_app.extensions["data_selector"].list_entities("Store")
+    query = request.args.get("q", "").strip()
+    stores = denormalize_ngsi_entities(current_app.extensions["data_selector"].list_entities("Store"))
+    filtered = _filter_stores(stores, query)
     if wants_json(request):
-        return jsonify(stores)
-    return render_template("stores/list.html", stores=denormalize_ngsi_entities(stores))
+        return jsonify(filtered)
+    return render_template("stores/list.html", stores=filtered, query=query)
 
 
 @stores_bp.get("")

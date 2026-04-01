@@ -8,7 +8,7 @@
 - Estado: Baseline para implementacion
 - Producto: fiware-smart-store
 - Tipo de documento: Product Requirements Document
-- Última actualización: 2026-03-31 (Issue #16 implementation closure)
+- Última actualización: 2026-04-01 (Issue #20 monetary format consistency)
 
 ### EN
 - Version: 1.0
@@ -16,11 +16,16 @@
 - Status: Baseline for implementation
 - Product: fiware-smart-store
 - Document type: Product Requirements Document
-- Last updated: 2026-03-31 (Issue #16 implementation closure)
+- Last updated: 2026-04-01 (Issue #20 monetary format consistency)
 
 ## 1.1 Change log
 
 ### ES
+- 2026-04-01: Hotfix Linux Docker networking: se agrega `extra_hosts: host.docker.internal:host-gateway` en Orion para asegurar que callbacks NGSI y providers externos de Store sean alcanzables desde el contenedor, restaurando visibilidad de `temperature`, `relativeHumidity` y notificaciones realtime.
+- 2026-04-01: Issue #20 completado: los precios de productos, ofertas y el salario de empleados se muestran de forma consistente con el simbolo € al final en todas las vistas principales y en actualizaciones realtime.
+- 2026-04-01: Issue #19 completado: descripcion de Stores, categorias de productos y nombres de productos se traducen dinamicamente segun idioma seleccionado sin alterar los datos persistidos.
+- 2026-04-01: Issue #18 completado: buscador global ampliado para incluir tiendas ademas de productos, con resultados tipados (Product/Store) y acceso directo al detalle. Se agrega filtro `q` al listado de tiendas para consistencia operativa.
+- 2026-04-01: Issue #18 completado: cobertura bilingue ES/EN reforzada en toda la UI (menus, tablas, botones, placeholders, mensajes de estado/error y textos dinamicos de mapa/escena 3D).
 - 2026-03-31: Issue #16 completado: refinamiento integral de vista Store con inventario agrupado por Shelf (barra de llenado), seccion ambiental con iconografia y semaforo de color, lista de tweets con icono X, panel de notificaciones en vivo, boton de compra por InventoryItem con decremento de `stockCount` y `shelfCount`, fallback Orion->SQLite para operaciones incrementales y cobertura realtime de `price_changed` en vistas de lista/detalle/dashboard/store.
 - 2026-04-01: La vista detail de Store se endurecio para tolerar ausencia de telemetry externa opcional (`temperature`, `relativeHumidity`, `tweets`) sin romper el render.
 - 2026-04-01: Issue #17 completado: mejoras visuales transversales con zoom en hover para Employee y Store, rotacion 360 en la imagen principal de Store, barras de progreso de Shelf con semaforo por porcentaje, tablas compactadas con iconografia Font Awesome, navbar fija con estado activo correcto y nueva vista Stores Map con marcadores Leaflet basados en imagen y acceso directo al detalle.
@@ -34,6 +39,11 @@
 - 2026-03-29: Mejoras operativas: buscador funcional de productos, selector de tema con modo sistema, CRUD directo en listados, categoria de producto y ampliacion de dataset de empleados.
 
 ### EN
+- 2026-04-01: Linux Docker networking hotfix: `extra_hosts: host.docker.internal:host-gateway` was added to Orion so NGSI callbacks and Store external providers are reachable from the container, restoring visibility of `temperature`, `relativeHumidity`, and realtime notifications.
+- 2026-04-01: Issue #20 completed: product prices, featured offers, and employee salaries are displayed consistently with the € symbol at the end across all main views and realtime updates.
+- 2026-04-01: Issue #19 completed: store descriptions, product categories, and product names are translated dynamically according to the selected language without changing persisted data.
+- 2026-04-01: Issue #18 completed: global search expanded to include stores in addition to products, with typed results (Product/Store) and direct detail navigation. `q` filtering was also added to the stores list for operational consistency.
+- 2026-04-01: Issue #18 completed: ES/EN bilingual coverage was reinforced across visible UI text (navigation, table labels, buttons, placeholders, status/error messages, and dynamic map/3D scene copy).
 - 2026-03-31: Issue #16 completed: full Store view refinement with Shelf-grouped inventory (fill progress bar), environmental section with iconography and traffic-light colors, tweets list with X icon, live notifications panel, per-InventoryItem buy action decrementing `stockCount` and `shelfCount`, Orion->SQLite fallback for incremental operations, and broader `price_changed` realtime coverage across list/detail/dashboard/store views.
 - 2026-04-01: Store detail view was hardened to tolerate missing optional external telemetry (`temperature`, `relativeHumidity`, `tweets`) without breaking render.
 - 2026-04-01: Issue #17 completed: cross-cutting visual improvements with hover zoom for Employee and Store, 360-degree rotation on the main Store image, Shelf progress bars with percentage-based color states, Font Awesome compact table iconography, sticky navigation with correct active state, and a new Stores Map view with Leaflet image markers and direct navigation to store details.
@@ -158,11 +168,15 @@ Out of scope:
 - FR-016: Vista detalle store con panel de notificaciones en tiempo real.
 - FR-017: CRUD de shelves desde detalle store.
 - FR-018: CRUD de inventory items desde detalle store.
+- FR-019: Listado de stores debe soportar filtro por `q` (id, nombre, countryCode y direccion) y mantener respuesta JSON/HTML consistente.
 
 #### 6.3 Products
 - FR-020: Listado de productos con imagen, nombre, color, size, categoria y acciones editar/borrar.
 - FR-021: CRUD completo de products con validacion HTML5 y JS.
-- FR-025: Busqueda de productos por nombre, categoria, origen o ID desde cabecera/listado.
+- FR-025: Busqueda global desde cabecera por nombre, categoria, origen o ID para productos y por id/nombre/countryCode/direccion para stores.
+- FR-026: Resultados de busqueda deben mostrar tipo de entidad (Product o Store) y acceso directo al detalle correspondiente.
+- FR-027: La UI debe traducir dinamicamente Store.description, Product.category y Product.name segun el idioma seleccionado, sin mutar los valores NGSIv2 persistidos.
+- FR-028: La UI debe mostrar importes monetarios con el simbolo € al final en listas, detalles, dashboard y actualizaciones realtime.
 - FR-022: Vista detalle product con InventoryItems agrupados por store y shelf.
 - FR-023: CRUD de inventory items desde detalle product.
 - FR-024: Select dinamico de shelves segun store seleccionada.
@@ -184,7 +198,7 @@ Out of scope:
 - FR-047: Dashboard debe mostrar seccion Productos Destacados usando productos reales existentes.
 
 #### 6.6 UX and visual standards
-- FR-050: Soporte bilingue ES/EN en toda la app.
+- FR-050: Soporte bilingue ES/EN en toda la app, incluyendo textos dinamicos renderizados por JavaScript (mapas/escena 3D).
 - FR-051: Selector de tema dark/light/system funcional y persistente.
 - FR-052: Navbar fija en scroll con seccion activa resaltada.
 - FR-053: Efectos visuales priorizan CSS sobre JS.
@@ -219,11 +233,15 @@ Out of scope:
 - FR-016: Store detail page with real-time notifications panel.
 - FR-017: Shelf CRUD from store detail.
 - FR-018: Inventory item CRUD from store detail.
+- FR-019: Stores list must support `q` filtering (id, name, countryCode, and address) while preserving JSON/HTML response behavior.
 
 #### 6.3 Products
 - FR-020: Product list with image, name, color swatch, size, category, edit/delete actions.
 - FR-021: Full product CRUD with HTML5 and JS validation.
-- FR-025: Product search by name, category, origin, or ID from header/list pages.
+- FR-025: Global header search must support products (name/category/origin/ID) and stores (id/name/countryCode/address).
+- FR-026: Search results must clearly display entity type (Product or Store) and provide direct detail navigation.
+- FR-027: The UI must dynamically translate Store.description, Product.category, and Product.name according to the selected language without mutating persisted NGSIv2 values.
+- FR-028: The UI must display monetary amounts with the € symbol at the end in lists, details, dashboard, and realtime updates.
 - FR-022: Product detail with InventoryItems grouped by store and shelf.
 - FR-023: Inventory item CRUD from product detail.
 - FR-024: Dynamic shelf select filtered by selected store.
@@ -245,7 +263,7 @@ Out of scope:
 - FR-047: Dashboard must display a Featured Products section fed by existing real products.
 
 #### 6.6 UX and visual standards
-- FR-050: Full ES/EN bilingual support.
+- FR-050: Full ES/EN bilingual support, including dynamic text rendered by JavaScript (maps/3D scene).
 - FR-051: Functional dark/light/system theme selector persisted across sessions.
 - FR-052: Sticky navbar with active section highlight.
 - FR-053: Visual effects should prioritize CSS over JS.

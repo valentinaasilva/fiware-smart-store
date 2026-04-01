@@ -17,6 +17,11 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-04-01: Hotfix de conectividad Linux: Orion en Docker incorpora `extra_hosts: host.docker.internal:host-gateway` para enrutar callbacks de subscriptions y consultas a providers de Store hacia Flask en host.
+- 2026-04-01: Issue #20 completado: el formato monetario visible se estandariza con sufijo € en precios de productos, ofertas del dashboard y salarios de empleados; SocketIO reutiliza el mismo sufijo via `data-price-suffix` para mantener consistencia en actualizaciones realtime.
+- 2026-04-01: Issue #19 completado: la capa de presentacion resuelve dinamicamente Store.description, Product.category y Product.name segun el idioma activo, usando el sistema i18n existente y sin mutar los datos NGSIv2 almacenados.
+- 2026-04-01: Issue #18 completado: la busqueda de cabecera deja de ser solo de Product y pasa a consolidar resultados Product/Store tipados en la vista de productos. El listado de stores incorpora filtrado por `q` reutilizando criterios de id/nombre/countryCode/direccion.
+- 2026-04-01: Issue #18 completado: capa de presentacion bilingue reforzada; textos dinamicos de mapa Leaflet y escena Three.js pasan a resolverse por atributos de datos traducidos desde Jinja2 para evitar copy hardcodeado en JS.
 - 2026-03-31: Issue #16 completado: vista Store reorganizada en bloques funcionales (mapa, condiciones ambientales, tweets, notificaciones, inventario por shelf y escena 3D basica con Three.js). Se introduce endpoint de compra por InventoryItem y operacion incremental Orion-first con fallback SQLite.
 - 2026-04-01: La vista Store usa acceso seguro a atributos opcionales de telemetria externa para evitar errores 500 cuando `temperature`, `relativeHumidity` o `tweets` no estan presentes.
 - 2026-04-01: Issue #17 completado: se añade una ruta dedicada `/stores-map` con marcadores Leaflet enriquecidos por imagen, tarjetas flotantes y click-through al detalle; la navegacion lateral pasa a usar Font Awesome global; los efectos de hover y los estados de progreso de Shelf quedan resueltos por CSS compartido sin cambiar la capa NGSI.
@@ -30,6 +35,11 @@
 - 2026-03-29: Se incorporan busqueda de productos por query, selector de tema dark/light/system y formularios CRUD en listados para Store/Product/Employee.
 
 ### EN
+- 2026-04-01: Linux connectivity hotfix: Orion in Docker now includes `extra_hosts: host.docker.internal:host-gateway` to route subscription callbacks and Store provider queries back to host Flask.
+- 2026-04-01: Issue #20 completed: visible monetary formatting is standardized with a trailing € suffix for product prices, dashboard offers, and employee salaries; SocketIO reuses the same suffix via `data-price-suffix` to keep realtime updates consistent.
+- 2026-04-01: Issue #19 completed: the presentation layer now dynamically resolves Store.description, Product.category, and Product.name according to the active language using the existing i18n system without mutating persisted NGSIv2 data.
+- 2026-04-01: Issue #18 completed: header search is no longer Product-only and now consolidates typed Product/Store results in the products view. The stores list now supports `q` filtering using id/name/countryCode/address criteria.
+- 2026-04-01: Issue #18 completed: bilingual presentation layer reinforced; dynamic Leaflet/Three.js UI copy is now injected through translated Jinja2 data attributes to avoid hardcoded JS text.
 - 2026-03-31: Issue #16 completed: Store view reorganized into functional blocks (map, environmental conditions, tweets, notifications, shelf-grouped inventory, and basic Three.js 3D scene). A per-InventoryItem buy endpoint and Orion-first incremental operation with SQLite fallback were added.
 - 2026-04-01: Store view now uses safe access to optional external telemetry attributes to prevent 500 errors when `temperature`, `relativeHumidity`, or `tweets` are absent.
 - 2026-04-01: Issue #17 completed: a dedicated `/stores-map` route adds Leaflet markers enriched with images, hover cards, and click-through navigation to store details; the sidebar navigation now uses global Font Awesome; shelf fill states and hover effects are handled through shared CSS without changing the NGSI layer.
@@ -88,10 +98,11 @@ Capas y componentes:
 - Socket.IO client para actualizaciones real-time.
 - Librerias visuales Leaflet, Three.js, Mermaid y Font Awesome.
 - Shell UI desacoplado en `templates/base.html` con sidebar fijo, support strip y top header de controles.
-- Header con formulario de busqueda global (`GET /products?q=...`) y selector de tema de tres modos.
+- Header con formulario de busqueda global (`GET /products?q=...`) que combina Product+Store y selector de tema de tres modos.
 - Reglas de calidad front-end de Issue #14: sin handlers inline, prioridad CSS para comportamiento visual y sin generacion HTML dinamica desde JavaScript.
 - Fallback de imagenes centralizado en `static/js/image-fallback.js` usando atributo `data-fallback-image`.
 - Actualizaciones dinamicas limitadas a nodos existentes mediante `textContent`, atributos y `classList`.
+- i18n JS-first: textos de estado/error y ayudas de interaccion en Leaflet/Three.js se inyectan como `data-*` traducidos desde templates y se consumen en `static/js/app.js`.
 
 2. Application layer
 - app.py como punto de entrada Flask y configuracion SocketIO.
@@ -124,10 +135,11 @@ Layers and components:
 - Socket.IO client for real-time updates.
 - Visual libraries Leaflet, Three.js, Mermaid, and Font Awesome.
 - Decoupled UI shell in `templates/base.html` with fixed sidebar, support strip, and control-oriented top header.
-- Header with global search form (`GET /products?q=...`) and three-mode theme selector.
+- Header with global search form (`GET /products?q=...`) that aggregates Product+Store results and a three-mode theme selector.
 - Front-end quality rules from Issue #14: no inline event handlers, CSS-first visual behavior, and no dynamic HTML generation from JavaScript.
 - Image fallback handling delegated to `static/js/image-fallback.js` using `data-fallback-image` attributes.
 - Dynamic UI updates constrained to existing nodes via `textContent`, attributes, and `classList`.
+- JS i18n pattern: status/error/help copy for Leaflet/Three.js is injected as translated `data-*` attributes from templates and consumed in `static/js/app.js`.
 
 2. Application layer
 - app.py as Flask entrypoint and SocketIO bootstrap.

@@ -71,7 +71,7 @@ def _build_store_markers(selector: DataSourceSelector) -> list[dict]:
                 "address": address,
                 "countryCode": country_code,
                 "image": image,
-                "description": description,
+                "description": translate(description, getattr(g, "lang", DEFAULT_LOCALE)) if description else "",
                 "detailUrl": url_for("stores.get_store", entity_id=store_id),
                 "lat": lat,
                 "lng": lng,
@@ -139,7 +139,7 @@ def _build_featured_offers(selector: DataSourceSelector) -> list[dict]:
         product_rows.append(
             {
                 "id": product.get("id"),
-                "name": _unwrap_attr(product.get("name")) or "Producto",
+                "name": _unwrap_attr(product.get("name")) or "Product",
                 "category": _unwrap_attr(product.get("category")) or "",
                 "price": _as_float(product.get("price"), 0.0),
                 "image": _unwrap_attr(product.get("image")) or "",
@@ -150,18 +150,18 @@ def _build_featured_offers(selector: DataSourceSelector) -> list[dict]:
     definitions = [
         {
             "category": "Frescos",
-            "title": "Frutas y Verduras de Temporada",
-            "description": "Seleccion premium de nuestros agricultores locales.",
+            "title": "Seasonal Fruit and Vegetables",
+            "description": "Premium selection from our local farmers.",
         },
         {
             "category": "Lacteos",
-            "title": "Lacteos para Cada Dia",
-            "description": "Ahorro diario en leche, queso y esenciales refrigerados.",
+            "title": "Dairy for Every Day",
+            "description": "Daily savings on milk, cheese and refrigerated essentials.",
         },
         {
             "category": "Panaderia",
-            "title": "Pan Recien Horneado",
-            "description": "Especialidades artesanas horneadas cada manana.",
+            "title": "Freshly Baked Bread",
+            "description": "Artisan specialties baked every morning.",
         },
     ]
 

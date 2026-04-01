@@ -10,15 +10,15 @@
   <article class="detail-media">
     {% if product.image %}
       <div class="media-frame media-frame-large">
-        <img data-fallback-image src="{{ product.image }}" alt="{{ product.name }}" width="420" height="420" loading="lazy">
-        <div class="img-fallback large is-hidden">No image</div>
+        <img data-fallback-image src="{{ product.image }}" alt="{{ _(product.name) }}" width="420" height="420" loading="lazy">
+        <div class="img-fallback large is-hidden">{{ _('No image') }}</div>
       </div>
     {% else %}
-      <div class="img-fallback large">No image</div>
+      <div class="img-fallback large">{{ _('No image') }}</div>
     {% endif %}
   </article>
   <article class="detail-card">
-    <h3>{{ product.name }}</h3>
+    <h3>{{ _(product.name) }}</h3>
     {% set country_names = {
       'ES': 'Spain',
       'DE': 'Germany',
@@ -28,12 +28,12 @@
     {% set origin_country = product.originCountry if product.originCountry is string else '' %}
     <dl>
       <dt>{{ _('ID') }}</dt><dd class="mono">{{ product.id.split(':')[-1] if product.id is string else product.id }}</dd>
-      <dt>{{ _('Category') }}</dt><dd>{{ product.category or '-' }}</dd>
-      <dt>Size</dt><dd>{{ product.size or '-' }}</dd>
-      <dt>Color</dt>
+      <dt>{{ _('Category') }}</dt><dd>{{ _(product.category) or '-' }}</dd>
+      <dt>{{ _('Size') }}</dt><dd>{{ product.size or '-' }}</dd>
+      <dt>{{ _('Color') }}</dt>
       <dd>
         {% if product.color %}
-          <span class="color-swatch" style="--swatch-color: {{ product.color }};" aria-label="Color: {{ product.color }}">
+          <span class="color-swatch" style="--swatch-color: {{ product.color }};" aria-label="{{ _('Color value') }} {{ product.color }}">
             <span class="color-swatch-dot"></span>
             <span class="mono">{{ product.color }}</span>
           </span>
@@ -42,7 +42,7 @@
         {% endif %}
       </dd>
       <dt>{{ _('Origin Country') }}</dt><dd>{{ _(country_names.get(origin_country, origin_country if origin_country else '-')) }}</dd>
-      <dt>{{ _('Price') }}</dt><dd class="price-cell product-price" data-product-id="{{ product.id }}" data-product-short="{{ product.id.split(':')[-1] if product.id is string else product.id }}">{{ product.price }}</dd>
+      <dt>{{ _('Price') }}</dt><dd class="price-cell product-price" data-product-id="{{ product.id }}" data-product-short="{{ product.id.split(':')[-1] if product.id is string else product.id }}" data-price-suffix="€">{{ '%.2f'|format(product.price|float) }}€</dd>
     </dl>
   </article>
 </section>
@@ -60,9 +60,9 @@
     </thead>
     <tbody>
       {% for store in available_stores %}
-      <tr>
+        <tr>
         <td class="mono">{{ store.id.split(':')[-1] if store.id is string else store.id }}</td>
-        <td>{{ store.name }}</td>
+        <td>{{ _(store.name) }}</td>
         <td>{{ store.stockCount }}</td>
         <td>{{ store.shelfCount }}</td>
       </tr>
@@ -90,8 +90,8 @@
       {% for item in inventory_items %}
       <tr>
         <td class="mono">{{ item.id.split(':')[-1] if item.id is string else item.id }}</td>
-        <td>{{ item.storeName }}</td>
-        <td>{{ item.shelfName }}</td>
+        <td>{{ _(item.storeName) }}</td>
+        <td>{{ _(item.shelfName) }}</td>
         <td>{{ item.stockCount }}</td>
         <td>{{ item.shelfCount }}</td>
         <td>
@@ -123,21 +123,21 @@
 
   <h4>{{ _('Add Inventory Item') }}</h4>
   <form method="post" action="{{ url_for('products.create_product_inventory', product_id=product.id) }}" class="inline-form">
-    <input type="text" name="id" placeholder="urn:ngsi-ld:InventoryItem:NEW001" required>
+    <input type="text" name="id" placeholder="{{ _('Inventory item ID example') }}" required>
     <select name="refStore" required>
       <option value="">{{ _('Ref Store') }}</option>
       {% for store in all_stores %}
-      <option value="{{ store.id }}">{{ store.name }}</option>
+      <option value="{{ store.id }}">{{ _(store.name) }}</option>
       {% endfor %}
     </select>
     <select name="refShelf" required>
       <option value="">{{ _('Shelf') }}</option>
       {% for shelf in all_shelves %}
-      <option value="{{ shelf.id }}">{{ shelf.name }}</option>
+      <option value="{{ shelf.id }}">{{ _(shelf.name) }}</option>
       {% endfor %}
     </select>
-    <input type="number" name="stockCount" min="0" placeholder="20" required>
-    <input type="number" name="shelfCount" min="0" placeholder="5" required>
+    <input type="number" name="stockCount" min="0" placeholder="{{ _('Stock example') }}" required>
+    <input type="number" name="shelfCount" min="0" placeholder="{{ _('Shelf example') }}" required>
     <button type="submit">{{ _('Add Inventory Item') }}</button>
   </form>
 </section>
