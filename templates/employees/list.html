@@ -33,8 +33,8 @@
       <tr>
         <td>
           {% if employee.image %}
-            <div class="media-frame employee-list-photo">
-              <img class="table-thumb product-thumb" data-fallback-image src="{{ employee.image }}" alt="{{ employee.name }}" width="72" height="72" loading="lazy">
+            <div class="media-frame employee-list-zoom-frame">
+              <img class="table-thumb product-thumb employee-list-zoom-image" data-fallback-image src="{{ employee.image }}" alt="{{ employee.name }}" width="72" height="72" loading="lazy">
               <span class="img-fallback is-hidden">No image</span>
             </div>
           {% else %}
