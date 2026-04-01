@@ -138,22 +138,10 @@
 
 		const firstMarker = markers[0];
 		const map = window.L.map(mapNode).setView([firstMarker.lat, firstMarker.lng], options.defaultZoom || 5);
-		const hoverFocusEnabled = options.enableHoverFocus === true;
-		const hoverFocusDelta = typeof options.hoverZoomDelta === "number" ? options.hoverZoomDelta : 2;
-		let initialView = null;
-		let activeHoverMarkerId = null;
 		window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 			maxZoom: 19,
 			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 		}).addTo(map);
-
-		function setInitialViewFromMap() {
-			const center = map.getCenter();
-			initialView = {
-				center: [center.lat, center.lng],
-				zoom: map.getZoom(),
-			};
-		}
 
 		const bounds = [];
 		markers.forEach(function (marker) {
@@ -175,44 +163,16 @@
 
 			leafletMarker.bindPopup(buildStorePopupHtml(marker, options.openLabel), {
 				closeButton: false,
-				autoPan: true,
+				autoPan: false,
+				keepInView: false,
 				className: "store-map-popup",
 			});
 
 			leafletMarker.on("mouseover", function () {
 				this.openPopup();
-				if (!hoverFocusEnabled || !initialView) {
-					return;
-				}
-
-				if (activeHoverMarkerId === marker.id) {
-					return;
-				}
-
-				activeHoverMarkerId = marker.id;
-				const targetZoom = Math.min(Math.max(initialView.zoom + hoverFocusDelta, initialView.zoom), 18);
-				map.flyTo([marker.lat, marker.lng], targetZoom, {
-					animate: true,
-					duration: 0.7,
-					easeLinearity: 0.25,
-				});
 			});
 			leafletMarker.on("mouseout", function () {
 				this.closePopup();
-				if (!hoverFocusEnabled || !initialView) {
-					return;
-				}
-
-				if (activeHoverMarkerId !== marker.id) {
-					return;
-				}
-
-				activeHoverMarkerId = null;
-				map.flyTo(initialView.center, initialView.zoom, {
-					animate: true,
-					duration: 0.7,
-					easeLinearity: 0.25,
-				});
 			});
 			leafletMarker.on("click", function () {
 				if (marker.detailUrl) {
@@ -222,12 +182,7 @@
 		});
 
 		if (options.fitBounds !== false && bounds.length > 1) {
-			map.once("moveend", function () {
-				setInitialViewFromMap();
-			});
 			map.fitBounds(bounds, { padding: [20, 20] });
-		} else {
-			setInitialViewFromMap();
 		}
 
 		return map;
@@ -274,8 +229,6 @@
 		initLeafletStoreMap(mapNode, {
 			defaultZoom: 6,
 			fitBounds: true,
-			enableHoverFocus: true,
-			hoverZoomDelta: 2,
 			openLabel: mapNode ? mapNode.dataset.openStoreLabel : "",
 		});
 	}
