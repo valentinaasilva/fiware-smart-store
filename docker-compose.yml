@@ -22,18 +22,20 @@ services:
   orion-v2:
     labels:
       org.fiware: 'tutorial'
-    image: quay.io/fiware/orion:${ORION_VERSION}
+    image: quay.io/fiware/orion:${ORION_VERSION:-4.1.0}
     hostname: orion
     container_name: fiware-orion
     depends_on:
       - mongo-db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - default
     ports:
-      - "${ORION_PORT}:${ORION_PORT}" # localhost:1026
+      - "${ORION_PORT:-1026}:${ORION_PORT:-1026}" # localhost:1026
     command: -dbURI mongodb://mongo-db -logLevel DEBUG -noCache
     healthcheck:
-      test: curl --fail -s http://orion:${ORION_PORT}/version || exit 1
+      test: curl --fail -s http://orion:${ORION_PORT:-1026}/version || exit 1
       interval: 5s
 
   # Tutorial displays a web app to manipulate the context directly
@@ -51,37 +53,37 @@ services:
           - iot-sensors
           - context-provider
     expose:
-      - "${TUTORIAL_APP_PORT}" # localhost:3000
-      - "${TUTORIAL_DUMMY_DEVICE_PORT}" # localhost:3001
+      - "${TUTORIAL_APP_PORT:-3000}" # localhost:3000
+      - "${TUTORIAL_DUMMY_DEVICE_PORT:-3001}" # localhost:3001
     ports:
-      - "${TUTORIAL_APP_PORT}:${TUTORIAL_APP_PORT}" # localhost:3000
-      - "${TUTORIAL_DUMMY_DEVICE_PORT}:${TUTORIAL_DUMMY_DEVICE_PORT}" # localhost:3001
+      - "${TUTORIAL_APP_PORT:-3000}:${TUTORIAL_APP_PORT:-3000}" # localhost:3000
+      - "${TUTORIAL_DUMMY_DEVICE_PORT:-3001}:${TUTORIAL_DUMMY_DEVICE_PORT:-3001}" # localhost:3001
     environment:
       - "MONGO_URL=mongodb://mongo-db:27017"
       - "DEBUG=tutorial:*"
-      - "WEB_APP_PORT=${TUTORIAL_APP_PORT}" # Port used by the content provider proxy and web-app for viewing data
+      - "WEB_APP_PORT=${TUTORIAL_APP_PORT:-3000}" # Port used by the content provider proxy and web-app for viewing data
       - "IOTA_HTTP_HOST=iot-agent"
-      - "IOTA_HTTP_PORT=${IOTA_SOUTH_PORT}"
-      - "DUMMY_DEVICES_PORT=${TUTORIAL_DUMMY_DEVICE_PORT}" # Port used by the dummy IOT devices to receive commands
+      - "IOTA_HTTP_PORT=${IOTA_SOUTH_PORT:-4041}"
+      - "DUMMY_DEVICES_PORT=${TUTORIAL_DUMMY_DEVICE_PORT:-3001}" # Port used by the dummy IOT devices to receive commands
       - "DUMMY_DEVICES_TRANSPORT=HTTP" # Default transport used by dummy Io devices
       - "DUMMY_DEVICES_API_KEY=4jggokgpepnvsb2uv4s40d59ov"
-      - "CONTEXT_BROKER=http://orion:${ORION_PORT}/v2" # URL of the context broker to update context
-      - "OPENWEATHERMAP_KEY_ID=<ADD_YOUR_KEY_ID>"
-      - "TWITTER_CONSUMER_KEY=<ADD_YOUR_CONSUMER_KEY>"
-      - "TWITTER_CONSUMER_SECRET=<ADD_YOUR_CONSUMER_SECRET>"
+      - "CONTEXT_BROKER=http://orion:${ORION_PORT:-1026}/v2" # URL of the context broker to update context
+      - "OPENWEATHERMAP_KEY_ID=${OPENWEATHERMAP_KEY_ID:-demo}"
+      - "TWITTER_CONSUMER_KEY=${TWITTER_CONSUMER_KEY:-demo}"
+      - "TWITTER_CONSUMER_SECRET=${TWITTER_CONSUMER_SECRET:-demo}"
 
 
   # Database
   mongo-db:
     labels:
       org.fiware: 'tutorial'
-    image: mongo:${MONGO_DB_VERSION}
+    image: mongo:${MONGO_DB_VERSION:-6.0}
     hostname: mongo-db
     container_name: db-mongo
     expose:
-      - "${MONGO_DB_PORT}"
+      - "${MONGO_DB_PORT:-27017}"
     ports:
-      - "${MONGO_DB_PORT}:${MONGO_DB_PORT}" # localhost:27017 # localhost:27017
+      - "${MONGO_DB_PORT:-27017}:${MONGO_DB_PORT:-27017}" # localhost:27017
     networks:
       - default
     volumes:

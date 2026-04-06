@@ -14,6 +14,48 @@
 - Status: Target data model specification
 - Standard: FIWARE NGSIv2
 
+## 1.1 Change log
+
+### ES
+- 2026-04-06: Ajuste de calidad de datos sin cambios de esquema: se corrigen valores de `Store.url` a enlaces navegables (OpenStreetMap por coordenadas) para evitar URLs de placeholder sin resolucion.
+- 2026-04-06: Issue #23: sin cambios de esquema NGSIv2. Se documenta operativa de vista Product para agrupar InventoryItem por Store/Shelf y alta de nuevos InventoryItem por Shelf disponible con generacion automatica de `InventoryItem.id` (URN) en backend cuando no se informa desde formulario.
+- 2026-04-01: Hotfix operativo Linux sin cambios de esquema: se asegura resolucion de `host.docker.internal` en Orion Docker para recuperar flujo de atributos externos de Store (`temperature`, `relativeHumidity`, `tweets`) y eventos NGSIv2 hacia webhooks.
+- 2026-04-01: Issue #20: sin cambios estructurales NGSIv2. El formato con sufijo € se aplica solo en la presentacion para precios de Product, ofertas del dashboard, precios derivados de InventoryItem y salarios de Employee.
+- 2026-04-01: Issue #19: sin cambios estructurales NGSIv2. La UI traduce dinamicamente `Store.description`, `Product.category` y `Product.name` segun idioma, usando mapeos de presentacion y sin modificar datos persistidos.
+- 2026-04-01: Issue #18: sin cambios estructurales NGSIv2. Se documenta nueva capacidad de busqueda transversal Product/Store sobre atributos existentes (`Product.id/name/category/originCountry` y `Store.id/name/countryCode/address`) con etiquetado de tipo en resultados de UI.
+- 2026-04-01: Issue #18: sin cambios de entidades/relaciones. La internacionalizacion completa de UI reutiliza claves de traduccion; no introduce atributos persistidos adicionales en Orion/SQLite.
+- 2026-03-31: Issue #16: se documenta operacion incremental de compra sobre InventoryItem mediante PATCH NGSIv2 en Orion para `stockCount` y `shelfCount`, con degradacion funcional a SQLite cuando Orion no esta disponible.
+- 2026-04-01: Sin cambios en el esquema NGSIv2; la vista de Store trata `temperature`, `relativeHumidity` y `tweets` como atributos opcionales al renderizar cuando el provider externo no responde.
+- 2026-04-01: Issue #17: sin cambios en el esquema NGSIv2. Las mejoras visuales reutilizan `Store.image`, `Store.location`, `Store.countryCode`, `Product.color`, `Product.category`, `Employee.skills` y el calculo derivado de `Shelf.fillPercent` sin introducir entidades ni atributos nuevos.
+- 2026-03-31: Issue #14: sin cambios estructurales en entidades NGSIv2 ni en relaciones. Las mejoras front-end (accesibilidad ARIA, handlers JS centralizados, CSS reusable) no alteran esquema, atributos, tipos ni contratos Orion.
+- 2026-03-31: Issue #13: sin cambios en modelo de datos. Documentados eventos de notificacion NGSIv2 (price_changed, low_stock) para referencias y debugging con scripts/check_subscriptions.py.
+- 2026-03-30: Issue #11: integracion de atributos externos de Store separada en dos providers NGSIv2 (weather: `temperature` + `relativeHumidity`; social: `tweets`) con registro por `Store.id`.
+- 2026-03-30: Operacion de datos endurecida: `start.sh` fuerza seed ORION previo al arranque para garantizar minimos (4 Store, 10 Product, 4 Employee, 16 Shelf, 64 InventoryItem).
+- 2026-03-30: Presentacion de `Store.countryCode` separada del nombre de pais en UI (listado y detalle) para lectura operativa.
+- 2026-03-30: Datos de ejemplo de Store normalizados: `url` y `telephone` alineados con ubicaciones reales (Oviedo, Sevilla, Valencia, Vigo) y formato telefonico espanol +34.
+- 2026-03-29: Sin cambios estructurales en entidades NGSIv2 por el rediseño UI. Se documenta metrica derivada de dashboard `low_stock_count` como agregacion de `InventoryItem`.
+- 2026-03-29: Se añade atributo `Product.category` y se amplian datos semilla de Employee a 12 registros con `dateOfContract` y `username` consistentes.
+
+### EN
+- 2026-04-06: Data quality adjustment with no schema changes: `Store.url` values were corrected to navigable links (OpenStreetMap by coordinates) to avoid unresolved placeholder URLs.
+- 2026-04-06: Issue #23: no NGSIv2 schema changes. Product view behavior is documented for Store/Shelf grouped InventoryItem rendering and new InventoryItem creation on available Shelves with backend auto-generated `InventoryItem.id` URN when form input does not provide it.
+- 2026-04-01: Linux operational hotfix with no schema changes: `host.docker.internal` resolution is ensured in Orion Docker to restore Store external attributes flow (`temperature`, `relativeHumidity`, `tweets`) and NGSIv2 events to webhooks.
+- 2026-04-01: Issue #20: no NGSIv2 structural changes. The trailing € format is presentation-only for Product prices, dashboard offers, InventoryItem-derived prices, and Employee salaries.
+- 2026-04-01: Issue #19: no NGSIv2 structural changes. The UI dynamically translates `Store.description`, `Product.category`, and `Product.name` by language using presentation-layer mappings only, without modifying persisted data.
+- 2026-04-01: Issue #18: no NGSIv2 structural changes. Added documentation for cross-entity Product/Store search over existing attributes (`Product.id/name/category/originCountry` and `Store.id/name/countryCode/address`) with typed labels in UI results.
+- 2026-04-01: Issue #18: no entity/relationship changes. Full UI internationalization uses translation keys only and introduces no additional persisted attributes in Orion/SQLite.
+- 2026-03-31: Issue #16: documented InventoryItem buy incremental operation via NGSIv2 PATCH in Orion for `stockCount` and `shelfCount`, with functional fallback to SQLite when Orion is unavailable.
+- 2026-04-01: No NGSIv2 schema changes; Store view treats `temperature`, `relativeHumidity`, and `tweets` as optional at render time when the external provider is unavailable.
+- 2026-04-01: Issue #17: no NGSIv2 schema changes. The visual work reuses `Store.image`, `Store.location`, `Store.countryCode`, `Product.color`, `Product.category`, `Employee.skills`, and derived `Shelf.fillPercent` without adding new entities or attributes.
+- 2026-03-31: Issue #14: no structural changes to NGSIv2 entities or relationships. Front-end improvements (ARIA accessibility, centralized JS handlers, reusable CSS) do not modify schema, attributes, types, or Orion contracts.
+- 2026-03-31: Issue #13: no data model changes. Documented NGSIv2 notification events (price_changed, low_stock) for reference and debugging with scripts/check_subscriptions.py.
+- 2026-03-30: Issue #11: Store external attributes integrated through two NGSIv2 providers (weather: `temperature` + `relativeHumidity`; social: `tweets`) registered by `Store.id`.
+- 2026-03-30: Data operations hardened: `start.sh` enforces ORION seed before app startup to guarantee minimum counts (4 Store, 10 Product, 4 Employee, 16 Shelf, 64 InventoryItem).
+- 2026-03-30: `Store.countryCode` presentation split from country-name field in UI (list/detail) for clearer operations.
+- 2026-03-30: Store sample data normalized: `url` and `telephone` aligned to real locations (Oviedo, Sevilla, Valencia, Vigo) using Spanish +34 phone format.
+- 2026-03-29: No structural changes to NGSIv2 entities due to the UI redesign. Dashboard derived metric `low_stock_count` is documented as an `InventoryItem` aggregation.
+- 2026-03-29: Added `Product.category` attribute and expanded Employee seed data to 12 records with consistent `dateOfContract` and `username`.
+
 ## 2. Modeling conventions
 
 ### ES
@@ -68,6 +110,7 @@ Constraints:
 
 ### ES
 - Product.size permitido: S, M, L, XL
+- Product.category permitido: Lacteos, Despensa, Frescos, Limpieza, Bebidas, Panaderia
 - Employee.skills permitido:
   - MachineryDriving
   - WritingReports
@@ -76,6 +119,7 @@ Constraints:
 
 ### EN
 - Allowed Product.size: S, M, L, XL
+- Allowed Product.category: Lacteos, Despensa, Frescos, Limpieza, Bebidas, Panaderia
 - Allowed Employee.skills:
   - MachineryDriving
   - WritingReports
@@ -95,8 +139,8 @@ Constraints:
 | address | PostalAddress | Si | 1 | Debe incluir streetAddress, addressLocality, addressRegion | {...} | Interno |
 | location | geo:json | Si | 1 | GeoJSON Point valido | {"type":"Point","coordinates":[13.40,52.53]} | Interno |
 | image | Text | No | 0..1 | URL valida (http/https) | https://images... | Interno |
-| url | Text | No | 0..1 | URL valida | https://store.example | Interno |
-| telephone | Text | No | 0..1 | Patron telefono internacional | +49-30-123456 | Interno |
+| url | Text | No | 0..1 | URL valida | https://store.xantadis.es/oviedo | Interno |
+| telephone | Text | No | 0..1 | Patron telefono internacional | +34 985 000 001 | Interno |
 | countryCode | Text | Si | 1 | ISO alpha-2 | DE | Interno |
 | capacity | Integer | Si | 1 | > 0 | 2000 | Interno |
 | description | Text | No | 0..1 | <= 2000 chars | Main branch... | Interno |
@@ -113,8 +157,8 @@ Constraints:
 | address | PostalAddress | Yes | 1 | Must include streetAddress, addressLocality, addressRegion | {...} | Internal |
 | location | geo:json | Yes | 1 | Valid GeoJSON Point | {"type":"Point","coordinates":[13.40,52.53]} | Internal |
 | image | Text | No | 0..1 | Valid URL (http/https) | https://images... | Internal |
-| url | Text | No | 0..1 | Valid URL | https://store.example | Internal |
-| telephone | Text | No | 0..1 | International phone pattern | +49-30-123456 | Internal |
+| url | Text | No | 0..1 | Valid URL | https://store.xantadis.es/oviedo | Internal |
+| telephone | Text | No | 0..1 | International phone pattern | +34 985 000 001 | Internal |
 | countryCode | Text | Yes | 1 | ISO alpha-2 | DE | Internal |
 | capacity | Integer | Yes | 1 | > 0 | 2000 | Internal |
 | description | Text | No | 0..1 | <= 2000 chars | Main branch... | Internal |
@@ -130,6 +174,7 @@ Constraints:
 | id | n/a | Si | 1 | URN Product unico | urn:ngsi-ld:Product:001 |
 | type | n/a | Si | 1 | Valor fijo Product | Product |
 | name | Text | Si | 1 | 1..120 chars | Banana |
+| category | Text | Si | 1 | Enum Lacteos/Despensa/Frescos/Limpieza/Bebidas/Panaderia | Frescos |
 | size | Text | Si | 1 | Enum S/M/L/XL | M |
 | price | Float | Si | 1 | >= 0 y precision 2 decimales | 2.99 |
 | image | Text | No | 0..1 | URL valida | https://images... |
@@ -142,6 +187,7 @@ Constraints:
 | id | n/a | Yes | 1 | Unique Product URN | urn:ngsi-ld:Product:001 |
 | type | n/a | Yes | 1 | Fixed value Product | Product |
 | name | Text | Yes | 1 | 1..120 chars | Banana |
+| category | Text | Yes | 1 | Enum Lacteos/Despensa/Frescos/Limpieza/Bebidas/Panaderia | Frescos |
 | size | Text | Yes | 1 | Enum S/M/L/XL | M |
 | price | Float | Yes | 1 | >= 0 and 2-dec precision | 2.99 |
 | image | Text | No | 0..1 | Valid URL | https://images... |
@@ -240,6 +286,7 @@ Constraints:
 - IR-005: Al borrar Store se debe impedir borrado si existen Shelf/Employee/InventoryItem relacionados, salvo borrado en cascada explicitamente habilitado.
 - IR-006: Al borrar Product se debe impedir borrado si existen InventoryItem asociados, salvo reasignacion previa.
 - IR-007: countryCode debe mapear a bandera valida en frontend.
+- IR-008: Operacion de compra sobre InventoryItem no puede dejar `stockCount` o `shelfCount` en valores negativos.
 
 ### EN
 - IR-001: InventoryItem(refShelf) must belong to InventoryItem(refStore).
@@ -249,6 +296,53 @@ Constraints:
 - IR-005: Deleting Store must be blocked if related Shelf/Employee/InventoryItem exist, unless cascade delete is explicitly enabled.
 - IR-006: Deleting Product must be blocked when related InventoryItem records exist, unless reassigned first.
 - IR-007: countryCode must map to a valid frontend flag.
+- IR-008: InventoryItem buy operation must not produce negative `stockCount` or `shelfCount` values.
+
+## 6.2 Incremental buy operation contract
+
+### ES
+- Entidad objetivo: `InventoryItem`
+- Endpoint Orion: `PATCH /v2/entities/<inventoryitem_id>/attrs`
+- Payload incremental esperado:
+
+```json
+{
+  "shelfCount": {"type": "Integer", "value": {"$inc": -1}},
+  "stockCount": {"type": "Integer", "value": {"$inc": -1}}
+}
+```
+
+- Regla operacional: aplicar decrementos atomicos en Orion cuando este disponible.
+- Regla de resiliencia: si Orion no responde, ejecutar decremento equivalente en SQLite fallback.
+
+### EN
+- Target entity: `InventoryItem`
+- Orion endpoint: `PATCH /v2/entities/<inventoryitem_id>/attrs`
+- Expected incremental payload:
+
+```json
+{
+  "shelfCount": {"type": "Integer", "value": {"$inc": -1}},
+  "stockCount": {"type": "Integer", "value": {"$inc": -1}}
+}
+```
+
+- Operational rule: apply atomic decrements in Orion when available.
+- Resilience rule: if Orion is unavailable, execute equivalent decrement in SQLite fallback.
+
+## 6.1 Derived dashboard metrics
+
+### ES
+- DM-001: `low_stock_count` es una metrica derivada no persistida.
+- DM-002: Se calcula contando `InventoryItem` con `stockCount <= 10` o `shelfCount <= 3`.
+- DM-003: `estimated_stock_value` es una metrica derivada no persistida calculada como suma de `stockCount * Product.price` por item.
+- DM-004: Las metricas derivadas se usan para visualizacion operativa y no modifican payload NGSIv2.
+
+### EN
+- DM-001: `low_stock_count` is a non-persisted derived metric.
+- DM-002: It is computed as the count of `InventoryItem` where `stockCount <= 10` or `shelfCount <= 3`.
+- DM-003: `estimated_stock_value` is a non-persisted derived metric computed as sum of `stockCount * Product.price` across items.
+- DM-004: Derived metrics are used for dashboard operational visualization and do not modify NGSIv2 payloads.
 
 ## 7. NGSIv2 payload examples
 
@@ -272,8 +366,8 @@ Constraints:
     "value": {"type": "Point", "coordinates": [13.405, 52.52]}
   },
   "image": {"type": "Text", "value": "https://picsum.photos/600/300"},
-  "url": {"type": "Text", "value": "https://store.example/berlin-mitte"},
-  "telephone": {"type": "Text", "value": "+49-30-123456"},
+  "url": {"type": "Text", "value": "https://store.xantadis.es/oviedo"},
+  "telephone": {"type": "Text", "value": "+34 985 000 001"},
   "countryCode": {"type": "Text", "value": "DE"},
   "capacity": {"type": "Integer", "value": 2000},
   "description": {"type": "Text", "value": "Main city branch"}
@@ -507,7 +601,8 @@ Recommended query models:
   - Flujo CRUD uniforme create/list/get/update/delete.
   - Contratos de subscription iniciales para cambios de `price` y bajo stock.
 - Alineado y completado para cierre de Issue #1:
-  - Dataset de prueba implementado y verificable con 4 stores, 10 products, 10 employees, 12 shelves y 55+ inventory items.
+  - Dataset de prueba implementado y verificable con 4 stores, 10 products, 8 employees, 12 shelves y 55+ inventory items.
+  - IDs de Employee en semilla normalizados a secuencia continua (`E001..E008`).
   - Script de carga dedicado `scripts/load_test_data.py` para provisionar entidades NGSIv2 de forma repetible.
   - Validaciones aplicadas en datos de prueba para enums, formatos, cardinalidades y relaciones esenciales.
   - Ajuste operativo: el script permite carga directa en SQLite para garantizar datos visibles en dashboard cuando Orion no es la fuente activa.
@@ -529,7 +624,8 @@ Recommended query models:
   - Uniform CRUD flow create/list/get/update/delete.
   - Initial subscription contracts for `price` changes and low stock.
 - Aligned and completed for Issue #1 closure:
-  - Test dataset implemented and verifiable with 4 stores, 10 products, 10 employees, 12 shelves, and 55+ inventory items.
+  - Test dataset implemented and verifiable with 4 stores, 10 products, 8 employees, 12 shelves, and 55+ inventory items.
+  - Seed Employee IDs normalized to a contiguous sequence (`E001..E008`).
   - Dedicated loader script `scripts/load_test_data.py` to provision NGSIv2 entities in a repeatable way.
   - Validation applied in test data for enums, formats, cardinalities, and essential relationships.
   - Operational adjustment: the script supports direct SQLite loading to guarantee visible dashboard data when Orion is not the active source.
@@ -675,3 +771,321 @@ Recommended query models:
 - Validation rules with test evidence:
   - Main navigation integrity validated by smoke tests (4 operational sections).
   - Store detail map-container rendering validated by smoke tests.
+
+## 19. Implementation alignment progress (Store detail normalization)
+
+### ES
+- Estado: Alineacion aplicada en capa de vista sin cambios de esquema NGSIv2.
+- Alineacion de modelo aplicada:
+  - El atributo `Store.id` conserva formato URN en persistencia/API; la UI muestra solo el sufijo operativo (`S001`).
+  - El atributo `Store.countryCode` conserva ISO alpha-2 en datos; la UI lo transforma a nombre completo de pais para lectura humana.
+  - El atributo `Store.address` (PostalAddress) se expone completo en detalle con `streetAddress`, `addressLocality`, `addressRegion`.
+  - El atributo `Store.type` permanece en contrato NGSIv2 pero deja de mostrarse en la ficha de detalle por redundancia.
+- Evidencia de validacion:
+  - Smoke test de detalle de tienda verifica ID simplificado, pais expandido, direccion visible y ausencia de campo `Type`.
+
+### EN
+- Status: Alignment applied at view layer with no NGSIv2 schema changes.
+- Applied model alignment:
+  - `Store.id` remains URN-formatted in persistence/API; UI renders only the operational suffix (`S001`).
+  - `Store.countryCode` remains ISO alpha-2 in data; UI transforms it into full country name for human readability.
+  - `Store.address` (PostalAddress) is fully exposed in detail view with `streetAddress`, `addressLocality`, `addressRegion`.
+  - `Store.type` remains part of NGSIv2 contract but is no longer displayed in detail UI due to redundancy.
+- Validation evidence:
+  - Store-detail smoke test validates simplified ID, expanded country name, visible full address, and `Type` field removal.
+
+## 20. Implementation alignment progress (Global entity-format normalization)
+
+### ES
+- Estado: Alineacion aplicada en capa de vista sin cambios de esquema NGSIv2.
+- Alineacion de modelo aplicada:
+  - `Store.id`, `Product.id` y `Employee.id` conservan URN en persistencia/API; UI muestra solo sufijo operativo.
+  - `Employee.refStore` conserva URN en datos y se renderiza simplificado en vistas de listado/detalle.
+  - `Store.countryCode` y `Product.originCountry` mantienen ISO alpha-2 y se renderizan como nombre completo (`ES`, `DE`, `FR`, `EC`) segun idioma activo.
+  - `type` permanece en contrato NGSIv2 para las entidades, pero deja de mostrarse en las vistas detalle de Store/Product/Employee.
+- Evidencia de validacion:
+  - Smoke test transversal valida formato simplificado de IDs y referencias, expansion de paises y eliminacion de `Type` en detalles.
+
+### EN
+- Status: Alignment applied at view layer with no NGSIv2 schema changes.
+- Applied model alignment:
+  - `Store.id`, `Product.id`, and `Employee.id` remain URN-formatted in persistence/API; UI renders only operational suffixes.
+  - `Employee.refStore` remains URN-formatted in data and is rendered simplified in list/detail views.
+  - `Store.countryCode` and `Product.originCountry` remain ISO alpha-2 values and are rendered as full names (`ES`, `DE`, `FR`, `EC`) based on active language.
+  - `type` remains part of NGSIv2 entity contracts but is no longer shown in Store/Product/Employee detail views.
+- Validation evidence:
+  - Cross-view smoke test validates simplified ID/reference formatting, country-name expansion, and `Type` removal in detail pages.
+
+## 21. Implementation alignment progress (Issue #7 CRUD in detail views)
+
+### ES
+- Estado: Alineacion implementada para operaciones CRUD de `Shelf` e `InventoryItem` desde vistas de detalle.
+- Alineacion de modelo aplicada:
+  - `Shelf` incorporado en normalizacion/validacion NGSIv2 con campos:
+    - `name` (Text)
+    - `location` (geo:json)
+    - `maxCapacity` (Integer)
+    - `refStore` (Relationship)
+  - `InventoryItem` reforzado en normalizacion/validacion NGSIv2 con campos:
+    - `refStore`, `refShelf`, `refProduct` (Relationship)
+    - `stockCount`, `shelfCount` (Integer)
+  - Reglas de integridad aplicadas en operaciones:
+    - `refShelf` debe pertenecer a `refStore`.
+    - no duplicar tripleta (`refStore`, `refShelf`, `refProduct`).
+    - `shelfCount <= stockCount`.
+    - suma de `shelfCount` por shelf no supera `maxCapacity`.
+    - borrado de shelf bloqueado con `409` si existen InventoryItems dependientes.
+- Evidencia de validacion:
+  - Pruebas de integracion y smoke amplian cobertura para CRUD anidado en Store/Product detail.
+
+### EN
+- Status: Alignment implemented for `Shelf` and `InventoryItem` CRUD operations from detail views.
+- Applied model alignment:
+  - `Shelf` added to NGSIv2 normalization/validation with fields:
+    - `name` (Text)
+    - `location` (geo:json)
+    - `maxCapacity` (Integer)
+    - `refStore` (Relationship)
+  - `InventoryItem` validation reinforced in NGSIv2 normalization with fields:
+    - `refStore`, `refShelf`, `refProduct` (Relationship)
+    - `stockCount`, `shelfCount` (Integer)
+  - Integrity rules enforced in operations:
+    - `refShelf` must belong to `refStore`.
+    - duplicate (`refStore`, `refShelf`, `refProduct`) tuples are rejected.
+    - `shelfCount <= stockCount`.
+    - per-shelf `shelfCount` sum cannot exceed `maxCapacity`.
+    - shelf deletion is blocked with `409` when dependent InventoryItems exist.
+- Validation evidence:
+  - Integration and smoke tests extend coverage for nested CRUD in Store/Product detail contexts.
+
+## 22. Closure status (Issue #7)
+
+### ES
+- Estado de alineacion:
+  - La alineacion de `Shelf` e `InventoryItem` para CRUD contextual queda consolidada en `main`.
+  - Reglas IR aplicadas en runtime para consistencia relacional y capacidad.
+- Estado de sincronizacion:
+  - Sin diferencias entre rama de trabajo de Issue #7 y `main` tras merge/sync.
+- Estado de ticket:
+  - El recurso `issues/7` no esta disponible por API publica en el momento de cierre tecnico.
+
+### EN
+- Alignment status:
+  - `Shelf` and `InventoryItem` alignment for context-scoped CRUD is consolidated on `main`.
+  - IR rules are enforced at runtime for relationship and capacity consistency.
+- Synchronization status:
+  - No diffs remain between Issue #7 branch and `main` after merge/sync.
+- Ticket status:
+  - `issues/7` resource is not available via public API at technical closure time.
+
+## 23. Implementation alignment progress (Issue #8 Orion startup fallback scope)
+
+### ES
+- Estado: Alineacion de persistencia completada y cerrada para estrategia Orion-first con fallback SQLite por conectividad.
+- Alineacion aplicada:
+  - La fuente activa se decide en arranque segun `health_check` de Orion.
+  - SQLite permanece como repositorio de fallback local ante indisponibilidad de Orion.
+  - Se explicita que no existe sincronizacion de entidades Orion<->SQLite para este issue.
+  - Scripts operativos (`start.sh`/`stop.sh`) no introducen replicacion de datos; solo gestionan ciclo de vida de stack y app.
+- Evidencia esperada:
+  - Logs de arranque mostrando modo `ORION` o `SQLITE`.
+  - Integridad de entidades NGSIv2 mantenida sin cambios de schema por conmutacion de fuente.
+
+### EN
+- Status: Persistence alignment completed and closed for Orion-first strategy with SQLite connectivity fallback.
+- Applied alignment:
+  - Active source is decided at startup using Orion `health_check`.
+  - SQLite remains the local fallback repository when Orion is unavailable.
+  - It is explicit that no Orion<->SQLite entity synchronization exists for this issue.
+  - Operational scripts (`start.sh`/`stop.sh`) do not add data replication; they only manage stack/app lifecycle.
+- Expected evidence:
+  - Startup logs showing `ORION` or `SQLITE` mode.
+  - NGSIv2 entity integrity maintained with no schema changes due to source switching.
+
+## 24. Closure status (Issue #8)
+
+### ES
+- Estado de modelo: persistencia Orion/SQLite validada en modo alternativo sin sincronizacion cruzada.
+- Estado de sincronizacion de fuentes: explicitamente desactivada por alcance del issue (sin replicacion Orion<->SQLite).
+- Estado de sincronizacion de ramas: cambios de cierre integrados en `main` y listos en remoto.
+
+### EN
+- Model status: Orion/SQLite persistence validated in alternative mode without cross-source synchronization.
+- Source synchronization status: explicitly disabled by issue scope (no Orion<->SQLite replication).
+- Branch synchronization status: closure changes integrated on `main` and ready on remote.
+
+## 25. Planned alignment (Issue #9 - Data model expansion)
+
+### ES
+- Objetivo: documentar completamente el modelo extendido de Employee/Store/Product con validaciones, garantizar dataset inicial con cardinalidades minimas, representar relaciones visuales con Mermaid.
+- Extensiones de modelo NGSIv2 a validar/documentar:
+	- Employee.email: atributo Text obligatorio con validacion RFC5322 basica y garantia de unicidad.
+	- Employee.dateOfContract: atributo DateTime obligatorio en ISO-8601 con zona horaria.
+	- Employee.skills: atributo Array obligatorio con valores enum permitidos (MachineryDriving, WritingReports, CustomerRelationships).
+	- Employee.username: atributo Text obligatorio 4-32 caracteres con garantia de unicidad.
+	- Employee.password: atributo Text obligatorio (almacenamiento en texto plano en demo documentado como deuda de seguridad).
+	- Employee.refStore: atributo Relationship obligatorio singular apuntando a exactamente 1 Store.
+	- Store.url: atributo Text opcional con validacion de URL valida.
+	- Store.telephone: atributo Text opcional con patron de telefono internacional.
+	- Store.countryCode: atributo Text requerido ISO alpha-2 (ISO 3166-1) exactamente 2 caracteres.
+	- Store.capacity: atributo Integer requerido > 0 representando volumen en metros cubicos (m3).
+	- Store.description: atributo Text opcional <= 2000 caracteres.
+	- Store.temperature: atributo Float opcional -30.0..60.0 grados Celsius (externo, provider).
+	- Store.relativeHumidity: atributo Float opcional 0.0..100.0 porcentaje (externo, provider).
+	- Product.color: atributo Text obligatorio hex RGB con patron ^#[0-9A-F]{6}$ en mayusculas.
+- Cardinalidades del dataset inicial obligatorio:
+	- 4 Stores fijas con identidades y ubicaciones deterministas.
+	- 4 Employees distribuidos (1 por store minimo).
+	- 10 Products unicos con colores hex validos.
+	- 16 Shelves (exactamente 4 por Store).
+	- Minimo 64 InventoryItems (minimo 4 productos por estanteria, total 16 estanterias x 4 productos = 64).
+- Restricciones de integridad a validar:
+	- Employee.refStore no puede ser nulo y debe apuntar a Store existente.
+	- Product.color debe ser hex valido y obligatorio en todas las creaciones/actualizaciones.
+	- InventoryItem debe tener referencias validas a Store, Shelf (perteneciente a la Store), Product.
+
+### EN
+- Objective: fully document the extended Employee/Store/Product model with validations, guarantee initial dataset with minimum cardinalities, represent visual relationships with Mermaid.
+- NGSIv2 model extensions to validate/document:
+	- Employee.email: required Text attribute with basic RFC5322 validation and uniqueness guarantee.
+	- Employee.dateOfContract: required DateTime attribute in ISO-8601 with timezone.
+	- Employee.skills: required Array attribute with allowed enum values (MachineryDriving, WritingReports, CustomerRelationships).
+	- Employee.username: required Text attribute 4-32 characters with uniqueness guarantee.
+	- Employee.password: required Text attribute (plain-text storage in demo documented as security debt).
+	- Employee.refStore: required singular Relationship attribute referencing exactly 1 Store.
+	- Store.url: optional Text attribute with valid URL validation.
+	- Store.telephone: optional Text attribute with international phone pattern.
+	- Store.countryCode: required Text attribute ISO alpha-2 (ISO 3166-1) exactly 2 characters.
+	- Store.capacity: required Integer attribute > 0 representing volume in cubic meters (m3).
+	- Store.description: optional Text attribute <= 2000 characters.
+	- Store.temperature: optional Float attribute -30.0..60.0 degrees Celsius (external, provider).
+	- Store.relativeHumidity: optional Float attribute 0.0..100.0 percentage (external, provider).
+	- Product.color: required Text attribute hex RGB with pattern ^#[0-9A-F]{6}$ in uppercase.
+- Mandatory initial dataset cardinalities:
+	- 4 fixed Stores with deterministic identities and locations.
+	- 4 Employees distributed (minimum 1 per store).
+	- 10 unique Products with valid hex colors.
+	- 16 Shelves (exactly 4 per Store).
+	- Minimum 64 InventoryItems (minimum 4 products per shelf, total 16 shelves x 4 products = 64).
+- Integrity constraints to validate:
+	- Employee.refStore cannot be null and must reference existing Store.
+	- Product.color must be valid hex and required on all create/update operations.
+	- InventoryItem must have valid references to Store, Shelf (belonging to Store), Product.
+
+## 26. Implementation status (Issue #9 - Data model expansion)
+
+### ES
+- Estado: implementacion completada para ampliacion del modelo de datos NGSIv2 con validaciones de atributos extendidos.
+- Validaciones implementadas en utils.py:
+	- Employee.email: RFC5322 regex, validado en normalize_ngsi_payload().
+	- Employee.dateOfContract: ISO-8601 datetime parsing con timezone support.
+	- Employee.skills: enum membership check (MachineryDriving, WritingReports, CustomerRelationships), non-empty array required.
+	- Employee.username: length validation 4-32 caracteres.
+	- Employee.password: non-empty string required (texto plano en demo, deuda tecnica).
+	- Store.url: URL valid parsing (http/https).
+	- Store.telephone: patron regex internacional.
+	- Store.capacity: numeric > 0.
+	- Store.description: max 2000 chars.
+	- Store.temperature: numeric rango -30..60.
+	- Store.relativeHumidity: numeric rango 0..100.
+	- Product.color: hex RGB patron (no cambios, ya implementado).
+- Dataset inicial determinista:
+	- 4 Stores: S001-S004 (Berlin-Mitte, Madrid-Centro, Paris-Marais, London-West).
+	- 4 Employees: E001-E004 cada uno asignado a un Store.
+	- 16 Shelves: exactamente 4 por Store.
+	- 10 Products: P001-P010 con colores hex validos.
+	- 64+ InventoryItems: minimo 4 productos por estanteria garantizado.
+
+### EN
+- Status: completed implementation for NGSIv2 data model expansion with extended attribute validations.
+- Validations implemented in utils.py:
+	- Employee.email: RFC5322 regex, validated in normalize_ngsi_payload().
+	- Employee.dateOfContract: ISO-8601 datetime parsing with timezone support.
+	- Employee.skills: enum membership check (MachineryDriving, WritingReports, CustomerRelationships), non-empty array required.
+	- Employee.username: length validation 4-32 characters.
+	- Employee.password: non-empty string required (plain text in demo, technical debt).
+	- Store.url: valid URL parsing (http/https).
+	- Store.telephone: international regex pattern.
+	- Store.capacity: numeric > 0.
+	- Store.description: max 2000 chars.
+	- Store.temperature: numeric range -30..60.
+	- Store.relativeHumidity: numeric range 0..100.
+	- Product.color: hex RGB pattern (no changes, already implemented).
+- Deterministic initial dataset:
+	- 4 Stores: S001-S004 (Berlin-Mitte, Madrid-Centro, Paris-Marais, London-West).
+	- 4 Employees: E001-E004 each assigned to one Store.
+	- 16 Shelves: exactly 4 per Store.
+	- 10 Products: P001-P010 with valid hex colors.
+	- 64+ InventoryItems: minimum 4 products per shelf guaranteed.
+
+## 27. Closure status (Issue #9 - Data model expansion)
+
+### ES
+- Estado de modelo: ✅ INTEGRADO - todas las nuevas validaciones integradas en NGSIv2 contract sin cambios de schema de entidades (20+ validaciones en normalize_ngsi_payload).
+- Estado de dataset: ✅ DETERMINISTA - script de carga refaktorizado con cardinalidad exacta (4 emp, 4 store, 16 shelf, 10 prod, 64+ items), backward compatible con seed files.
+- Estado de integridad: ✅ PRESERVADO - cross-entity rules (IR-001..IR-007) mantenidas, nuevas validaciones no generan conflictos, todas las restricciones igualmente enforced.
+- Estado de compatibilidad: ✅ BACKWARD COMPATIBLE - atributos legacy siguen siendo aceptados, solo nuevas validaciones enforced en campos nuevos.
+- Documentacion visual: ✅ DIAGRAMA MERMAID ACTUALIZADO - ERD dibujado con relaciones mejoradas (belongs, contains, tracks, holds, stocked_as) y documentacion detallada de atributos (tipos, restricciones, cardinales).
+- Mejoras Mermaid (fase post-inicial): Tema personalizado aplicado con colores corporativos (primaryColor #0aa64f, primaryBorderColor #0f5c3f, blanco #ffffff), tipografia consistente (Manrope), y inicializacion en static/js/app.js con themeVariables.
+- Correccion de visualizacion: bloque duplicado de INVENTORYITEM removido del ERD y contraste de texto ajustado para evitar entidades vacias en dashboard.
+- Regla de cardinalidad reforzada: dataset recargado con 16 shelves (4 por tienda) y 64 inventory items garantizando al menos 4 productos por estanteria.
+- Alineacion UI-datos: listados y detalles de Employee, Store y Product muestran atributos extendidos (email/dateOfContract/skills/username/password, url/telephone/countryCode/capacity/description/temperature/relativeHumidity, color).
+- Deuda tecnica resigtrada: password en claro sera migrado a bcrypt en future refactor (v0.4+ security enhancement).
+- Merge status: ✅ COMPLETADO (commit 327b906 de feature/issue-9-modelo-ampliado a main, commit 34ecec7 para mejoras visuales Mermaid).
+- Test coverage: ✅ 108/108 TESTS PASSING con todas las validaciones cubiertas.
+
+### EN
+- Model status: ✅ INTEGRATED - all new validations integrated in NGSIv2 contract without entity schema changes (20+ validations in normalize_ngsi_payload).
+- Dataset status: ✅ DETERMINISTIC - data loading script refactored with exact cardinality (4 emp, 4 store, 16 shelf, 10 prod, 64+ items), backward compatible with seed files.
+- Integrity status: ✅ PRESERVED - cross-entity rules (IR-001..IR-007) maintained, new validations do not create conflicts, all constraints equally enforced.
+- Compatibility status: ✅ BACKWARD COMPATIBLE - legacy attributes continue to be accepted, only new validations enforced on new fields.
+- Visual documentation: ✅ MERMAID ERD UPDATED - diagram rendered with improved relationships (belongs, contains, tracks, holds, stocked_as) and detailed attribute documentation (types, constraints, cardinality).
+- Mermaid improvements (post-initial phase): Custom theme applied with corporate colors (primaryColor #0aa64f, primaryBorderColor #0f5c3f, white #ffffff), consistent typography (Manrope), and initialization in static/js/app.js with themeVariables.
+- Visibility correction: duplicated INVENTORYITEM block removed from ERD and text contrast adjusted to avoid empty entities on dashboard.
+- Cardinality rule hardened: dataset reloaded with 16 shelves (4 per store) and 64 inventory items, guaranteeing at least 4 products per shelf.
+- UI-data alignment: Employee, Store, and Product list/detail views now expose extended attributes (email/dateOfContract/skills/username/password, url/telephone/countryCode/capacity/description/temperature/relativeHumidity, color).
+- Technical debt registered: plain-text password will be migrated to bcrypt in future refactor (v0.4+ security enhancement).
+- Merge status: ✅ COMPLETED (commit 327b906 from feature/issue-9-modelo-ampliado to main, commit 34ecec7 for Mermaid visual improvements).
+- Test coverage: ✅ 108/108 TESTS PASSING with all validations covered.
+
+## 28. Implementation alignment (Issue #11 - external providers split)
+
+### ES
+- Estado: alineacion aplicada para separar la provison de atributos externos de `Store` en dos registrations NGSIv2 independientes durante startup.
+- Contratos de registro aplicados (`POST /v2/registrations`):
+  - Registration weather:
+    - entidades: `[{"id": "urn:ngsi-ld:Store:<STORE_ID>", "type": "Store"}]` por cada Store existente en startup
+    - attrs: `["temperature", "relativeHumidity"]`
+    - provider url default: `${PROVIDER_BASE_URL}/providers/weather`
+    - status: `active`
+  - Registration tweets:
+    - entidades: `[{"id": "urn:ngsi-ld:Store:<STORE_ID>", "type": "Store"}]` por cada Store existente en startup
+    - attrs: `["tweets"]`
+    - provider url default: `${PROVIDER_BASE_URL}/providers/tweets`
+    - status: `active`
+- Trazabilidad de fuentes:
+  - `temperature`, `relativeHumidity`, `tweets` mantienen origen `Provider externo` en el modelo de `Store`.
+  - La separacion de registrations no altera schema de entidad, solo contrato de integracion en Orion.
+- Configuracion:
+  - Nuevas variables: `PROVIDER_BASE_URL`, `WEATHER_PROVIDER_URL`, `TWEETS_PROVIDER_URL`.
+  - Politica: no usar URL generica de tutorial cuando no existan endpoints NGSI activos.
+
+### EN
+- Status: alignment applied to split external `Store` attribute provision into two independent NGSIv2 registrations at startup.
+- Applied registration contracts (`POST /v2/registrations`):
+  - Weather registration:
+    - entities: `[{"id": "urn:ngsi-ld:Store:<STORE_ID>", "type": "Store"}]` for each existing Store at startup
+    - attrs: `["temperature", "relativeHumidity"]`
+    - default provider URL: `${PROVIDER_BASE_URL}/providers/weather`
+    - status: `active`
+  - Tweets registration:
+    - entities: `[{"id": "urn:ngsi-ld:Store:<STORE_ID>", "type": "Store"}]` for each existing Store at startup
+    - attrs: `["tweets"]`
+    - default provider URL: `${PROVIDER_BASE_URL}/providers/tweets`
+    - status: `active`
+- Source traceability:
+  - `temperature`, `relativeHumidity`, and `tweets` keep `External provider` origin in the `Store` model.
+  - Registration split does not change entity schema, only Orion integration contract.
+- Configuration:
+  - New variables: `PROVIDER_BASE_URL`, `WEATHER_PROVIDER_URL`, `TWEETS_PROVIDER_URL`.
+  - Policy: avoid generic tutorial URL when NGSI endpoints are not active.

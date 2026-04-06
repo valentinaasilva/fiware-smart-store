@@ -1,33 +1,83 @@
 {% extends 'base.html' %}
+{% from 'macros/visuals.html' import country_chip %}
 
 {% block content %}
-<section class="page-header">
-  <p class="eyebrow">Retail network overview</p>
-  <h2>{{ _('Stores') }}</h2>
+<section class="page-header page-header-inline">
+  <div>
+    <p class="eyebrow">{{ _('Retail network overview') }}</p>
+    <h2>{{ _('Stores') }}</h2>
+  </div>
+  <a class="button-link" href="{{ url_for('stores.new_store_page') }}">{{ _('Add Store') }}</a>
 </section>
 
 <section class="table-shell">
+  {% set country_names = {
+    'ES': 'Spain',
+    'DE': 'Germany',
+    'FR': 'France',
+    'EC': 'Ecuador'
+  } %}
+  <form method="get" action="{{ url_for('stores.list_stores') }}" class="inline-form search-inline-form">
+    <input type="search" name="q" value="{{ query or '' }}" placeholder="{{ _('Search stores...') }}">
+    <button type="submit">{{ _('Search') }}</button>
+    {% if query %}
+      <a class="button-link secondary" href="{{ url_for('stores.list_stores') }}">{{ _('Clear') }}</a>
+    {% endif %}
+  </form>
   <table>
     <thead>
-      <tr><th>{{ _('Image') }}</th><th>{{ _('ID') }}</th><th>{{ _('Name') }}</th><th>{{ _('Country') }}</th></tr>
+      <tr role="alert" aria-live="polite">
+        <th>{{ _('Image') }}</th>
+        <th>{{ _('ID') }}</th>
+        <th>{{ _('Name') }}</th>
+        <th>{{ _('Country') }}</th>
+        <th>{{ _('Country Code') }}</th>
+        <th>{{ _('URL') }}</th>
+        <th>{{ _('Telephone') }}</th>
+        <th>{{ _('Capacity (m3)') }}</th>
+        <th>{{ _('Temperature (°C)') }}</th>
+        <th>{{ _('Relative Humidity (%)') }}</th>
+        <th>{{ _('Actions') }}</th>
+      </tr>
     </thead>
     <tbody>
     {% for store in stores %}
       <tr>
         <td>
           {% if store.image %}
-            <div class="media-frame">
-              <img class="table-thumb" src="{{ store.image }}" alt="{{ store.name }}" width="96" height="64" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
-              <span class="img-fallback is-hidden">No image</span>
+            <div class="media-frame store-list-zoom-spin-frame">
+              <img class="table-thumb store-list-zoom-spin-image" data-fallback-image src="{{ store.image }}" alt="{{ store.name }}" width="96" height="64" loading="lazy">
+              <span class="img-fallback is-hidden">{{ _('No image') }}</span>
             </div>
           {% else %}
-            <span class="img-fallback">No image</span>
+            <span class="img-fallback">{{ _('No image') }}</span>
           {% endif %}
         </td>
-        <td class="mono">{{ store.id }}</td>
+        <td class="mono">{{ store.id.split(':')[-1] if store.id is string else store.id }}</td>
         <td><a class="entity-link" href="{{ url_for('stores.get_store', entity_id=store.id) }}">{{ store.name }}</a></td>
-        <td>{{ store.countryCode }}</td>
+        {% set country_code = store.countryCode if store.countryCode is string else '' %}
+        <td>{{ country_chip(country_code, _(country_names.get(country_code, country_code if country_code else '-'))) }}</td>
+        <td class="mono">{{ country_code if country_code else '-' }}</td>
+        <td>
+          {% if store.url %}
+            <a href="{{ store.url }}" target="_blank" rel="noopener noreferrer">{{ store.url }}</a>
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        <td>{{ store.telephone or '-' }}</td>
+        <td>{{ store.capacity if store.capacity is not none else '-' }}</td>
+        <td><span class="mini-metric"><i class="fa-solid fa-temperature-half" aria-hidden="true"></i><span>{{ store.temperature if store.temperature is not none else '-' }}</span></span></td>
+        <td><span class="mini-metric"><i class="fa-solid fa-droplet" aria-hidden="true"></i><span>{{ store.relativeHumidity if store.relativeHumidity is not none else '-' }}</span></span></td>
+        <td class="actions-cell">
+          <a class="button-link" href="{{ url_for('stores.edit_store_page', entity_id=store.id) }}">{{ _('Update') }}</a>
+          <form method="post" action="{{ url_for('stores.delete_store_form', entity_id=store.id) }}" data-confirm-message="{{ _('Delete') }} {{ store.name }}?">
+            <button type="submit">{{ _('Delete') }}</button>
+          </form>
+        </td>
       </tr>
+    {% else %}
+      <tr><td colspan="11">{{ _('No records') }}</td></tr>
     {% endfor %}
     </tbody>
   </table>

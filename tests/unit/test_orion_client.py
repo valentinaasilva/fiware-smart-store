@@ -42,7 +42,9 @@ def test_health_check_request_exception(monkeypatch):
 def test_list_entities_by_type(monkeypatch):
     def fake_get(url, params, headers, timeout):
         assert url.endswith("/v2/entities")
-        assert params == {"type": "Store"}
+        assert params["type"] == "Store"
+        assert params["limit"] == 1000
+        assert params["offset"] == 0
         return DummyResponse(200, [{"id": "urn:ngsi-ld:Store:001", "type": "Store"}])
 
     monkeypatch.setattr(requests, "get", fake_get)
@@ -144,3 +146,26 @@ def test_register_provider_accepts_created(monkeypatch):
 
     client = OrionClient("http://orion")
     assert client.register_provider({"description": "provider"}) is True
+
+
+def test_increment_entity_attrs_uses_inc_payload(monkeypatch):
+    captured = {}
+
+    def fake_patch(url, json, headers, timeout):
+        captured["url"] = url
+        captured["json"] = json
+        return DummyResponse(204)
+
+    def fake_get(url, headers, timeout):
+        return DummyResponse(200, {"id": "urn:ngsi-ld:InventoryItem:001", "stockCount": {"type": "Integer", "value": 6}})
+
+    monkeypatch.setattr(requests, "patch", fake_patch)
+    monkeypatch.setattr(requests, "get", fake_get)
+
+    client = OrionClient("http://orion")
+    updated = client.increment_entity_attrs("urn:ngsi-ld:InventoryItem:001", {"stockCount": -1, "shelfCount": -1})
+
+    assert updated is not None
+    assert captured["url"].endswith("/v2/entities/urn:ngsi-ld:InventoryItem:001/attrs")
+    assert captured["json"]["stockCount"]["value"]["$inc"] == -1
+    assert captured["json"]["shelfCount"]["value"]["$inc"] == -1

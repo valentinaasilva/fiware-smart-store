@@ -1,34 +1,105 @@
 {% extends 'base.html' %}
+{% from 'macros/visuals.html' import color_swatch, country_chip, category_chip %}
 
 {% block content %}
-<section class="page-header">
-  <p class="eyebrow">Catalog management</p>
-  <h2>{{ _('Products') }}</h2>
+<section class="page-header page-header-inline">
+  <div>
+    <p class="eyebrow">{{ _('Catalog management') }}</p>
+    <h2>{{ _('Products') }}</h2>
+  </div>
+  <a class="button-link" href="{{ url_for('products.new_product_page') }}">{{ _('Add Product') }}</a>
 </section>
 
 <section class="table-shell">
+  {% set country_names = {
+    'ES': 'Spain',
+    'DE': 'Germany',
+    'FR': 'France',
+    'EC': 'Ecuador'
+  } %}
+
+  <form method="get" action="{{ url_for('products.list_products') }}" class="inline-form search-inline-form">
+    <input type="search" name="q" value="{{ query or '' }}" placeholder="{{ _('Search products, stores...') }}">
+    <button type="submit">{{ _('Search') }}</button>
+    {% if query %}
+      <a class="button-link secondary" href="{{ url_for('products.list_products') }}">{{ _('Clear') }}</a>
+    {% endif %}
+  </form>
+
+  {% if query %}
+  <h3>{{ _('Search Results') }}</h3>
   <table>
     <thead>
-      <tr><th>{{ _('Image') }}</th><th>{{ _('ID') }}</th><th>{{ _('Name') }}</th><th>{{ _('Origin Country') }}</th><th>{{ _('Price') }}</th></tr>
+      <tr>
+        <th>{{ _('Type') }}</th>
+        <th>{{ _('ID') }}</th>
+        <th>{{ _('Name') }}</th>
+        <th>{{ _('Actions') }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for result in search_results %}
+      <tr>
+        <td>
+          <span class="status-badge {% if result.type == 'Store' %}ok{% else %}off{% endif %}">
+            {{ _(result.type) }}
+          </span>
+        </td>
+        <td class="mono">{{ result.id.split(':')[-1] if result.id is string else result.id }}</td>
+        <td>{{ _(result.display_name or result.name) }}</td>
+        <td><a class="button-link" href="{{ result.detail_url }}">{{ _('Open detail') }}</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4">{{ _('No records') }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  <table>
+    <thead>
+      <tr>
+        <th>{{ _('Image') }}</th>
+        <th>{{ _('ID') }}</th>
+        <th>{{ _('Name') }}</th>
+        <th>{{ _('Category') }}</th>
+        <th>{{ _('Size') }}</th>
+        <th>{{ _('Color') }}</th>
+        <th>{{ _('Origin Country') }}</th>
+        <th>{{ _('Price') }}</th>
+        <th>{{ _('Actions') }}</th>
+      </tr>
     </thead>
     <tbody>
     {% for product in products %}
-      <tr>
+      <tr data-product-id="{{ product.id }}" data-product-short="{{ product.id.split(':')[-1] if product.id is string else product.id }}" role="alert" aria-live="polite">
         <td>
           {% if product.image %}
             <div class="media-frame">
-              <img class="table-thumb product-thumb" src="{{ product.image }}" alt="{{ product.name }}" width="72" height="72" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
-              <span class="img-fallback is-hidden">No image</span>
+              <img class="table-thumb product-thumb" data-fallback-image src="{{ product.image }}" alt="{{ _(product.name) }}" width="72" height="72" loading="lazy">
+              <span class="img-fallback is-hidden">{{ _('No image') }}</span>
             </div>
           {% else %}
-            <span class="img-fallback">No image</span>
+            <span class="img-fallback">{{ _('No image') }}</span>
           {% endif %}
         </td>
-        <td class="mono">{{ product.id }}</td>
-        <td><a class="entity-link" href="{{ url_for('products.get_product', entity_id=product.id) }}">{{ product.name }}</a></td>
-        <td>{{ product.originCountry or '-' }}</td>
-        <td class="price-cell">{{ product.price }}</td>
+        <td class="mono">{{ product.id.split(':')[-1] if product.id is string else product.id }}</td>
+        <td><a class="entity-link" href="{{ url_for('products.get_product', entity_id=product.id) }}">{{ _(product.name) }}</a></td>
+        <td>{{ category_chip(product.category, _(product.category)) }}</td>
+        <td>{{ product.size or '-' }}</td>
+        <td>{{ color_swatch(product.color) }}</td>
+        {% set origin_country = product.originCountry if product.originCountry is string else '' %}
+        <td>{{ country_chip(origin_country, _(country_names.get(origin_country, origin_country if origin_country else '-'))) }}</td>
+        <td class="price-cell product-price" data-price-suffix="€">{{ '%.2f'|format(product.price|float) }}€</td>
+        <td class="actions-cell">
+          <a class="button-link" href="{{ url_for('products.edit_product_page', entity_id=product.id) }}">{{ _('Update') }}</a>
+          <form method="post" action="{{ url_for('products.delete_product_form', entity_id=product.id) }}" data-confirm-message="{{ _('Delete') }} {{ _(product.name) }}?">
+            <button type="submit">{{ _('Delete') }}</button>
+          </form>
+        </td>
       </tr>
+    {% else %}
+      <tr><td colspan="9">{{ _('No records') }}</td></tr>
     {% endfor %}
     </tbody>
   </table>

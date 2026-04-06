@@ -1,30 +1,99 @@
 {% extends 'base.html' %}
+{% from 'macros/visuals.html' import country_chip, color_swatch %}
 
 {% block content %}
-{% set coords = store.location.coordinates if store.location and store.location.coordinates is defined else none %}
+{% set store_data = store if store is mapping else {} %}
+{% set location = store_data.get('location') %}
+{% set coords = location.get('coordinates') if location is mapping else none %}
+{% set simplified_id = store_data.get('id').split(':')[-1] if store_data.get('id') is string else store_data.get('id') %}
+{% set temp = store_data.get('temperature') %}
+{% set humidity = store_data.get('relativeHumidity') %}
+{% set temp_num = temp|float if temp is not none else none %}
+{% set humidity_num = humidity|float if humidity is not none else none %}
+{% set temp_state = 'normal' %}
+{% if temp_num is not none and temp_num > 27 %}{% set temp_state = 'high' %}{% elif temp_num is not none and temp_num < 18 %}{% set temp_state = 'low' %}{% endif %}
+{% set humidity_state = 'normal' %}
+{% if humidity_num is not none and humidity_num > 70 %}{% set humidity_state = 'high' %}{% elif humidity_num is not none and humidity_num < 30 %}{% set humidity_state = 'low' %}{% endif %}
 <section class="detail-header">
   <a class="back-link" href="{{ url_for('stores.list_stores') }}">&larr; {{ _('Stores') }}</a>
   <h2>{{ _('Store Detail') }}</h2>
+  <a class="button-link" href="#add-shelf-form">{{ _('Add Shelf') }}</a>
 </section>
 
 <section class="detail-grid">
-  <article class="detail-media">
-    {% if store.image %}
-      <div class="media-frame media-frame-large">
-        <img src="{{ store.image }}" alt="{{ store.name }}" width="520" height="300" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
-        <div class="img-fallback large is-hidden">No image</div>
+  <article class="detail-media zoom-figure store-hero-frame">
+    {% if store_data.get('image') %}
+      <div class="media-frame media-frame-large zoom-rotate-frame">
+        <img data-fallback-image src="{{ store_data.get('image') }}" alt="{{ store_data.get('name') }}" width="520" height="300" loading="lazy">
+        <div class="img-fallback large is-hidden">{{ _('No image') }}</div>
       </div>
     {% else %}
-      <div class="img-fallback large">No image</div>
+      <div class="img-fallback large">{{ _('No image') }}</div>
     {% endif %}
   </article>
   <article class="detail-card">
-    <h3>{{ store.name }}</h3>
+    <h3>{{ store_data.get('name') }}</h3>
+    {% set country_names = {
+      'ES': 'Spain',
+      'DE': 'Germany',
+      'FR': 'France',
+      'EC': 'Ecuador'
+    } %}
+    {% set country_code = store_data.get('countryCode') if store_data.get('countryCode') is string else '' %}
+    {% set addr = store_data.get('address') if store_data.get('address') is mapping else none %}
     <dl>
-      <dt>{{ _('ID') }}</dt><dd class="mono">{{ store.id }}</dd>
-      <dt>{{ _('Country') }}</dt><dd>{{ store.countryCode }}</dd>
-      <dt>{{ _('Type') }}</dt><dd>{{ store.type }}</dd>
+      <dt>{{ _('ID') }}</dt><dd class="mono">{{ simplified_id }}</dd>
+      <dt>{{ _('Country') }}</dt><dd>{{ country_chip(country_code, _(country_names.get(country_code, country_code if country_code else '-'))) }}</dd>
+      <dt>{{ _('Country Code') }}</dt><dd class="mono">{{ country_code if country_code else '-' }}</dd>
+      <dt>{{ _('URL') }}</dt>
+      <dd>
+        {% if store_data.get('url') %}
+          <a href="{{ store_data.get('url') }}" target="_blank" rel="noopener noreferrer">{{ store_data.get('url') }}</a>
+        {% else %}
+          -
+        {% endif %}
+      </dd>
+      <dt>{{ _('Telephone') }}</dt><dd>{{ store_data.get('telephone') or '-' }}</dd>
+      <dt>{{ _('Capacity (m3)') }}</dt><dd>{{ store_data.get('capacity') if store_data.get('capacity') is not none else '-' }}</dd>
+      <dt>{{ _('Description') }}</dt><dd>{{ _(store_data.get('description') or '') or '-' }}</dd>
+      <dt>{{ _('Address') }}</dt>
+      <dd>
+        {% if addr %}
+          {{ addr.streetAddress }}{% if addr.addressLocality %}, {{ addr.addressLocality }}{% endif %}{% if addr.addressRegion %}, {{ addr.addressRegion }}{% endif %}
+        {% else %}
+          -
+        {% endif %}
+      </dd>
     </dl>
+  </article>
+</section>
+
+<section class="store-signal-grid">
+  <article class="table-shell climate-shell">
+    <h3>{{ _('Store Conditions') }}</h3>
+    <div class="environment-metrics">
+      <div class="env-chip {{ temp_state }}">
+        <span class="env-icon" aria-hidden="true">🌡</span>
+        <div>
+          <strong>{{ _('Temperature (°C)') }}</strong>
+          <p>{{ temp if temp is not none else '-' }}</p>
+        </div>
+      </div>
+      <div class="env-chip {{ humidity_state }}">
+        <span class="env-icon" aria-hidden="true">💧</span>
+        <div>
+          <strong>{{ _('Relative Humidity (%)') }}</strong>
+          <p>{{ humidity if humidity is not none else '-' }}</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="table-shell notifications-shell">
+    <h3>{{ _('Notifications') }}</h3>
+    <ul id="store-notification-list" class="notification-list" data-store-notifications data-store-short="{{ simplified_id }}">
+      <li class="notification-muted">{{ _('No records') }}</li>
+    </ul>
   </article>
 </section>
 
@@ -36,10 +105,210 @@
       class="store-map"
       data-lng="{{ coords[0] }}"
       data-lat="{{ coords[1] }}"
-      data-title="{{ store.name }}"
+      data-title="{{ store_data.get('name') }}"
+      data-store-label="{{ _('Store') }}"
     ></div>
   {% else %}
     <div class="img-fallback large">{{ _('Location unavailable') }}</div>
   {% endif %}
+</section>
+
+<section class="table-shell immersive-shell">
+  <h3>{{ _('Immersive Store Walkthrough') }}</h3>
+  <div class="immersive-toolbar">
+    <button id="immersive-tour-start" type="button" class="button-link">{{ _('Start Tour') }}</button>
+    <button id="immersive-tour-pause" type="button" class="button-link secondary">{{ _('Pause') }}</button>
+    <button id="immersive-tour-reset" type="button" class="button-link secondary">{{ _('Reset') }}</button>
+    <button id="immersive-camera-mode" type="button" class="button-link secondary">{{ _('First-Person: Off') }}</button>
+    <span id="immersive-tour-status" class="immersive-tour-status">{{ _('Tour idle') }}</span>
+  </div>
+  <div class="immersive-layout">
+    <div
+      id="store-immersive-scene"
+      class="store-immersive-scene"
+      data-layout='{{ scene_layout|tojson|safe }}'
+      data-store-label="{{ _('Store') }}"
+      data-open-store-label="{{ _('Open store detail') }}"
+      data-loading-scene="{{ _('Loading 3D scene...') }}"
+      data-unable-layout="{{ _('Unable to load 3D layout.') }}"
+      data-webgl-disabled="{{ _('WebGL is disabled in this browser. Enable hardware acceleration to view 3D.') }}"
+      data-renderer-error="{{ _('Unable to initialize 3D renderer in this browser.') }}"
+      data-threejs-error="{{ _('Unable to load Three.js assets. Check network/CSP configuration.') }}"
+      data-unavailable-browser-note="{{ _('3D unavailable in this browser. Inventory overview remains available.') }}"
+      data-renderer-failed-note="{{ _('3D renderer initialization failed. Inventory overview remains available.') }}"
+      data-assets-unavailable-note="{{ _('3D assets unavailable. Inventory overview remains available.') }}"
+      data-main-aisle="{{ _('Main aisle') }}"
+      data-shelf-prefix="{{ _('Shelf') }}"
+      data-product-label="{{ _('Product') }}"
+      data-resume="{{ _('Resume') }}"
+      data-pause="{{ _('Pause') }}"
+      data-first-person-on="{{ _('First-Person: On') }}"
+      data-first-person-off="{{ _('First-Person: Off') }}"
+      data-tour-running="{{ _('Tour running') }}"
+      data-stop="{{ _('Stop') }}"
+      data-tour-paused="{{ _('Tour paused') }}"
+      data-tour-idle="{{ _('Tour idle') }}"
+      data-tour-stopped-first-person="{{ _('Tour stopped (first-person mode)') }}"
+      data-first-person-enabled="{{ _('First-person mode enabled (WASD move, Q/E turn)') }}"
+      data-orbit-enabled="{{ _('Orbit mode enabled') }}"
+      data-tour-stopped-manual-camera="{{ _('Tour stopped (manual camera control)') }}"
+      data-tour-stopped-manual-zoom="{{ _('Tour stopped (manual zoom)') }}"
+      data-first-person-navigation-active="{{ _('First-person navigation active') }}"
+      data-orbit-navigation-active="{{ _('Orbit manual navigation active') }}"
+      data-controls-hint="{{ _('Controls: drag to orbit, wheel to zoom, Start Tour for cinematic route, or enable first-person (WASD move, Q/E turn).') }}"
+      data-shelf-units="{{ _('Shelf units') }}"
+      data-total-stock="{{ _('Total stock') }}"
+      data-shelf-key="{{ _('Shelf') }}"
+      data-stock-key="{{ _('Stock') }}"
+      data-inspector-heading="{{ _('Shelf Product Overview') }}"
+      data-empty-shelves-products="{{ _('No shelves or products available.') }}"
+      data-load-format="{{ _('Load {current} / {max} ({percent}%)') }}"
+      data-no-products-on-shelf="{{ _('No products on this shelf.') }}"
+    >
+      <p class="scene-loading">{{ _('Loading 3D scene...') }}</p>
+    </div>
+    <aside id="immersive-inspector" class="immersive-inspector" aria-live="polite">
+      <h4>{{ _('Shelf Product Overview') }}</h4>
+      <p class="scene-loading">{{ _('Loading 3D scene...') }}</p>
+    </aside>
+  </div>
+</section>
+
+<section class="table-shell">
+  <h3>{{ _('Products in Store') }}</h3>
+  <h3>{{ _('Shelves') }}</h3>
+  <h4>{{ _('Inventory by Shelf') }}</h4>
+  {% for shelf in shelves %}
+  <article class="shelf-block">
+    <header class="shelf-header">
+      <div>
+        <h4>{{ shelf.name }}</h4>
+        <p class="mono">{{ shelf.id.split(':')[-1] if shelf.id is string else shelf.id }}</p>
+      </div>
+      <div class="shelf-actions">
+        <details>
+          <summary class="button-link secondary">{{ _('Edit Shelf') }}</summary>
+          <form method="post" action="{{ url_for('stores.update_store_shelf_form', store_id=store_data.get('id'), shelf_id=shelf.id) }}" class="inline-form form-stack">
+            <input type="text" name="name" value="{{ shelf.name }}" required>
+            <input type="number" name="maxCapacity" value="{{ shelf.maxCapacity }}" min="1" required>
+            <button type="submit">{{ _('Update') }}</button>
+          </form>
+          <form method="post" action="{{ url_for('stores.delete_store_shelf_form', store_id=store_data.get('id'), shelf_id=shelf.id) }}" class="inline-form-inline top-spaced">
+            <button type="submit">{{ _('Delete') }}</button>
+          </form>
+        </details>
+        <details>
+          <summary class="button-link">{{ _('Add Inventory Item') }}</summary>
+          <form method="post" action="{{ url_for('stores.create_store_inventory', store_id=store_data.get('id')) }}" class="inline-form form-stack">
+            <input type="text" name="id" placeholder="{{ _('Inventory item ID example') }}" required>
+            <input type="hidden" name="refShelf" value="{{ shelf.id }}">
+            <select name="refProduct" required>
+              <option value="">{{ _('Product') }}</option>
+              {% for product in shelf.availableProducts %}
+              <option value="{{ product.id }}">{{ _(product.name) }}</option>
+              {% endfor %}
+            </select>
+            <input type="number" name="stockCount" min="0" placeholder="{{ _('Stock example') }}" required>
+            <input type="number" name="shelfCount" min="0" placeholder="{{ _('Shelf example') }}" required>
+            <button type="submit">{{ _('Add Inventory Item') }}</button>
+          </form>
+        </details>
+      </div>
+    </header>
+
+    <div class="shelf-capacity-wrap">
+      <div class="shelf-capacity-meta">
+        <span>{{ _('Current Load') }}: <strong>{{ shelf.currentLoad }}</strong> / {{ shelf.maxCapacity }}</span>
+        <span>{{ shelf.fillPercent }}%</span>
+      </div>
+      {% set shelf_fill_state = 'low' if shelf.fillPercent < 50 else 'mid' if shelf.fillPercent <= 80 else 'high' %}
+      <div class="capacity-track" role="progressbar" aria-valuenow="{{ shelf.fillPercent }}" aria-valuemin="0" aria-valuemax="100">
+        <span class="capacity-fill {{ shelf_fill_state }}" style="width: {{ shelf.fillPercent }}%;"></span>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>{{ _('Image') }}</th>
+          <th>{{ _('Name') }}</th>
+          <th>{{ _('Price') }}</th>
+          <th>{{ _('Size') }}</th>
+          <th>{{ _('Color') }}</th>
+          <th>{{ _('Stock Count') }}</th>
+          <th>{{ _('Shelf Count') }}</th>
+          <th>{{ _('Actions') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in shelf.inventoryItems %}
+        {% set product_short = item.refProduct.split(':')[-1] if item.refProduct is string else item.refProduct %}
+        {% set inventory_short = item.id.split(':')[-1] if item.id is string else item.id %}
+        <tr data-inventory-id="{{ item.id }}" data-inventory-short="{{ inventory_short }}" data-product-id="{{ item.refProduct }}" data-product-short="{{ product_short }}">
+          <td>
+            {% if item.productImage %}
+            <div class="media-frame">
+              <img class="table-thumb product-thumb" data-fallback-image src="{{ item.productImage }}" alt="{{ _(item.productName) }}" width="72" height="72" loading="lazy">
+              <span class="img-fallback is-hidden">{{ _('No image') }}</span>
+            </div>
+            {% else %}
+            <span class="img-fallback">{{ _('No image') }}</span>
+            {% endif %}
+          </td>
+          <td>{{ _(item.productName) }}</td>
+          <td class="price-cell product-price" data-product-id="{{ item.refProduct }}" data-product-short="{{ product_short }}" data-price-suffix="€">{{ '%.2f'|format(item.productPrice|float) }}€</td>
+          <td>{{ item.productSize or '-' }}</td>
+          <td>{{ color_swatch(item.productColor) }}</td>
+          <td class="stock-count" data-stock-count="{{ item.stockCount }}">{{ item.stockCount }}</td>
+          <td>{{ item.shelfCount }}</td>
+          <td class="actions-cell">
+            <form method="post" action="{{ url_for('stores.buy_store_inventory_item', store_id=store.id, inventory_id=item.id) }}" class="inline-form-inline">
+              <button type="submit">{{ _('Buy') }}</button>
+            </form>
+            <form method="post" action="{{ url_for('stores.update_store_inventory_form', store_id=store.id, inventory_id=item.id) }}" class="inline-form-compact">
+              <input type="number" name="stockCount" value="{{ item.stockCount }}" min="0" required>
+              <input type="number" name="shelfCount" value="{{ item.shelfCount }}" min="0" required>
+              <input type="hidden" name="refProduct" value="{{ item.refProduct }}">
+              <input type="hidden" name="refShelf" value="{{ item.refShelf }}">
+              <button type="submit">{{ _('Update') }}</button>
+            </form>
+            <form method="post" action="{{ url_for('stores.delete_store_inventory_form', store_id=store.id, inventory_id=item.id) }}" class="inline-form-inline">
+              <button type="submit">{{ _('Delete') }}</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8">{{ _('No records') }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </article>
+  {% else %}
+  <p>{{ _('No records') }}</p>
+  {% endfor %}
+
+  <h4 id="add-shelf-form">{{ _('Add Shelf') }}</h4>
+  <form method="post" action="{{ url_for('stores.create_store_shelf', store_id=store.id) }}" class="inline-form">
+    <input type="text" name="id" placeholder="{{ _('Shelf ID example') }}" required>
+    <input type="text" name="name" placeholder="{{ _('Shelf name example') }}" required>
+    <input type="number" name="maxCapacity" min="1" placeholder="{{ _('Capacity example') }}" required>
+    <button type="submit">{{ _('Add Shelf') }}</button>
+  </form>
+</section>
+
+<section class="table-shell tweets-shell">
+  <h3>{{ _('Tweets') }}</h3>
+  <ul class="tweet-list">
+    {% set tweets = store_data.get('tweets') %}
+    {% if tweets is sequence and tweets is not string and tweets|length > 0 %}
+      {% for tweet in tweets %}
+      <li><span class="tweet-icon" aria-hidden="true">𝕏</span><span>{{ tweet }}</span></li>
+      {% endfor %}
+    {% elif tweets %}
+      <li><span class="tweet-icon" aria-hidden="true">𝕏</span><span>{{ tweets }}</span></li>
+    {% else %}
+      <li>{{ _('No records') }}</li>
+    {% endif %}
+  </ul>
 </section>
 {% endblock %}

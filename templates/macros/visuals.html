@@ -1,0 +1,74 @@
+{% macro color_swatch(color) -%}
+  {% if color %}
+    <span class="color-swatch compact" style="--swatch-color: {{ color }};" aria-label="{{ color }}">
+      <span class="color-swatch-dot"></span>
+      <span class="mono">{{ color }}</span>
+    </span>
+  {% else %}
+    <span class="muted-pill">-</span>
+  {% endif %}
+{%- endmacro %}
+
+{% macro country_chip(code, label='') -%}
+  {% set code_upper = (code or '')|upper %}
+  {% set code_lower = code_upper|lower %}
+  {% set country_label = label or code_upper or '-' %}
+  {% if code_upper %}
+    <span class="attribute-chip country-chip" title="{{ country_label }}">
+      <img
+        class="country-flag-img"
+        src="https://flagcdn.com/w40/{{ code_lower }}.png"
+        srcset="https://flagcdn.com/w80/{{ code_lower }}.png 2x"
+        alt="{{ country_label }}"
+        loading="lazy"
+      >
+      <span>{{ country_label }}</span>
+    </span>
+  {% else %}
+    <span class="muted-pill">-</span>
+  {% endif %}
+{%- endmacro %}
+
+{% macro category_chip(category, label='') -%}
+  {% set icon_map = {
+    'Lacteos': 'fa-solid fa-cheese',
+    'Despensa': 'fa-solid fa-boxes-stacked',
+    'Frescos': 'fa-solid fa-leaf',
+    'Limpieza': 'fa-solid fa-soap',
+    'Bebidas': 'fa-solid fa-martini-glass-citrus',
+    'Panaderia': 'fa-solid fa-bread-slice'
+  } %}
+  {% if category %}
+    <span class="attribute-chip category-chip">
+      <i class="{{ icon_map.get(category, 'fa-solid fa-tag') }}" aria-hidden="true"></i>
+      <span>{{ label or category }}</span>
+    </span>
+  {% else %}
+    <span class="muted-pill">-</span>
+  {% endif %}
+{%- endmacro %}
+
+{% macro skills_chips(skills) -%}
+  {% set skill_labels = {
+    'MachineryDriving': 'Machinery Driving',
+    'WritingReports': 'Writing Reports',
+    'CustomerRelationships': 'Customer Relationships'
+  } %}
+  {% set skill_icons = {
+    'MachineryDriving': 'fa-solid fa-truck-moving',
+    'WritingReports': 'fa-solid fa-pen-to-square',
+    'CustomerRelationships': 'fa-solid fa-handshake'
+  } %}
+  {% if skills is iterable and skills is not string and skills|length > 0 %}
+    <span class="chip-stack">
+      {% for skill in skills %}
+        <span class="attribute-chip skill-chip">
+          <i class="{{ skill_icons.get(skill, 'fa-solid fa-circle-dot') }}" aria-hidden="true"></i>
+          <span>{{ skill_labels.get(skill, skill) }}</span>
+        </span>
+      {% endfor %}
+    </span>
+  {% else %}
+    <span class="muted-pill">-</span>
+  {% endif %}
+{%- endmacro %}

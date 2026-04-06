@@ -30,3 +30,19 @@ def test_sqlite_repository_crud_and_stats(tmp_path: Path):
 def test_sqlite_path_normalization_directory(tmp_path: Path):
     repo = SQLiteRepository(str(tmp_path))
     assert repo.sqlite_path.endswith("fiware.db")
+
+
+def test_sqlite_increment_entity_attrs(tmp_path: Path):
+    repo = SQLiteRepository(str(tmp_path / "inc.db"))
+    entity = {
+        "id": "urn:ngsi-ld:InventoryItem:001",
+        "type": "InventoryItem",
+        "stockCount": {"type": "Integer", "value": 8},
+        "shelfCount": {"type": "Integer", "value": 3},
+    }
+    repo.create_entity(entity)
+
+    updated = repo.increment_entity_attrs(entity["id"], {"stockCount": -1, "shelfCount": -1})
+    assert updated is not None
+    assert updated["stockCount"]["value"] == 7
+    assert updated["shelfCount"]["value"] == 2

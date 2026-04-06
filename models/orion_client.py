@@ -8,7 +8,6 @@ class OrionClient:
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
         self.headers = {
-            "Content-Type": "application/json",
             "Accept": "application/json",
         }
 
@@ -20,17 +19,31 @@ class OrionClient:
             return False
 
     def list_entities(self, entity_type: str | None = None) -> list[dict[str, Any]]:
-        params = {}
+        params: dict[str, Any] = {"limit": 1000}
         if entity_type:
             params["type"] = entity_type
-        response = requests.get(
-            f"{self.base_url}/v2/entities",
-            params=params,
-            headers=self.headers,
-            timeout=self.timeout,
-        )
-        response.raise_for_status()
-        return response.json()
+
+        entities: list[dict[str, Any]] = []
+        offset = 0
+        while True:
+            page_params = {**params, "offset": offset}
+            response = requests.get(
+                f"{self.base_url}/v2/entities",
+                params=page_params,
+                headers=self.headers,
+                timeout=self.timeout,
+            )
+            response.raise_for_status()
+            page = response.json()
+            if not isinstance(page, list):
+                break
+
+            entities.extend(page)
+            if len(page) < params["limit"]:
+                break
+            offset += params["limit"]
+
+        return entities
 
     def get_entity(self, entity_id: str) -> dict[str, Any] | None:
         response = requests.get(
@@ -47,7 +60,7 @@ class OrionClient:
         response = requests.post(
             f"{self.base_url}/v2/entities",
             json=entity,
-            headers=self.headers,
+            headers={**self.headers, "Content-Type": "application/json"},
             timeout=self.timeout,
         )
         response.raise_for_status()
@@ -57,7 +70,7 @@ class OrionClient:
         response = requests.patch(
             f"{self.base_url}/v2/entities/{entity_id}/attrs",
             json=attrs,
-            headers=self.headers,
+            headers={**self.headers, "Content-Type": "application/json"},
             timeout=self.timeout,
         )
         if response.status_code == 404:
@@ -65,6 +78,25 @@ class OrionClient:
         response.raise_for_status()
         entity = self.get_entity(entity_id)
         return entity
+
+    def increment_entity_attrs(self, entity_id: str, increments: dict[str, int]) -> dict[str, Any] | None:
+        payload = {
+            field: {
+                "type": "Integer",
+                "value": {"$inc": int(delta)},
+            }
+            for field, delta in increments.items()
+        }
+        response = requests.patch(
+            f"{self.base_url}/v2/entities/{entity_id}/attrs",
+            json=payload,
+            headers={**self.headers, "Content-Type": "application/json"},
+            timeout=self.timeout,
+        )
+        if response.status_code == 404:
+            return None
+        response.raise_for_status()
+        return self.get_entity(entity_id)
 
     def delete_entity(self, entity_id: str) -> bool:
         response = requests.delete(
@@ -81,7 +113,7 @@ class OrionClient:
         response = requests.post(
             f"{self.base_url}/v2/subscriptions",
             json=payload,
-            headers=self.headers,
+            headers={**self.headers, "Content-Type": "application/json"},
             timeout=self.timeout,
         )
         return response.status_code in (201, 409)
@@ -90,7 +122,7 @@ class OrionClient:
         response = requests.post(
             f"{self.base_url}/v2/registrations",
             json=payload,
-            headers=self.headers,
+            headers={**self.headers, "Content-Type": "application/json"},
             timeout=self.timeout,
         )
         return response.status_code in (201, 409)

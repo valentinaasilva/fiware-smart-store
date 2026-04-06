@@ -8,6 +8,7 @@
 - Estado: Baseline para implementacion
 - Producto: fiware-smart-store
 - Tipo de documento: Product Requirements Document
+- Última actualización: 2026-04-01 (Issue #20 monetary format consistency)
 
 ### EN
 - Version: 1.0
@@ -15,6 +16,49 @@
 - Status: Baseline for implementation
 - Product: fiware-smart-store
 - Document type: Product Requirements Document
+- Last updated: 2026-04-01 (Issue #20 monetary format consistency)
+
+## 1.1 Change log
+
+### ES
+- 2026-04-06: Correccion operativa final: las URLs de `Store.url` se actualizan a enlaces funcionales (OpenStreetMap por coordenadas) para que la accion desde detalle de tienda navegue a un destino valido.
+- 2026-04-06: Issue #23 en progreso: la vista detalle de Product pasa a mostrar InventoryItems agrupados por Store con total de `stockCount` por cabecera, filas por Shelf con `shelfCount`, y alta guiada de InventoryItem por Store usando solo Shelfs disponibles que no contienen ya ese Product.
+- 2026-04-01: Hotfix Linux Docker networking: se agrega `extra_hosts: host.docker.internal:host-gateway` en Orion para asegurar que callbacks NGSI y providers externos de Store sean alcanzables desde el contenedor, restaurando visibilidad de `temperature`, `relativeHumidity` y notificaciones realtime.
+- 2026-04-01: Issue #20 completado: los precios de productos, ofertas y el salario de empleados se muestran de forma consistente con el simbolo € al final en todas las vistas principales y en actualizaciones realtime.
+- 2026-04-01: Issue #19 completado: descripcion de Stores, categorias de productos y nombres de productos se traducen dinamicamente segun idioma seleccionado sin alterar los datos persistidos.
+- 2026-04-01: Issue #18 completado: buscador global ampliado para incluir tiendas ademas de productos, con resultados tipados (Product/Store) y acceso directo al detalle. Se agrega filtro `q` al listado de tiendas para consistencia operativa.
+- 2026-04-01: Issue #18 completado: cobertura bilingue ES/EN reforzada en toda la UI (menus, tablas, botones, placeholders, mensajes de estado/error y textos dinamicos de mapa/escena 3D).
+- 2026-03-31: Issue #16 completado: refinamiento integral de vista Store con inventario agrupado por Shelf (barra de llenado), seccion ambiental con iconografia y semaforo de color, lista de tweets con icono X, panel de notificaciones en vivo, boton de compra por InventoryItem con decremento de `stockCount` y `shelfCount`, fallback Orion->SQLite para operaciones incrementales y cobertura realtime de `price_changed` en vistas de lista/detalle/dashboard/store.
+- 2026-04-01: La vista detail de Store se endurecio para tolerar ausencia de telemetry externa opcional (`temperature`, `relativeHumidity`, `tweets`) sin romper el render.
+- 2026-04-01: Issue #17 completado: mejoras visuales transversales con zoom en hover para Employee y Store, rotacion 360 en la imagen principal de Store, barras de progreso de Shelf con semaforo por porcentaje, tablas compactadas con iconografia Font Awesome, navbar fija con estado activo correcto y nueva vista Stores Map con marcadores Leaflet basados en imagen y acceso directo al detalle.
+- 2026-03-31: Issue #14 completado: refinamiento front-end orientado a best practices. Eliminados handlers inline en templates, nuevo modulo `static/js/image-fallback.js`, clases CSS reusables (`.color-swatch`), sincronizacion de animaciones via `animationend`, y mejoras de accesibilidad ARIA.
+- 2026-03-31: Issue #13 completado: suscripciones Orion NGSIv2 y notificaciones en tiempo real. Webhooks mejorados con normalización de payloads, cliente SocketIO para escuchar eventos (price_changed, low_stock), actualización dinámica del DOM sin reload, estilos de animación de resaltado y alerta de bajo stock. Script check_subscriptions.py para validar suscripciones activas.
+- 2026-03-30: Issue #11 completado: providers externos de Store separados por atributo (weather: temperature/relativeHumidity, social: tweets) con registro automatico en bootstrap Orion y en alta de nuevas tiendas.
+- 2026-03-30: Arranque endurecido en `start.sh`: secuencia obligatoria stack Docker -> seed ORION (`SEED_ON_START=1`) -> app Flask, para evitar estados vacios tras reinicio.
+- 2026-03-30: Vista de Stores ajustada para mostrar pais y countryCode en campos separados (listado y detalle).
+- 2026-03-30: Normalizacion de datos de Store en semilla y base local: URLs por ciudad real (oviedo, sevilla, valencia, vigo) y telefonos en formato espanol +34 coherentes por ubicacion.
+- 2026-03-29: Rediseño visual del shell de la aplicacion (sidebar + support strip + top header), dashboard hero y tarjetas KPI. Se mantiene funcionalidad CRUD existente y se incorpora metrica explicita de bajo stock en dashboard.
+- 2026-03-29: Mejoras operativas: buscador funcional de productos, selector de tema con modo sistema, CRUD directo en listados, categoria de producto y ampliacion de dataset de empleados.
+
+### EN
+- 2026-04-06: Final operational fix: `Store.url` values were updated to functional links (OpenStreetMap by coordinates) so the navigation action in store detail opens a valid destination.
+- 2026-04-06: Issue #23 in progress: Product detail now groups InventoryItems by Store with a `stockCount` total in each header, shelf-level rows with `shelfCount`, and guided InventoryItem creation per Store using only available Shelves that do not already contain that Product.
+- 2026-04-01: Linux Docker networking hotfix: `extra_hosts: host.docker.internal:host-gateway` was added to Orion so NGSI callbacks and Store external providers are reachable from the container, restoring visibility of `temperature`, `relativeHumidity`, and realtime notifications.
+- 2026-04-01: Issue #20 completed: product prices, featured offers, and employee salaries are displayed consistently with the € symbol at the end across all main views and realtime updates.
+- 2026-04-01: Issue #19 completed: store descriptions, product categories, and product names are translated dynamically according to the selected language without changing persisted data.
+- 2026-04-01: Issue #18 completed: global search expanded to include stores in addition to products, with typed results (Product/Store) and direct detail navigation. `q` filtering was also added to the stores list for operational consistency.
+- 2026-04-01: Issue #18 completed: ES/EN bilingual coverage was reinforced across visible UI text (navigation, table labels, buttons, placeholders, status/error messages, and dynamic map/3D scene copy).
+- 2026-03-31: Issue #16 completed: full Store view refinement with Shelf-grouped inventory (fill progress bar), environmental section with iconography and traffic-light colors, tweets list with X icon, live notifications panel, per-InventoryItem buy action decrementing `stockCount` and `shelfCount`, Orion->SQLite fallback for incremental operations, and broader `price_changed` realtime coverage across list/detail/dashboard/store views.
+- 2026-04-01: Store detail view was hardened to tolerate missing optional external telemetry (`temperature`, `relativeHumidity`, `tweets`) without breaking render.
+- 2026-04-01: Issue #17 completed: cross-cutting visual improvements with hover zoom for Employee and Store, 360-degree rotation on the main Store image, Shelf progress bars with percentage-based color states, Font Awesome compact table iconography, sticky navigation with correct active state, and a new Stores Map view with Leaflet image markers and direct navigation to store details.
+- 2026-03-31: Issue #14 completed: front-end best-practices refinement. Inline handlers removed from templates, new `static/js/image-fallback.js` module, reusable CSS classes (`.color-swatch`), animation synchronization via `animationend`, and ARIA accessibility improvements.
+- 2026-03-31: Issue #13 completed: Orion NGSIv2 subscriptions and real-time notifications. Enhanced webhooks with payload normalization, SocketIO client for event listening (price_changed, low_stock), dynamic DOM updates without reload, highlight animation and low-stock alert styles. check_subscriptions.py script for validating active subscriptions.
+- 2026-03-30: Issue #11 completed: Store external providers split by attribute (weather: temperature/relativeHumidity, social: tweets) with automatic registration at Orion bootstrap and on new store creation.
+- 2026-03-30: Hardened startup in `start.sh`: mandatory sequence Docker stack -> ORION seed (`SEED_ON_START=1`) -> Flask app, preventing empty-state runs after restart.
+- 2026-03-30: Stores view adjusted to display country and countryCode in separate fields (list and detail).
+- 2026-03-30: Store seed/local database normalization: city-specific URLs (oviedo, sevilla, valencia, vigo) and Spanish +34 phone numbers aligned with each location.
+- 2026-03-29: Visual redesign of the app shell (sidebar + support strip + top header), dashboard hero, and KPI cards. Existing CRUD functionality remains unchanged and an explicit low-stock metric is added to the dashboard.
+- 2026-03-29: Operational improvements: working product search, theme selector with system mode, direct CRUD from list views, product category, and expanded employee dataset.
 
 ## 2. Product vision and goals
 
@@ -114,6 +158,9 @@ Out of scope:
 - FR-003: Si Orion no responde, el sistema usa SQLite fallback sin interrumpir UI.
 - FR-004: El sistema debe registrar providers externos de temperature, relativeHumidity y tweets al arrancar.
 - FR-005: El sistema debe registrar subscriptions NGSIv2 para cambio de precio y bajo stock.
+- FR-006: El stack de desarrollo debe levantarse con script `start.sh` (contenedores + aplicacion) y detenerse con `stop.sh`.
+- FR-007: El fallback Orion/SQLite no debe sincronizar datos entre fuentes; solo selecciona fuente activa por conectividad.
+- FR-008: `start.sh` debe ejecutar por defecto un seed completo sobre ORION antes de arrancar la app para garantizar dataset minimo consistente tras reinicios (desactivable con `SEED_ON_START=0`).
 
 #### 6.2 Stores
 - FR-010: Listado de stores con imagen, nombre, countryCode, temperature y relativeHumidity.
@@ -125,18 +172,24 @@ Out of scope:
 - FR-016: Vista detalle store con panel de notificaciones en tiempo real.
 - FR-017: CRUD de shelves desde detalle store.
 - FR-018: CRUD de inventory items desde detalle store.
+- FR-019: Listado de stores debe soportar filtro por `q` (id, nombre, countryCode y direccion) y mantener respuesta JSON/HTML consistente.
 
 #### 6.3 Products
-- FR-020: Listado de productos con imagen, nombre, color, size y acciones editar/borrar.
+- FR-020: Listado de productos con imagen, nombre, color, size, categoria y acciones editar/borrar.
 - FR-021: CRUD completo de products con validacion HTML5 y JS.
+- FR-025: Busqueda global desde cabecera por nombre, categoria, origen o ID para productos y por id/nombre/countryCode/direccion para stores.
+- FR-026: Resultados de busqueda deben mostrar tipo de entidad (Product o Store) y acceso directo al detalle correspondiente.
+- FR-027: La UI debe traducir dinamicamente Store.description, Product.category y Product.name segun el idioma seleccionado, sin mutar los valores NGSIv2 persistidos.
+- FR-028: La UI debe mostrar importes monetarios con el simbolo € al final en listas, detalles, dashboard y actualizaciones realtime.
 - FR-022: Vista detalle product con InventoryItems agrupados por store y shelf.
 - FR-023: CRUD de inventory items desde detalle product.
-- FR-024: Select dinamico de shelves segun store seleccionada.
+- FR-024: En detalle de Product, el alta de InventoryItem por Store debe ofrecer un select dinamico con Shelfs de esa Store que no contengan ya el Product actual.
 
 #### 6.4 Employees
 - FR-030: Listado empleados con imagen, nombre, category, skills e iconos asociados.
 - FR-031: CRUD completo de employees con validacion HTML5 y JS.
 - FR-032: Imagen de empleado con efecto zoom en hover (CSS).
+- FR-033: Dataset base debe incluir al menos 8 empleados con datos de contrato, username y refStore.
 
 #### 6.5 Dashboard and map
 - FR-040: Home dashboard con metricas de stores, products, employees e inventory items.
@@ -144,13 +197,18 @@ Out of scope:
 - FR-042: Stores map con Leaflet y marcadores de todas las tiendas.
 - FR-043: Hover en marcador muestra tarjeta flotante con datos principales.
 - FR-044: Click en marcador navega a detalle de store.
+- FR-045: Dashboard debe exponer contador de bajo stock calculado con umbral operativo (stockCount <= 10 o shelfCount <= 3).
+- FR-046: Dashboard debe mostrar Valor Estimado de stock agregado y panel de Gestion de Tiendas con estado operativo.
+- FR-047: Dashboard debe mostrar seccion Productos Destacados usando productos reales existentes.
 
 #### 6.6 UX and visual standards
-- FR-050: Soporte bilingue ES/EN en toda la app.
-- FR-051: Toggle dark/light funcional y persistente por sesion.
+- FR-050: Soporte bilingue ES/EN en toda la app, incluyendo textos dinamicos renderizados por JavaScript (mapas/escena 3D).
+- FR-051: Selector de tema dark/light/system funcional y persistente.
 - FR-052: Navbar fija en scroll con seccion activa resaltada.
 - FR-053: Efectos visuales priorizan CSS sobre JS.
 - FR-054: JS cliente no crea HTML nuevo; solo actualiza atributos en nodos existentes.
+- FR-054: JS cliente evita mutaciones estructurales arbitrarias; se permite insercion controlada de items en panel de notificaciones en tiempo real.
+- FR-055: Vistas de listado de tiendas, productos y empleados deben permitir alta/edicion/borrado sin depender de vistas detalle.
 
 #### 6.7 Real-time notifications
 - FR-060: Notificacion de cambio de precio debe actualizar vistas de producto activas sin reload.
@@ -165,6 +223,9 @@ Out of scope:
 - FR-003: If Orion is unreachable, SQLite fallback is used without UI interruption.
 - FR-004: The system must register external providers for temperature, relativeHumidity, and tweets at startup.
 - FR-005: The system must register NGSIv2 subscriptions for price change and low stock.
+- FR-006: Development stack startup must be automated with `start.sh` (containers + app) and stopped with `stop.sh`.
+- FR-007: Orion/SQLite fallback must not synchronize data between sources; it only selects the active source by connectivity.
+- FR-008: `start.sh` must run a full ORION seed by default before app startup to guarantee a consistent minimum dataset after restarts (can be disabled with `SEED_ON_START=0`).
 
 #### 6.2 Stores
 - FR-010: Store list with image, name, countryCode, temperature, and relativeHumidity.
@@ -176,18 +237,24 @@ Out of scope:
 - FR-016: Store detail page with real-time notifications panel.
 - FR-017: Shelf CRUD from store detail.
 - FR-018: Inventory item CRUD from store detail.
+- FR-019: Stores list must support `q` filtering (id, name, countryCode, and address) while preserving JSON/HTML response behavior.
 
 #### 6.3 Products
-- FR-020: Product list with image, name, color swatch, size, edit/delete actions.
+- FR-020: Product list with image, name, color swatch, size, category, edit/delete actions.
 - FR-021: Full product CRUD with HTML5 and JS validation.
+- FR-025: Global header search must support products (name/category/origin/ID) and stores (id/name/countryCode/address).
+- FR-026: Search results must clearly display entity type (Product or Store) and provide direct detail navigation.
+- FR-027: The UI must dynamically translate Store.description, Product.category, and Product.name according to the selected language without mutating persisted NGSIv2 values.
+- FR-028: The UI must display monetary amounts with the € symbol at the end in lists, details, dashboard, and realtime updates.
 - FR-022: Product detail with InventoryItems grouped by store and shelf.
 - FR-023: Inventory item CRUD from product detail.
-- FR-024: Dynamic shelf select filtered by selected store.
+- FR-024: In Product detail, InventoryItem creation per Store must provide a dynamic shelf select filtered to Shelves in that Store that do not already contain the current Product.
 
 #### 6.4 Employees
 - FR-030: Employee list with image, name, category, skills, mapped icons.
 - FR-031: Full employee CRUD with HTML5 and JS validation.
 - FR-032: Employee image hover zoom effect (CSS).
+- FR-033: Baseline dataset must include at least 8 employees with contract date, username, and valid refStore.
 
 #### 6.5 Dashboard and map
 - FR-040: Home dashboard with metrics for stores, products, employees, inventory items.
@@ -195,13 +262,18 @@ Out of scope:
 - FR-042: Stores map using Leaflet with markers for all stores.
 - FR-043: Marker hover displays floating card with main store data.
 - FR-044: Marker click navigates to store detail.
+- FR-045: Dashboard must expose a low-stock counter computed with the operational threshold (stockCount <= 10 or shelfCount <= 3).
+- FR-046: Dashboard must display aggregated Estimated Stock Value and a Store Management panel with operational status.
+- FR-047: Dashboard must display a Featured Products section fed by existing real products.
 
 #### 6.6 UX and visual standards
-- FR-050: Full ES/EN bilingual support.
-- FR-051: Functional dark/light toggle persisted per session.
+- FR-050: Full ES/EN bilingual support, including dynamic text rendered by JavaScript (maps/3D scene).
+- FR-051: Functional dark/light/system theme selector persisted across sessions.
 - FR-052: Sticky navbar with active section highlight.
 - FR-053: Visual effects should prioritize CSS over JS.
 - FR-054: Client JS must not generate new HTML; only update existing node attributes.
+- FR-054: Client JS should avoid arbitrary structural mutations; controlled insertion of items in the real-time notifications panel is allowed.
+- FR-055: Store, product, and employee list views must allow create/update/delete without relying only on detail pages.
 
 #### 6.7 Real-time notifications
 - FR-060: Price change notification must update active product views without reload.
@@ -242,6 +314,9 @@ Out of scope:
 - AC-007: Toggle dark/light cambia tema completo y se mantiene durante la sesion.
 - AC-008: Dashboard muestra conteos correctos para stores/products/employees/inventory items.
 - AC-009: Stores map permite hover informativo y click navegable a detalle store.
+- AC-010: La vista Store expone seccion de inventario agrupada por shelf con barra de llenado y accion de compra por item.
+- AC-011: La accion de compra ejecuta decremento de conteos y aplica fallback a SQLite si Orion no esta disponible.
+- AC-012: El evento `price_changed` actualiza precio en listado de productos, detalle de producto, cards del dashboard y tabla de inventario del Store.
 
 ### EN
 - AC-001: On startup, the app detects Orion and automatically switches between Orion and SQLite.
@@ -253,6 +328,9 @@ Out of scope:
 - AC-007: Dark/light toggle updates full theme and remains during session.
 - AC-008: Dashboard shows correct counts for stores/products/employees/inventory items.
 - AC-009: Stores map supports informative hover and clickable navigation to store detail.
+- AC-010: Store detail exposes Shelf-grouped inventory with fill bar and per-item buy action.
+- AC-011: Buy action decrements counters and applies SQLite fallback when Orion is unavailable.
+- AC-012: `price_changed` updates prices in product list, product detail, dashboard featured cards, and Store inventory table.
 
 ## 9. Dependencies and assumptions
 
@@ -337,7 +415,8 @@ Assumptions:
 	- Blueprints CRUD para Stores, Products, Employees, Inventory y Notifications.
 	- Capa de seleccion de fuente de datos Orion-first con fallback SQLite.
 	- Script de carga de datos de prueba `scripts/load_test_data.py` con opciones `--clean`, `--dry-run` y `--verbose`.
-	- Carga objetivo cumplida: 4 stores, 10 products, 10 employees, 12 shelves y 55+ inventory items.
+	- Carga objetivo cumplida: 4 stores, 10 products, 8 employees, 12 shelves y 55+ inventory items.
+	- IDs de empleados normalizados de forma correlativa en dataset semilla: `E001..E008`.
 	- Suites de tests agregadas para stores, products, employees, inventory y data loading.
 - Cobertura de requisitos lograda en Issue #1:
 	- FR-001, FR-002, FR-003: implementados y operativos.
@@ -362,7 +441,8 @@ Assumptions:
 	- CRUD blueprints for Stores, Products, Employees, Inventory, and Notifications.
 	- Orion-first data source selector with SQLite fallback.
 	- Test data loader script `scripts/load_test_data.py` with `--clean`, `--dry-run`, and `--verbose`.
-	- Target dataset delivered: 4 stores, 10 products, 10 employees, 12 shelves, and 55+ inventory items.
+	- Target dataset delivered: 4 stores, 10 products, 8 employees, 12 shelves, and 55+ inventory items.
+	- Employee IDs normalized to a sequential seed range: `E001..E008`.
 	- Test suites added for stores, products, employees, inventory, and data loading.
 - Requirement coverage achieved in Issue #1:
 	- FR-001, FR-002, FR-003: implemented and working.
@@ -542,3 +622,272 @@ Assumptions:
 	- FR-012: geolocation map integrated into Store detail via Leaflet.
 	- FR-030/FR-031: Employee listing/detail routes remain functional in UI.
 	- FR-042: map-driven Store location representation available in operational UI.
+
+## 19. Implementation progress (Store detail normalization)
+
+### ES
+- Estado: Implementacion completada para normalizacion de datos visibles en detalle de tienda.
+- Alcance implementado:
+	- El ID de tienda se muestra simplificado (segmento final del URN, por ejemplo `S001`).
+	- El pais se muestra por nombre completo en UI (mapeo de `countryCode` para ES/DE/FR).
+	- La direccion completa se muestra en ficha con `streetAddress`, `addressLocality` y `addressRegion`.
+	- Se elimina el campo `Tipo` en detalle de tienda por redundancia funcional.
+- Trazabilidad de requisitos:
+	- FR-010: la presentacion de atributos de Store en detalle mejora legibilidad y semantica.
+	- FR-050: el nombre de pais queda integrado en flujo bilingue de etiquetas.
+
+### EN
+- Status: Completed implementation for visible-data normalization on Store detail.
+- Implemented scope:
+	- Store ID is rendered in simplified format (URN trailing segment, e.g. `S001`).
+	- Country is rendered as full name in UI (`countryCode` mapping for ES/DE/FR).
+	- Full address is shown using `streetAddress`, `addressLocality`, and `addressRegion`.
+	- `Type` field was removed from Store detail due to functional redundancy.
+- Requirement traceability:
+	- FR-010: Store detail attribute rendering is clearer and more semantic.
+	- FR-050: country-name rendering is integrated with bilingual label flow.
+
+## 20. Implementation progress (Global entity-format normalization)
+
+### ES
+- Estado: Implementacion completada para normalizacion de formato en todas las vistas de Stores, Products y Employees (listado y detalle).
+- Alcance implementado:
+	- IDs de Store/Product/Employee mostrados en formato simplificado (sufijo final del URN).
+	- Referencias `refStore` mostradas en formato simplificado en listados y detalle de Employees.
+	- Codigos de pais (`countryCode`, `originCountry`) mostrados como nombre completo en idioma activo (ES, DE, FR, EC).
+	- Campo `Tipo` eliminado en todas las vistas de detalle de Store/Product/Employee.
+	- Cobertura smoke ampliada para validar consistencia transversal de formato.
+- Trazabilidad de requisitos:
+	- FR-010/FR-020/FR-030: vistas de listado y detalle con representacion de datos mas legible para operacion.
+	- FR-050: mapeo de paises integrado al flujo bilingue ES/EN.
+	- NFR-003: consistencia de lectura y escaneo visual en vistas principales.
+
+### EN
+- Status: Completed implementation for formatting normalization across all Stores, Products, and Employees views (list and detail).
+- Implemented scope:
+	- Store/Product/Employee IDs are rendered in simplified format (URN trailing segment).
+	- `refStore` references are rendered in simplified format in Employees list/detail.
+	- Country codes (`countryCode`, `originCountry`) are rendered as full names in active language (ES, DE, FR, EC).
+	- `Type` field was removed from all Store/Product/Employee detail views.
+	- Smoke coverage was extended to validate cross-view format consistency.
+- Requirement traceability:
+	- FR-010/FR-020/FR-030: list/detail views now provide more legible operational rendering.
+	- FR-050: country-name mapping is integrated into the ES/EN bilingual flow.
+	- NFR-003: improved readability consistency across main views.
+
+## 21. Implementation progress (Issue #7)
+
+### ES
+- Estado: Implementacion iniciada y completada para operaciones CRUD en detalle de tienda y detalle de producto.
+- Alcance implementado:
+	- Detalle de tienda muestra productos almacenados en la tienda (agregacion por inventario).
+	- Detalle de tienda incorpora CRUD de estanterias (alta, edicion y borrado con control de dependencias).
+	- Detalle de tienda incorpora CRUD de items de inventario vinculados al contexto de la tienda.
+	- Detalle de producto muestra tiendas donde el producto esta disponible.
+	- Detalle de producto incorpora CRUD de items de inventario vinculados al contexto del producto.
+	- Se implementa politica de integridad para borrado de estanterias: bloqueo con `409 Conflict` cuando existen items asociados.
+- Trazabilidad de requisitos:
+	- FR-014: vista de detalle store con tabla de InventoryItems (por store con referencia de shelf/product).
+	- FR-017: CRUD de shelves desde detalle store.
+	- FR-018: CRUD de inventory items desde detalle store.
+	- FR-022: vista detalle product con disponibilidad por tienda.
+	- FR-023: CRUD de inventory items desde detalle product.
+	- FR-024: soporte de seleccion de shelf/store en formularios de inventario.
+
+### EN
+- Status: Implementation started and completed for CRUD operations in store detail and product detail.
+- Implemented scope:
+	- Store detail now shows products stored in the store (inventory-based aggregation).
+	- Store detail now includes shelf CRUD (create, update, delete with dependency control).
+	- Store detail now includes inventory-item CRUD scoped to the store context.
+	- Product detail now shows stores where the product is available.
+	- Product detail now includes inventory-item CRUD scoped to the product context.
+	- Shelf deletion integrity policy implemented: `409 Conflict` when linked inventory items exist.
+- Requirement traceability:
+	- FR-014: store detail with InventoryItems table (store-scoped with shelf/product references).
+	- FR-017: shelf CRUD from store detail.
+	- FR-018: inventory-item CRUD from store detail.
+	- FR-022: product detail availability grouped by store.
+	- FR-023: inventory-item CRUD from product detail.
+	- FR-024: shelf/store selection support in inventory forms.
+
+## 22. Closure status (Issue #7)
+
+### ES
+- Estado de fusion: `feature/issue-7-crud` fusionada en `main` (sin diferencias pendientes; `main` ya contenia el commit de Issue #7).
+- Estado de sincronizacion: rama local y remoto `origin/main` sincronizados.
+- Estado funcional: alcance CRUD de Issue #7 validado por pruebas (suite en verde).
+- Estado de ticket GitHub: no se encuentra el recurso `issues/7` via API publica al momento del cierre tecnico.
+
+### EN
+- Merge status: `feature/issue-7-crud` merged into `main` (no pending diffs; `main` already contained Issue #7 commit).
+- Sync status: local branch and `origin/main` are synchronized.
+- Functional status: Issue #7 CRUD scope validated by tests (full suite green).
+- GitHub ticket status: `issues/7` is not available through the public API at technical closure time.
+
+## 23. Implementation progress (Issue #8 Orion-first startup fallback)
+
+### ES
+- Estado: Implementacion completada y cerrada para integracion operativa Orion-first sin sincronizacion de datos entre Orion y SQLite.
+- Alcance implementado:
+	- Seleccion de fuente en arranque reforzada con trazas explicitas de modo ORION/SQLITE.
+	- Fallback runtime mantiene continuidad operativa con cambio controlado a SQLite cuando Orion falla.
+	- `docker-compose.yml` alineado al stack tutorial CRUD Operations con defaults seguros para ejecucion local.
+	- Se agregan scripts operativos `start.sh` y `stop.sh` para levantar/parar contenedores y aplicacion.
+	- Se mantiene exclusion explicita de sincronizacion Orion<->SQLite.
+- Trazabilidad de requisitos:
+	- FR-001, FR-002, FR-003: seleccion de fuente por conectividad en arranque.
+	- FR-004, FR-005: registro de integraciones externas cuando Orion esta activo.
+	- FR-006, FR-007: scripts de operacion y no-sincronizacion entre fuentes.
+
+### EN
+- Status: Implementation completed and closed for Orion-first operational integration without data synchronization between Orion and SQLite.
+- Implemented scope:
+	- Startup source selection now includes explicit ORION/SQLITE mode logs.
+	- Runtime fallback preserves continuity with controlled switch to SQLite when Orion fails.
+	- `docker-compose.yml` is aligned with the CRUD Operations tutorial stack with safe local defaults.
+	- Operational scripts `start.sh` and `stop.sh` were added to start/stop containers and app.
+	- Explicit exclusion of Orion<->SQLite synchronization is preserved.
+- Requirement traceability:
+	- FR-001, FR-002, FR-003: connectivity-based source selection at startup.
+	- FR-004, FR-005: external integration registration when Orion is active.
+	- FR-006, FR-007: operational scripts and no cross-source synchronization.
+
+## 24. Closure status (Issue #8)
+
+### ES
+- Estado de fusion: `feature/issue-8-orion-integration` integrada en `main`.
+- Estado de sincronizacion: `main` y `origin/main` sincronizados tras push de cierre.
+- Estado funcional: Orion-first en arranque, fallback SQLite operativo y scripts `start.sh`/`stop.sh` validados por suite.
+- Estado de ticket GitHub: cerrado mediante commit en `main` con referencia `Closes #8`.
+
+### EN
+- Merge status: `feature/issue-8-orion-integration` integrated into `main`.
+- Sync status: `main` and `origin/main` synchronized after closure push.
+- Functional status: startup Orion-first, operational SQLite fallback, and validated `start.sh`/`stop.sh` scripts.
+- GitHub ticket status: closed through a `main` commit referencing `Closes #8`.
+
+## 25. Planned scope (Issue #9 - Data model expansion)
+
+### ES
+- Objetivo: ampliar modelo de datos con atributos extendidos y representacion UML, mejorar dataset inicial con distribucion minima garantizada, mantener Orion-first sin sincronizacion entre fuentes.
+- Requisitos funcionales nuevos:
+	- FR-051: Visualizar diagrama UML Mermaid en Home (dashboard) con relaciones entre entities.
+	- FR-052: CRUD de Employee con validaciones extendidas (email, skills enum, dateOfContract, username, password singular).
+	- FR-053: CRUD de Store con temperatura y humedad relativa enriquecidas.
+	- FR-054: CRUD de Product con color hex RGB requerido y validado.
+	- FR-055: Dataset inicial con cardinalidad garantizada: 4 Employees, 4 Stores, 16 Shelves (4 por store), 10 Products, minimo 64 InventoryItems (4 por shelf).
+- Politica de seguridad para credenciales (deuda tecnica):
+	- En alcance demo: se permite almacenar password en texto plano para fase inicial documentado como deuda.
+	- Fuera de alcance: implementacion de hash bcrypt para produccion en este issue.
+- Atributos existentes a validar/documentar:
+	- Employee: email (email valido y unico), dateOfContract (DateTime ISO-8601), skills (Array enum: MachineryDriving, WritingReports, CustomerRelationships), username (Text 4-32 chars unico), password (Text, credencial de demo), refStore (Relationship singular a Store).
+	- Store: url (URL valida), telephone (Patron telefono), countryCode (ISO alpha-2 2 chars), capacity (m3 positivo), description (Text <= 2000 chars), temperature (Float -30..60 grados C), relativeHumidity (Float 0..100 porcentaje).
+	- Product: color (Text hex RGB #RRGGBB obligatorio).
+
+### EN
+- Objective: expand data model with extended attributes and UML representation, improve initial dataset with guaranteed minimum distribution, maintain Orion-first without cross-source synchronization.
+- New functional requirements:
+	- FR-051: Display UML Mermaid diagram in Home (dashboard) with entity relationships.
+	- FR-052: Employee CRUD with extended validations (email, skills enum, dateOfContract, username, password singular).
+	- FR-053: Store CRUD with enriched temperature and relative humidity.
+	- FR-054: Product CRUD with required and validated hex RGB color.
+	- FR-055: Initial dataset with guaranteed cardinality: 4 Employees, 4 Stores, 16 Shelves (4 per store), 10 Products, minimum 64 InventoryItems (4 per shelf).
+- Security policy for credentials (technical debt):
+	- In demo scope: plain-text password storage allowed for initial phase documented as debt.
+	- Out of scope: bcrypt hash implementation for production in this issue.
+- Existing attributes to validate/document:
+	- Employee: email (valid and unique email format), dateOfContract (ISO-8601 DateTime), skills (Array enum: MachineryDriving, WritingReports, CustomerRelationships), username (Text 4-32 chars unique), password (Text, demo credential), refStore (singular Relationship to Store).
+	- Store: url (valid URL), telephone (international phone pattern), countryCode (ISO alpha-2 2 chars), capacity (positive m3), description (Text <= 2000 chars), temperature (Float -30..60 degrees C), relativeHumidity (Float 0..100 percentage).
+	- Product: color (Text hex RGB #RRGGBB required).
+
+## 26. Implementation progress (Issue #9 - Data model expansion)
+
+### ES
+- Estado: Implementacion completada y cerrada para ampliacion del modelo de datos con validaciones extendidas, representacion UML Mermaid en Home y script de carga determinista.
+- Alcance implementado:
+	- FR-051: Diagrama UML Mermaid integrado en dashboard.html mostrando relaciones entre Store/Employee/Product/Shelf/InventoryItem.
+	- FR-052: Validaciones de Employee extendidas (email RFC5322 valido, dateOfContract ISO-8601, skills enum enforced, username 4-32 caracteres, password texto plano en demo).
+	- FR-053: Validaciones de Store extendidas (url valid, telephone patron telefono, capacity > 0, description <= 2000 chars, temperature -30..60°C, relativeHumidity 0..100%).
+	- FR-054: Product.color validado con patron hex RGB #RRGGBB (ya implementado antes, sin cambios).
+	- FR-055: Dataset determinista garantizado: 4 Employees, 4 Stores, 16 Shelves (4 por store), 10 Products, 64+ InventoryItems.
+	- Cambios en load_test_data.py: SHELVES_PER_STORE cambiado de 3 a 4, EMPLOYEES_DATA reducido de 8 a 4 empleados (E001-E004).
+	- Mermaid renderizado responsivamente en dashboard con CDN jsdelivr y inicializacion en app.js.
+- Trazabilidad de requisitos:
+	- FR-051: seccion data-model-uml en dashboard.html con diagrama ERD Mermaid.
+	- FR-052/FR-053/FR-054: validaciones centralizadas en routes/utils.py con 20+ nuevas reglas.
+	- FR-055: script de carga verifica cardinalidades minimas en integrity validation.
+	- NFR-008: cobertura de tests extendida a 108 passed (unit + integration + smoke + e2e).
+
+### EN
+- Status: Implementation completed and closed for data model expansion with extended validations, Mermaid UML representation in Home, and deterministic data loading.
+- Implemented scope:
+	- FR-051: Mermaid UML diagram integrated in dashboard.html showing relationships between Store/Employee/Product/Shelf/InventoryItem.
+	- FR-052: Extended Employee validations (valid RFC5322 email, ISO-8601 dateOfContract, enforced skills enum, 4-32 char username, plain-text password in demo).
+	- FR-053: Extended Store validations (valid url, phone pattern, capacity > 0, description <= 2000 chars, temperature -30..60°C, relativeHumidity 0..100%).
+	- FR-054: Product.color validated with hex RGB pattern #RRGGBB (previously implemented, no changes).
+	- FR-055: Guaranteed deterministic dataset: 4 Employees, 4 Stores, 16 Shelves (4 per store), 10 Products, 64+ InventoryItems.
+	- load_test_data.py changes: SHELVES_PER_STORE changed from 3 to 4, EMPLOYEES_DATA reduced from 8 to 4 (E001-E004).
+	- Mermaid rendered responsively in dashboard using CDN jsdelivr with initialization in app.js.
+- Requirement traceability:
+	- FR-051: data-model-uml section in dashboard.html with Mermaid ERD diagram.
+	- FR-052/FR-053/FR-054: centralized validations in routes/utils.py with 20+ new rules.
+	- FR-055: data loading script verifies minimum cardinalities in integrity validation.
+	- NFR-008: test coverage expanded to 108 passed (unit + integration + smoke + e2e).
+
+## 27. Closure status (Issue #9)
+
+### ES
+- Estado de fusion: ✅ COMPLETADO - cambios de Issue #9 merged desde `feature/issue-9-modelo-ampliado` a `main` (commit 327b906).
+- Estado de sincronizacion: ✅ SINCRONIZADO - rama local y remoto `origin/main` sincronizados post-merge con push a origin.
+- Estado funcional: ✅ OPERATIVO - validaciones de atributos extendidas en utils.py (98 líneas), dashboard con diagrama Mermaid renderizado responsivamente, script de carga con cardinalidad garantizada (4 emp, 4 store, 16 shelf, 10 prod, 64+ items).
+- Suite de pruebas: ✅ 108/108 TESTS EN VERDE (0 fallos) - unit, integration, e2e, y smoke tests completados exitosamente.
+- Deuda tecnica documentada: password almacenado en texto plano en demo para esta fase, migracion a hash bcrypt deferred a future release.
+- Mejoras visuales en Mermaid (fase post-inicial): Tema aplicado con colores corporativos (verde primario #0aa64f, verde oscuro #0f5c3f, blanco #ffffff), etiquetas de relaciones mejoradas (belongs, contains, tracks, holds, stocked_as), documentacion detallada de atributos en diagrama ERD con tipos y restricciones.
+- Correcciones funcionales post-cierre: se elimina definicion duplicada de INVENTORYITEM en Mermaid para evitar render vacio, se reordena dashboard en secuencia Panel de Control -> Featured Products -> Store Management -> Stores Map, y se amplian vistas list/detail para exponer atributos extendidos de Employee, Store y Product.
+- Commits de cierre: 327b906 ("chore: Issue #9 implementation complete - Closes #9"), 34ecec7 ("feat: mejorar diagrama Mermaid con tema personalizado — colores de aplicacion").
+
+### EN
+- Merge status: ✅ COMPLETED - Issue #9 changes merged from `feature/issue-9-modelo-ampliado` to `main` (commit 327b906).
+- Sync status: ✅ SYNCHRONIZED - local branch and `origin/main` synchronized post-merge with push to origin.
+- Functional status: ✅ OPERATIONAL - extended attribute validations in utils.py (98 lines), dashboard with responsively-rendered Mermaid diagram, data loading script with guaranteed cardinality (4 emp, 4 store, 16 shelf, 10 prod, 64+ items).
+- Test suite: ✅ 108/108 TESTS GREEN (0 failures) - unit, integration, e2e, and smoke tests completed successfully.
+- Visual Mermaid improvements (post-initial phase): Theme applied with corporate colors (primary green #0aa64f, dark green #0f5c3f, white #ffffff), improved relationship labels (belongs, contains, tracks, holds, stocked_as), detailed attribute documentation in ERD diagram with types and constraints.
+- Post-closure functional fixes: removed duplicated INVENTORYITEM Mermaid definition to prevent empty rendering, reordered dashboard sections as Control Panel -> Featured Products -> Store Management -> Stores Map, and expanded list/detail views to expose extended attributes for Employee, Store, and Product.
+- Closure commits: 327b906 ("chore: Issue #9 implementation complete - Closes #9"), 34ecec7 ("feat: mejorar diagrama Mermaid con tema personalizado — colores de aplicacion").
+- Technical debt documented: password stored in plain text in demo for this phase, migration to bcrypt hash deferred to future release.
+- Closure commit: 327b906 ("chore: Issue #9 implementation complete - Closes #9")
+
+## 28. Implementation progress (Issue #11 - NGSIv2 external context providers)
+
+### ES
+- Estado: implementacion completada en rama de trabajo para separar providers externos de Store en dos registros NGSIv2 independientes durante startup.
+- Alcance funcional implementado:
+	- FR-004 reforzado: registro automatico de providers al arranque en modo ORION mediante `POST /v2/registrations`.
+	- Registro A (Store weather): atributos `temperature` y `relativeHumidity`.
+	- Registro B (Store tweets): atributo `tweets`.
+	- Ambos registros aplican a `Store` mediante registro por `id` de cada Store existente en startup.
+- Configuracion operativa:
+	- `PROVIDER_BASE_URL` como base de provider NGSI para contexto externo.
+	- `WEATHER_PROVIDER_URL` con default `${PROVIDER_BASE_URL}/providers/weather`.
+	- `TWEETS_PROVIDER_URL` con default `${PROVIDER_BASE_URL}/providers/tweets`.
+	- Politica de integracion: no usar URL generica del tutorial sin endpoints NGSI activos.
+- Evidencia esperada:
+	- Reinicio idempotente sin fallo por duplicados (Orion `201/409` tratados como exito en cliente).
+	- `GET /v2/registrations` mostrando dos registros activos para tipo `Store`.
+
+### EN
+- Status: implementation completed in working branch to split external Store providers into two independent NGSIv2 registrations at startup.
+- Implemented functional scope:
+	- FR-004 strengthened: automatic provider registration at startup in ORION mode through `POST /v2/registrations`.
+	- Registration A (Store weather): `temperature` and `relativeHumidity`.
+	- Registration B (Store tweets): `tweets`.
+	- Both registrations target `Store` by registering each existing Store `id` at startup.
+- Operational configuration:
+	- `PROVIDER_BASE_URL` as external NGSI provider base.
+	- `WEATHER_PROVIDER_URL` defaulting to `${PROVIDER_BASE_URL}/providers/weather`.
+	- `TWEETS_PROVIDER_URL` defaulting to `${PROVIDER_BASE_URL}/providers/tweets`.
+	- Integration policy: do not use generic tutorial URL when NGSI endpoints are not active.
+- Expected evidence:
+	- Idempotent restart with no duplicate-registration failure (Orion `201/409` treated as success by client contract).
+	- `GET /v2/registrations` exposing two active registrations for `Store`.

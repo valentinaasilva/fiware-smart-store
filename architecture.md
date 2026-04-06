@@ -14,6 +14,48 @@
 - Status: Technical baseline
 - Scope: Target architecture for Flask + FIWARE implementation
 
+## 1.1 Change log
+
+### ES
+- 2026-04-06: Correccion final de datos de navegacion: `Store.url` deja de usar dominios de ejemplo no resolubles y pasa a enlaces funcionales de OpenStreetMap para mantener coherencia UX en el detalle de tienda.
+- 2026-04-06: Issue #23 en progreso: `routes/products.py` agrega contexto de inventario agrupado por Store (totales y filas por Shelf) y habilita alta de InventoryItem sin id explicito mediante generacion de URN en backend; `static/js/product-inventory.js` controla apertura de formulario por Store y carga dinamica de Shelfs disponibles.
+- 2026-04-01: Hotfix de conectividad Linux: Orion en Docker incorpora `extra_hosts: host.docker.internal:host-gateway` para enrutar callbacks de subscriptions y consultas a providers de Store hacia Flask en host.
+- 2026-04-01: Issue #20 completado: el formato monetario visible se estandariza con sufijo € en precios de productos, ofertas del dashboard y salarios de empleados; SocketIO reutiliza el mismo sufijo via `data-price-suffix` para mantener consistencia en actualizaciones realtime.
+- 2026-04-01: Issue #19 completado: la capa de presentacion resuelve dinamicamente Store.description, Product.category y Product.name segun el idioma activo, usando el sistema i18n existente y sin mutar los datos NGSIv2 almacenados.
+- 2026-04-01: Issue #18 completado: la busqueda de cabecera deja de ser solo de Product y pasa a consolidar resultados Product/Store tipados en la vista de productos. El listado de stores incorpora filtrado por `q` reutilizando criterios de id/nombre/countryCode/direccion.
+- 2026-04-01: Issue #18 completado: capa de presentacion bilingue reforzada; textos dinamicos de mapa Leaflet y escena Three.js pasan a resolverse por atributos de datos traducidos desde Jinja2 para evitar copy hardcodeado en JS.
+- 2026-03-31: Issue #16 completado: vista Store reorganizada en bloques funcionales (mapa, condiciones ambientales, tweets, notificaciones, inventario por shelf y escena 3D basica con Three.js). Se introduce endpoint de compra por InventoryItem y operacion incremental Orion-first con fallback SQLite.
+- 2026-04-01: La vista Store usa acceso seguro a atributos opcionales de telemetria externa para evitar errores 500 cuando `temperature`, `relativeHumidity` o `tweets` no estan presentes.
+- 2026-04-01: Issue #17 completado: se añade una ruta dedicada `/stores-map` con marcadores Leaflet enriquecidos por imagen, tarjetas flotantes y click-through al detalle; la navegacion lateral pasa a usar Font Awesome global; los efectos de hover y los estados de progreso de Shelf quedan resueltos por CSS compartido sin cambiar la capa NGSI.
+- 2026-03-31: Issue #14 completado: refinamiento de arquitectura de presentacion front-end con separacion estricta HTML/CSS/JS, modulo `static/js/image-fallback.js`, patron CSS reusable `.color-swatch`, animaciones sincronizadas por evento `animationend`, y atributos ARIA para accesibilidad.
+- 2026-03-31: Issue #13 completado: arquitectura de notificaciones en tiempo real con suscripciones Orion->webhooks normalizados->SocketIO->actualizacion dinamica DOM. Flujos detallados de price_changed y low_stock con eventos NGSIv2, normalizacion de payloads y animaciones visuales (highlight-flash, alert-low-stock).
+- 2026-03-30: Issue #11: providers externos de Store desacoplados por atributo y servidos por blueprint interno `routes/providers.py`; registro por Store en bootstrap Orion y alta de tienda.
+- 2026-03-30: `start.sh` endurecido con secuencia determinista stack -> seed ORION -> app para eliminar carreras de arranque y estados sin datos.
+- 2026-03-30: Capa de presentacion de Stores actualizada para separar visualmente nombre de pais y countryCode en listado y detalle.
+- 2026-03-30: Ajuste de datos semilla de Store en capa de datos para coherencia geografica: URLs por ciudad real y telefonos +34 por provincia/ciudad.
+- 2026-03-29: Actualizada arquitectura de presentacion con shell de dos niveles (sidebar + cabecera superior) y dashboard enriquecido con mapa agregado de tiendas y KPI de bajo stock.
+- 2026-03-29: Se incorporan busqueda de productos por query, selector de tema dark/light/system y formularios CRUD en listados para Store/Product/Employee.
+
+### EN
+- 2026-04-06: Final navigation-data fix: `Store.url` no longer uses unresolved placeholder domains and now points to functional OpenStreetMap links to keep a coherent UX in store detail.
+- 2026-04-06: Issue #23 in progress: `routes/products.py` now builds Store-grouped inventory context (totals and shelf-level rows) and supports InventoryItem creation without an explicit id by generating the URN server-side; `static/js/product-inventory.js` drives per-Store form toggling and dynamic loading of available Shelves.
+- 2026-04-01: Linux connectivity hotfix: Orion in Docker now includes `extra_hosts: host.docker.internal:host-gateway` to route subscription callbacks and Store provider queries back to host Flask.
+- 2026-04-01: Issue #20 completed: visible monetary formatting is standardized with a trailing € suffix for product prices, dashboard offers, and employee salaries; SocketIO reuses the same suffix via `data-price-suffix` to keep realtime updates consistent.
+- 2026-04-01: Issue #19 completed: the presentation layer now dynamically resolves Store.description, Product.category, and Product.name according to the active language using the existing i18n system without mutating persisted NGSIv2 data.
+- 2026-04-01: Issue #18 completed: header search is no longer Product-only and now consolidates typed Product/Store results in the products view. The stores list now supports `q` filtering using id/name/countryCode/address criteria.
+- 2026-04-01: Issue #18 completed: bilingual presentation layer reinforced; dynamic Leaflet/Three.js UI copy is now injected through translated Jinja2 data attributes to avoid hardcoded JS text.
+- 2026-03-31: Issue #16 completed: Store view reorganized into functional blocks (map, environmental conditions, tweets, notifications, shelf-grouped inventory, and basic Three.js 3D scene). A per-InventoryItem buy endpoint and Orion-first incremental operation with SQLite fallback were added.
+- 2026-04-01: Store view now uses safe access to optional external telemetry attributes to prevent 500 errors when `temperature`, `relativeHumidity`, or `tweets` are absent.
+- 2026-04-01: Issue #17 completed: a dedicated `/stores-map` route adds Leaflet markers enriched with images, hover cards, and click-through navigation to store details; the sidebar navigation now uses global Font Awesome; shelf fill states and hover effects are handled through shared CSS without changing the NGSI layer.
+- 2026-03-31: Issue #14 completed: presentation-layer architecture refinement with strict HTML/CSS/JS separation, `static/js/image-fallback.js` module, reusable `.color-swatch` CSS pattern, `animationend`-driven animation synchronization, and ARIA accessibility attributes.
+- 2026-03-31: Issue #13 completed: real-time notification architecture with Orion subscriptions->normalized webhooks->SocketIO->dynamic DOM updates. Detailed flows for price_changed and low_stock with NGSIv2 events, payload normalization, and visual animations (highlight-flash, alert-low-stock).
+- 2026-03-30: Issue #11: Store external providers split by attribute and served by internal `routes/providers.py` blueprint; registrations created per Store on Orion bootstrap and store creation.
+- 2026-03-30: `start.sh` hardened with deterministic sequence stack -> ORION seed -> app to eliminate startup races and empty-data states.
+- 2026-03-30: Stores presentation layer updated to separate country name and countryCode in list/detail views.
+- 2026-03-30: Store seed-data adjustment in data layer for geographic coherence: city-specific URLs and +34 phone numbers by city.
+- 2026-03-29: Presentation architecture updated with a two-level shell (sidebar + top header) and an enriched dashboard with aggregated stores map and low-stock KPI.
+- 2026-03-29: Added query-based product search, dark/light/system theme selector, and list-view CRUD forms for Store/Product/Employee.
+
 ## 2. Architectural goals
 
 ### ES
@@ -33,22 +75,22 @@
 ## 3. System context
 
 ### ES
-El sistema opera como una app Flask conectada a Orion Context Broker y MongoDB en Docker. Tambien consume providers externos del contenedor tutorial para enriquecer Stores con temperature, relativeHumidity y tweets.
+El sistema opera como una app Flask conectada a Orion Context Broker y MongoDB en Docker. Los providers de contexto externo para Store se exponen en la propia app Flask (blueprint `routes/providers.py`) y Orion los consulta para enriquecer `temperature`, `relativeHumidity` y `tweets`.
 
 Actores externos:
 - Navegador web del operador/supervisor.
 - Orion Context Broker (API NGSIv2).
 - MongoDB (persistencia de Orion).
-- Tutorial Context Provider.
+- Providers externos NGSI (weather/tweets) expuestos por Flask.
 
 ### EN
-The system runs as a Flask app connected to Orion Context Broker and MongoDB in Docker. It also consumes external providers from the tutorial container to enrich Stores with temperature, relativeHumidity, and tweets.
+The system runs as a Flask app connected to Orion Context Broker and MongoDB in Docker. Store external context providers are exposed by the Flask app itself (`routes/providers.py`) and queried by Orion to enrich `temperature`, `relativeHumidity`, and `tweets`.
 
 External actors:
 - Operator/supervisor web browser.
 - Orion Context Broker (NGSIv2 API).
 - MongoDB (Orion persistence).
-- Tutorial Context Provider.
+- NGSI external providers (weather/tweets) exposed by Flask.
 
 ## 4. Logical architecture
 
@@ -59,6 +101,13 @@ Capas y componentes:
 - Assets estaticos CSS/JS.
 - Socket.IO client para actualizaciones real-time.
 - Librerias visuales Leaflet, Three.js, Mermaid y Font Awesome.
+- Shell UI desacoplado en `templates/base.html` con sidebar fijo, support strip y top header de controles.
+- Header con formulario de busqueda global (`GET /products?q=...`) que combina Product+Store y selector de tema de tres modos.
+- Reglas de calidad front-end de Issue #14: sin handlers inline, prioridad CSS para comportamiento visual y sin generacion HTML dinamica desde JavaScript.
+- Fallback de imagenes centralizado en `static/js/image-fallback.js` usando atributo `data-fallback-image`.
+- Actualizaciones dinamicas limitadas a nodos existentes mediante `textContent`, atributos y `classList`.
+- Interaccion en detalle de Product para inventario agrupado por Store y alta en Shelf disponible gestionada por `static/js/product-inventory.js`.
+- i18n JS-first: textos de estado/error y ayudas de interaccion en Leaflet/Three.js se inyectan como `data-*` traducidos desde templates y se consumen en `static/js/app.js`.
 
 2. Application layer
 - app.py como punto de entrada Flask y configuracion SocketIO.
@@ -68,13 +117,15 @@ Capas y componentes:
   - routes/employees.py
   - routes/inventory.py
   - routes/notifications.py
+  - routes/providers.py
 - Servicio de i18n para ES/EN.
 - Servicio de tema para dark/light mode.
 
 3. Data access layer
 - Adapter OrionClient (NGSIv2 CRUD y subscriptions).
+- Adapter OrionClient (NGSIv2 CRUD, subscriptions e incrementos atomicos por atributo).
 - Adapter SQLiteRepository (fallback local).
-- DataSourceSelector (estrategia Orion first + fallback).
+- DataSourceSelector (estrategia Orion first + fallback, incluyendo operacion incremental).
 
 4. Integration layer
 - Client HTTP hacia Orion /v2/entities, /v2/subscriptions, /v2/registrations.
@@ -88,6 +139,13 @@ Layers and components:
 - Static CSS/JS assets.
 - Socket.IO client for real-time updates.
 - Visual libraries Leaflet, Three.js, Mermaid, and Font Awesome.
+- Decoupled UI shell in `templates/base.html` with fixed sidebar, support strip, and control-oriented top header.
+- Header with global search form (`GET /products?q=...`) that aggregates Product+Store results and a three-mode theme selector.
+- Front-end quality rules from Issue #14: no inline event handlers, CSS-first visual behavior, and no dynamic HTML generation from JavaScript.
+- Image fallback handling delegated to `static/js/image-fallback.js` using `data-fallback-image` attributes.
+- Dynamic UI updates constrained to existing nodes via `textContent`, attributes, and `classList`.
+- Product-detail inventory grouping by Store and available-Shelf creation flow handled by `static/js/product-inventory.js`.
+- JS i18n pattern: status/error/help copy for Leaflet/Three.js is injected as translated `data-*` attributes from templates and consumed in `static/js/app.js`.
 
 2. Application layer
 - app.py as Flask entrypoint and SocketIO bootstrap.
@@ -97,13 +155,15 @@ Layers and components:
   - routes/employees.py
   - routes/inventory.py
   - routes/notifications.py
+  - routes/providers.py
 - i18n service for ES/EN.
 - Theme service for dark/light mode.
 
 3. Data access layer
 - OrionClient adapter (NGSIv2 CRUD and subscriptions).
+- OrionClient adapter (NGSIv2 CRUD, subscriptions, and atomic per-attribute increments).
 - SQLiteRepository adapter (local fallback).
-- DataSourceSelector (Orion-first + fallback strategy).
+- DataSourceSelector (Orion-first + fallback strategy, including incremental operations).
 
 4. Integration layer
 - HTTP client to Orion /v2/entities, /v2/subscriptions, /v2/registrations.
@@ -141,7 +201,7 @@ Critical connectivity rule:
 - Orion disponible -> modo ORION
 - Orion no disponible -> modo SQLITE
 4. Si modo ORION:
-- Registrar context providers externos (temperature, relativeHumidity, tweets).
+- Registrar context providers externos por Store (temperature, relativeHumidity, tweets).
 - Crear/validar subscriptions:
   - Price change on Product
   - Low stock on InventoryItem por Store
@@ -155,7 +215,7 @@ Critical connectivity rule:
 - Orion reachable -> ORION mode
 - Orion unreachable -> SQLITE mode
 4. If ORION mode:
-- Register external context providers (temperature, relativeHumidity, tweets).
+- Register per-Store external context providers (temperature, relativeHumidity, tweets).
 - Create/validate subscriptions:
   - Price change on Product
   - Low stock on InventoryItem per Store
@@ -173,18 +233,93 @@ Critical connectivity rule:
 4. Persistencia en origen activo.
 5. Respuesta a UI y refresco de atributos visibles.
 
-#### 7.2 Price-change event flow
-1. Cambio de price en Product ocurre via CRUD.
-2. Orion detecta condicion de subscription y emite notificacion HTTP.
-3. routes/notifications.py recibe evento y lo normaliza.
-4. SocketIO emite evento product_price_changed.
-5. JS cliente actualiza atributo de precio en vistas activas (sin regenerar HTML).
+#### 7.4 Dashboard map flow
+1. `app.py` agrega datos de ubicacion validos de Store en `stores_map` para el dashboard.
+2. `templates/dashboard.html` serializa los marcadores en atributo de datos del contenedor Leaflet.
+3. `static/js/app.js` inicializa mapa agregado y ajusta bounds para mostrar todas las tiendas.
 
-#### 7.3 Low-stock event flow
-1. stockCount/shelfCount desciende por debajo de umbral definido.
-2. Orion emite notificacion low_stock.
-3. Backend registra evento y lo publica por SocketIO.
-4. UI Store detail actualiza panel de alertas en tiempo real.
+### ES
+1. Load configuration (.env) and start Flask + SocketIO.
+2. Execute Orion health-check.
+3. Select active source:
+- Orion reachable -> ORION mode
+- Orion unreachable -> SQLITE mode
+4. If ORION mode:
+- Register per-Store external context providers (temperature, relativeHumidity, tweets).
+- Create/validate subscriptions:
+  - Price change on Product
+  - Low stock on InventoryItem per Store
+5. Initialize lightweight cache for catalogs (stores, products, shelves) if applicable.
+6. Expose web endpoints and API interna para formularios dinamicos.
+
+### EN
+1. Load configuration (.env) and start Flask + SocketIO.
+2. Execute Orion health-check.
+3. Select active source:
+- Orion reachable -> ORION mode
+- Orion unreachable -> SQLITE mode
+4. If ORION mode:
+- Register per-Store external context providers (temperature, relativeHumidity, tweets).
+- Create/validate subscriptions:
+  - Price change on Product
+  - Low stock on InventoryItem per Store
+5. Initialize lightweight cache for catalogs (stores, products, shelves) if applicable.
+6. Expose web endpoints and internal API for dynamic forms.
+
+## 7. Runtime data flows
+
+### ES
+
+#### 7.1 CRUD flow (normal)
+1. Usuario interactua con formulario en UI.
+2. Blueprint valida payload y aplica reglas de dominio.
+3. DataSourceSelector enruta a OrionClient o SQLiteRepository.
+4. Persistencia en origen activo.
+5. Respuesta a UI y refresco de atributos visibles.
+
+#### 7.4 Dashboard map flow
+1. `app.py` agrega datos de ubicacion validos de Store en `stores_map` para el dashboard.
+2. `templates/dashboard.html` serializa los marcadores en atributo de datos del contenedor Leaflet.
+3. `static/js/app.js` inicializa mapa agregado y ajusta bounds para mostrar todas las tiendas.
+
+#### 7.2 Price-change event flow (NGSIv2 -> SocketIO -> Frontend)
+1. Cambio de price en Product ocurre via CRUD.
+2. Orion detecta condicion de subscription (attrs: ["price"]) y emite notificacion HTTP POST.
+3. routes/notifications.py::price_change_webhook() recibe payload NGSIv2 complejo:
+   ```
+   {
+     "subscriptionId": "...",
+     "data": [{
+       "id": "urn:ngsi-ld:Product:PROD-001",
+       "type": "Product",
+       "price": {"type": "Number", "value": 29.99},
+       "name": {"type": "Text", "value": "Yogur"}
+     }]
+   }
+   ```
+4. Funciones auxiliares extraen y normalizan: `{product_id, product_name, new_price, timestamp}`.
+5. SocketIO emite evento `price_changed` a todos los clientes conectados.
+6. static/js/socketio-client.js escucha evento y busca elemento con `data-product-id`.
+7. Actualiza `.product-price` dinámicamente y aplica animacion `highlight-flash` (2 segundos).
+8. Usuario ve resaltado amarillo en celda de precio sin reload de pagina.
+
+#### 7.3 Low-stock event flow (NGSIv2 -> SocketIO -> Frontend)
+1. stockCount/shelfCount baja por cambio de inventario.
+2. Orion detecta condicion de subscription (attrs: ["stockCount", "shelfCount"]) y emite notificacion.
+3. routes/notifications.py::low_stock_webhook() recibe y normaliza payload NGSIv2.
+4. Extrae: `{inventory_id, store_id, product_id, stock_count, shelf_id, timestamp}`.
+5. SocketIO emite evento `low_stock` a clientes.
+6. static/js/socketio-client.js busca elemento con `data-inventory-id`.
+7. Actualiza `.stock-count` y aplica clase `.alert-low-stock` (fondo rojo suave) si stock < 5.
+8. Tabla de inventario se actualiza en tiempo real sin reload.
+
+#### 7.5 Buy InventoryItem flow (Store UI -> Orion/SQLite)
+1. Usuario pulsa boton Buy en una fila de InventoryItem dentro de detalle Store.
+2. `routes/stores.py` valida pertenencia del item a la Store y confirma stock/shelfCount > 0.
+3. Se invoca `DataSourceSelector.increment_entity_attrs()` con decrementos `{shelfCount: -1, stockCount: -1}`.
+4. En modo ORION, `OrionClient` ejecuta PATCH `/v2/entities/<inventory_id>/attrs` con payload incremental.
+5. Si Orion falla, selector conmuta a SQLite y aplica decremento equivalente de manera local.
+6. Backend devuelve estado actualizado y la UI refleja conteos en tabla; eventos SocketIO mantienen consistencia visual.
 
 ### EN
 
@@ -195,18 +330,49 @@ Critical connectivity rule:
 4. Persistence in active source.
 5. Response to UI and refresh of visible attributes.
 
-#### 7.2 Price-change event flow
-1. Product price change occurs through CRUD.
-2. Orion matches subscription condition and sends HTTP notification.
-3. routes/notifications.py receives and normalizes the event.
-4. SocketIO emits product_price_changed event.
-5. Client JS updates price attribute in active views (no HTML regeneration).
+#### 7.4 Dashboard map flow
+1. `app.py` aggregates valid Store coordinates into `stores_map` for dashboard rendering.
+2. `templates/dashboard.html` serializes markers into a Leaflet container data attribute.
+3. `static/js/app.js` initializes the aggregate map and fits bounds to show all stores.
 
-#### 7.3 Low-stock event flow
-1. stockCount/shelfCount drops below configured threshold.
-2. Orion emits low_stock notification.
-3. Backend stores event and publishes via SocketIO.
-4. Store detail UI updates alerts panel in real time.
+#### 7.2 Price-change event flow (NGSIv2 -> SocketIO -> Frontend)
+1. Product price change occurs through CRUD.
+2. Orion matches subscription condition (attrs: ["price"]) and sends HTTP POST notification.
+3. routes/notifications.py::price_change_webhook() receives complex NGSIv2 payload:
+   ```
+   {
+     "subscriptionId": "...",
+     "data": [{
+       "id": "urn:ngsi-ld:Product:PROD-001",
+       "type": "Product",
+       "price": {"type": "Number", "value": 29.99},
+       "name": {"type": "Text", "value": "Yogur"}
+     }]
+   }
+   ```
+4. Helper functions extract and normalize: `{product_id, product_name, new_price, timestamp}`.
+5. SocketIO emits `price_changed` event to all connected clients.
+6. static/js/socketio-client.js listens for event and finds element with `data-product-id`.
+7. Updates `.product-price` dynamically and applies `highlight-flash` animation (2 seconds).
+8. User sees yellow highlight on price cell without page reload.
+
+#### 7.3 Low-stock event flow (NGSIv2 -> SocketIO -> Frontend)
+1. stockCount/shelfCount drops due to inventory change.
+2. Orion matches subscription condition (attrs: ["stockCount", "shelfCount"]) and sends notification.
+3. routes/notifications.py::low_stock_webhook() receives and normalizes NGSIv2 payload.
+4. Extracts: `{inventory_id, store_id, product_id, stock_count, shelf_id, timestamp}`.
+5. SocketIO emits `low_stock` event to clients.
+6. static/js/socketio-client.js finds element with `data-inventory-id`.
+7. Updates `.stock-count` and applies `.alert-low-stock` class (soft red bg) if stock < 5.
+8. Inventory table updates in real time without reload.
+
+#### 7.5 Buy InventoryItem flow (Store UI -> Orion/SQLite)
+1. User clicks Buy on an InventoryItem row in Store detail.
+2. `routes/stores.py` validates that the item belongs to the Store and checks stock/shelfCount > 0.
+3. `DataSourceSelector.increment_entity_attrs()` is called with decrements `{shelfCount: -1, stockCount: -1}`.
+4. In ORION mode, `OrionClient` sends PATCH `/v2/entities/<inventory_id>/attrs` with incremental payload.
+5. If Orion fails, the selector switches to SQLite and applies an equivalent local decrement.
+6. Backend returns updated state and UI reflects new counters; SocketIO events keep visual consistency.
 
 ## 8. Module decomposition
 
@@ -216,14 +382,18 @@ Critical connectivity rule:
 
 - routes/stores.py
   - Listado, detalle, alta, edicion y borrado de Store.
+  - Formularios de alta/edicion/borrado desde vista de listado (`/stores/new`, `/stores/edit/<id>`, `/stores/delete/<id>`).
   - CRUD de Shelf e InventoryItem asociados.
 
 - routes/products.py
   - CRUD Product.
+  - Filtro de busqueda por query en listado (`q` por id/nombre/categoria/origen).
+  - Formularios de alta/edicion/borrado desde vista de listado (`/products/new`, `/products/edit/<id>`, `/products/delete/<id>`).
   - Vista detalle product con agregacion de inventario por tienda/estanteria.
 
 - routes/employees.py
   - CRUD Employee con validaciones de email, salary, contract date.
+  - Formularios de alta/edicion/borrado desde vista de listado (`/employees/new`, `/employees/edit/<id>`, `/employees/delete/<id>`).
 
 - routes/inventory.py
   - Operaciones transversales de InventoryItem.
@@ -246,14 +416,18 @@ Critical connectivity rule:
 
 - routes/stores.py
   - Store list/detail/create/update/delete.
+  - List-page create/edit/delete form endpoints (`/stores/new`, `/stores/edit/<id>`, `/stores/delete/<id>`).
   - CRUD for related Shelf and InventoryItem.
 
 - routes/products.py
   - Product CRUD.
+  - Query-based search filtering on list endpoint (`q` by id/name/category/origin).
+  - List-page create/edit/delete form endpoints (`/products/new`, `/products/edit/<id>`, `/products/delete/<id>`).
   - Product detail with inventory aggregation by store/shelf.
 
 - routes/employees.py
   - Employee CRUD with validation for email, salary, contract date.
+  - List-page create/edit/delete form endpoints (`/employees/new`, `/employees/edit/<id>`, `/employees/delete/<id>`).
 
 - routes/inventory.py
   - Cross-entity InventoryItem operations.
@@ -408,7 +582,8 @@ Test levels:
   - Plantillas server-rendered base y estilos iniciales.
 - Implementado especificamente para cierre de Issue #1:
   - Script de carga de datos `scripts/load_test_data.py` integrado al flujo de desarrollo local.
-  - Inicializacion de dataset funcional para cadena de supermercados (4 stores, 10 products, 10 employees, 12 shelves, 55+ inventory items).
+  - Inicializacion de dataset funcional para cadena de supermercados (4 stores, 10 products, 8 employees, 12 shelves, 55+ inventory items).
+  - IDs de empleados en semilla reindexados de forma correlativa (`E001..E008`) para consistencia operativa y pruebas.
   - Suites de pruebas para validacion estructural de entidades y reglas de integridad.
   - Correccion posterior: el script ahora permite target `sqlite` por defecto para carga local efectiva del dashboard.
   - Correccion de navegacion: barra superior usa rutas estables y blueprints de listado aceptan URL con y sin slash final.
@@ -430,7 +605,8 @@ Test levels:
   - Base server-rendered templates and initial styling.
 - Implemented specifically to close Issue #1:
   - Test data loading script `scripts/load_test_data.py` integrated into local development workflow.
-  - Functional supermarket bootstrap dataset (4 stores, 10 products, 10 employees, 12 shelves, 55+ inventory items).
+  - Functional supermarket bootstrap dataset (4 stores, 10 products, 8 employees, 12 shelves, 55+ inventory items).
+  - Seed employee IDs were reindexed to a contiguous range (`E001..E008`) for operational and test consistency.
   - Test suites for entity-structure validation and integrity rule checks.
   - Post-fix: the script now supports `sqlite` as default target to ensure effective local dashboard seeding.
   - Navigation fix: topbar uses stable route links and list blueprints accept URLs both with and without trailing slash.
@@ -573,3 +749,286 @@ Test levels:
   - `tests/test_smoke.py` now extends link integrity and Store detail map-container checks.
 - Verification:
   - Full suite execution with 103 passing tests.
+
+## 21. Implementation progress (Store detail normalization)
+
+### ES
+- Estado: Implementacion completada para ajuste de representacion semantica en capa de presentacion.
+- Cambios arquitectonicos aplicados:
+  - La simplificacion de identificador (`urn:...` -> segmento final) se resuelve en template Jinja sin modificar contrato de datos.
+  - El mapeo de `countryCode` a nombre visible de pais se mantiene en capa de presentacion con soporte i18n.
+  - La direccion postal completa se consolida en la ficha de detalle usando atributos existentes del modelo `address`.
+  - Se elimina el campo `type` de la vista detalle para reducir ruido de interfaz sin alterar API.
+- Trazabilidad tecnica:
+  - Capa afectada: Presentation (`templates/stores/detail.html`, `models/i18n.py`).
+  - Capas no afectadas: Application, Data access e Integration.
+
+### EN
+- Status: Completed implementation for semantic rendering adjustments in the presentation layer.
+- Applied architectural changes:
+  - Identifier simplification (`urn:...` -> trailing segment) is handled in Jinja template logic without changing data contracts.
+  - `countryCode` to country-name mapping remains presentation-layer logic with i18n support.
+  - Full postal address is consolidated in Store detail using existing `address` model attributes.
+  - `type` field was removed from detail view to reduce UI noise without API changes.
+- Technical traceability:
+  - Affected layer: Presentation (`templates/stores/detail.html`, `models/i18n.py`).
+  - Unaffected layers: Application, Data access, and Integration.
+
+## 22. Implementation progress (Global entity-format normalization)
+
+### ES
+- Estado: Implementacion completada para normalizacion transversal de formato en capa de presentacion.
+- Cambios arquitectonicos aplicados:
+  - Simplificacion de URN (`id`, `refStore`) centralizada en logica de templates para vistas de Stores/Products/Employees.
+  - Mapeo de codigos de pais a nombre visible integrado en templates con soporte i18n (`ES`, `DE`, `FR`, `EC`).
+  - Eliminacion del campo `type` en vistas detalle para reducir ruido de interfaz sin cambiar contratos de API.
+  - Pruebas smoke ampliadas para verificar consistencia de render entre listados y detalles.
+- Trazabilidad tecnica:
+  - Capa afectada: Presentation (`templates/stores/*`, `templates/products/*`, `templates/employees/*`, `models/i18n.py`, `tests/test_smoke.py`).
+  - Capas no afectadas: Application, Data access, Integration.
+
+### EN
+- Status: Completed implementation for cross-view formatting normalization in the presentation layer.
+- Applied architectural changes:
+  - URN simplification (`id`, `refStore`) is handled in template logic across Stores/Products/Employees views.
+  - Country-code to full-name mapping is integrated in templates with i18n support (`ES`, `DE`, `FR`, `EC`).
+  - `type` field was removed from detail views to reduce UI noise without API contract changes.
+  - Smoke tests were extended to verify rendering consistency across list and detail pages.
+- Technical traceability:
+  - Affected layer: Presentation (`templates/stores/*`, `templates/products/*`, `templates/employees/*`, `models/i18n.py`, `tests/test_smoke.py`).
+  - Unaffected layers: Application, Data access, Integration.
+
+## 23. Implementation progress (Issue #7 CRUD in detail views)
+
+### ES
+- Estado: Implementacion completada para CRUD contextual en detalles de Store/Product.
+- Cambios arquitectonicos aplicados:
+  - Se adoptan endpoints anidados por contexto para operaciones en detalle:
+    - `stores/<id>/shelves`, `stores/<id>/inventory`
+    - `products/<id>/inventory`
+  - Se incorporan validaciones de dominio para `Shelf` e `InventoryItem` en capa de rutas/utilidades.
+  - Se agrega logica de integridad cruzada:
+    - coherencia `refShelf` con `refStore`.
+    - no duplicados por tripleta (`refStore`, `refShelf`, `refProduct`).
+    - bloqueo de borrado de shelf con dependencias (409).
+  - Las vistas server-rendered de detalle incorporan formularios CRUD y tablas operativas.
+  - La capa de acceso a datos agrega consulta filtrada por atributo para resolver contextos sin romper fallback Orion/SQLite.
+- Trazabilidad tecnica:
+  - Capa afectada: Presentation, Application y Data access.
+  - Archivos clave: `routes/stores.py`, `routes/products.py`, `routes/inventory.py`, `routes/utils.py`, `models/data_source.py`, `templates/stores/detail.html`, `templates/products/detail.html`.
+
+### EN
+- Status: Implementation completed for context-scoped CRUD in Store/Product detail views.
+- Applied architectural changes:
+  - Context-nested endpoints were adopted for detail operations:
+    - `stores/<id>/shelves`, `stores/<id>/inventory`
+    - `products/<id>/inventory`
+  - Domain validations for `Shelf` and `InventoryItem` were added in route/utils layer.
+  - Cross-entity integrity rules were introduced:
+    - `refShelf` and `refStore` consistency.
+    - duplicate prevention for (`refStore`, `refShelf`, `refProduct`) tuples.
+    - shelf delete blocking when dependencies exist (409).
+  - Server-rendered detail views now include operational CRUD forms/tables.
+  - Data-access layer now supports attribute-filtered queries to build contextual views while preserving Orion/SQLite fallback behavior.
+- Technical traceability:
+  - Affected layers: Presentation, Application, and Data access.
+  - Key files: `routes/stores.py`, `routes/products.py`, `routes/inventory.py`, `routes/utils.py`, `models/data_source.py`, `templates/stores/detail.html`, `templates/products/detail.html`.
+
+## 24. Closure status (Issue #7)
+
+### ES
+- Estado de despliegue en ramas:
+  - `main` y `feature/issue-7-crud` convergen en el mismo commit funcional de Issue #7.
+  - Sin cambios pendientes tras flujo de merge/sync.
+- Estado tecnico:
+  - Arquitectura objetivo para CRUD contextual (Store/Product detail) consolidada en `main`.
+  - Contratos de errores y reglas de integridad operativos en capas Application/Data access/Presentation.
+- Estado de ticket:
+  - No se detecta `issues/7` por API publica al momento de cierre tecnico.
+
+### EN
+- Branch deployment status:
+  - `main` and `feature/issue-7-crud` converge on the same functional Issue #7 commit.
+  - No pending changes after merge/sync flow.
+- Technical status:
+  - Target architecture for context-scoped CRUD (Store/Product detail) is consolidated on `main`.
+  - Error contracts and integrity rules are operational across Application/Data access/Presentation layers.
+- Ticket status:
+  - `issues/7` is not detected via public API at technical closure time.
+
+## 25. Implementation progress (Issue #8 Orion-first operational bootstrap)
+
+### ES
+- Estado: Implementacion completada y cerrada para robustecer arquitectura de arranque Orion-first con fallback SQLite sin sincronizacion.
+- Cambios arquitectonicos aplicados:
+  - `DataSourceSelector.bootstrap()` consolida decision de fuente activa en arranque y registra logs operativos del modo seleccionado.
+  - Se mantiene fallback a SQLite ante error de operaciones Orion para continuidad, sin replicacion de datos entre fuentes.
+  - `docker-compose.yml` se ajusta al stack del tutorial CRUD Operations con defaults que evitan dependencias de variables no definidas.
+  - Scripts de operacion:
+    - `start.sh`: detiene stack previo, levanta contenedores, espera salud de Orion y arranca Flask.
+    - `stop.sh`: detiene app local y contenedores del stack.
+- Trazabilidad tecnica:
+  - Capas afectadas: Data access, Integration y operacion local de despliegue.
+  - Archivos clave: `models/data_source.py`, `docker-compose.yml`, `start.sh`, `stop.sh`.
+
+### EN
+- Status: Implementation completed and closed to harden Orion-first startup architecture with SQLite fallback and no synchronization.
+- Applied architectural changes:
+  - `DataSourceSelector.bootstrap()` now centralizes startup source decision with explicit operational mode logging.
+  - SQLite fallback on Orion operation failures is kept for continuity, without any cross-source data replication.
+  - `docker-compose.yml` is aligned to the CRUD Operations tutorial stack with defaults that avoid undefined-variable dependencies.
+  - Operational scripts:
+    - `start.sh`: stops previous stack, starts containers, waits for Orion health, then starts Flask.
+    - `stop.sh`: stops local app process and stack containers.
+- Technical traceability:
+  - Affected layers: Data access, Integration, and local deployment operations.
+  - Key files: `models/data_source.py`, `docker-compose.yml`, `start.sh`, `stop.sh`.
+
+## 26. Closure status (Issue #8)
+
+### ES
+- Estado de fusion: cambios de Issue #8 consolidados en `main`.
+- Estado de sincronizacion: rama de trabajo y remoto `origin/main` sin diferencias pendientes.
+- Estado tecnico: flujo Orion-first en bootstrap, fallback controlado a SQLite y ciclo operativo con scripts start/stop consolidado.
+- Estado de ticket: cierre trazado por commit en `main` con referencia de cierre de issue.
+
+### EN
+- Merge status: Issue #8 changes consolidated on `main`.
+- Sync status: working branch and `origin/main` are aligned with no pending diffs.
+- Technical status: Orion-first bootstrap flow, controlled SQLite fallback, and start/stop operational lifecycle consolidated.
+- Ticket status: closure traced by a `main` commit with issue-closing reference.
+
+## 27. Planned technical roadmap (Issue #9 - Data model expansion)
+
+### ES
+- Objetivo: ampliar representacion del modelo de datos con UML Mermaid en Home, extender validaciones de atributos de Employee/Store/Product, crear dataset inicial con distribucion minima garantizada.
+- Decisiones arquitectonicas clave:
+	- Mermaid UML renderizado en dashboard.html como bloque visual integrado sin iframe (embebido en el mismo HTML).
+	- Validaciones centralizadas en routes/utils.py extendidas con nuevas reglas (email unico, skills enum, password singular, color hex).
+	- Dataset inicial generado por script mejorado basado en load_test_data.py con cardinalidad exacta (4 emp, 4 store, 16 shelf, 10 prod, 64+ inv items).
+	- Persistencia sigue Orion-first sin cambios al modelo de acceso a datos.
+	- Scripts load_test_data.py llama a validadores en utils.py para garantizar integridad de datos cargados.
+- Capas afectadas:
+	- Aplicacion: rutas de CRUD (stores.py, products.py, employees.py) con validaciones mejoradas.
+	- Presentacion: dashboard.html con seccion Mermaid, plantillas de formularios actualizadas (list/detail/form).
+	- Integracion (sin cambios): data_source.py mantiene Orion-first sin sincronizacion.
+	- Datos: load_test_data.py extendido para generar dataset determinista con cardinalidades.
+
+### EN
+- Objective: extend data model representation with UML Mermaid in Home, enhance Employee/Store/Product attribute validations, create initial dataset with guaranteed minimum distribution.
+- Key architectural decisions:
+	- Mermaid UML rendered in dashboard.html as integrated visual block without iframe (embedded in same HTML).
+	- Centralized and extended validations in routes/utils.py with new rules (unique email, skills enum, password singular, hex color).
+	- Initial dataset generated by improved script based on load_test_data.py with exact cardinality (4 emp, 4 store, 16 shelf, 10 prod, 64+ inv items).
+	- Persistence follows Orion-first unchanged in data access model.
+	- load_test_data.py script calls validators in utils.py to guarantee loaded data integrity.
+- Affected layers:
+	- Application: CRUD routes (stores.py, products.py, employees.py) with enhanced validations.
+	- Presentation: dashboard.html with Mermaid section, updated form templates (list/detail/form).
+	- Integration (unchanged): data_source.py maintains Orion-first without synchronization.
+	- Data: load_test_data.py extended to generate deterministic dataset with exact cardinalities.
+
+## 28. Implementation details (Issue #9)
+
+### ES
+- Cambios en capa de aplicacion (routes/utils.py):
+	- Agregadas constantes: EMPLOYEE_SKILLS_ENUM, EMPLOYEE_USERNAME_MIN/MAX, STORE_DESCRIPTION_MAX, STORE_TEMPERATURE_MIN/MAX, STORE_HUMIDITY_MIN/MAX, EMAIL_RE (regex RFC5322).
+	- Funcion _validate_store() extendida: validacion de url, telephone, capacity, description length, temperature range, humidity range.
+	- Funcion _validate_employee() extendida: validacion de email, dateOfContract (ISO-8601), skills (enum + non-empty), username (length 4-32), password (non-empty string).
+	- Nuevas reglas de validacion: 20+ validaciones adicionales sin romper contrabase backward compatibility.
+- Cambios en capa de presentacion (templates):
+	- Agregadas input fields en templates/stores/form.html: url, telephone, description, temperature, relativeHumidity.
+	- base.html: CDN Mermaid incluido.
+	- dashboard.html: seccion data-model-uml con diagrama ERD embebido.
+	- static/css/main.css: estilos para mermaid-container responsive.
+	- static/js/app.js: inicializacion de initMermaidDiagrams() en DOMContentLoaded.
+- Cambios en capa de datos (scripts/load_test_data.py):
+	- SHELVES_PER_STORE: 3 -> 4 (16 total shelves).
+	- EMPLOYEES_DATA: E001-E004 (4 empleados, reducido de 8).
+	- Totales garantizados: 4 stores, 4 employees, 16 shelves, 10 products, 64+ inventory items.
+
+### EN
+- Changes in application layer (routes/utils.py):
+	- Added constants: EMPLOYEE_SKILLS_ENUM, EMPLOYEE_USERNAME_MIN/MAX, STORE_DESCRIPTION_MAX, STORE_TEMPERATURE_MIN/MAX, STORE_HUMIDITY_MIN/MAX, EMAIL_RE (RFC5322 regex).
+	- Extended _validate_store() function: validation for url, telephone, capacity, description length, temperature range, humidity range.
+	- Extended _validate_employee() function: validation for email, dateOfContract (ISO-8601), skills (enum + non-empty), username (4-32 length), password (non-empty string).
+	- New validation rules: 20+ additional validations without breaking backward compatibility.
+- Changes in presentation layer (templates):
+	- Added input fields in templates/stores/form.html: url, telephone, description, temperature, relativeHumidity.
+	- base.html: Mermaid CDN included.
+	- dashboard.html: data-model-uml section with embedded ERD diagram.
+	- static/css/main.css: responsive styles for mermaid-container.
+	- static/js/app.js: initMermaidDiagrams() initialization in DOMContentLoaded.
+- Changes in data layer (scripts/load_test_data.py):
+	- SHELVES_PER_STORE: 3 -> 4 (16 total shelves).
+	- EMPLOYEES_DATA: E001-E004 (4 employees, reduced from 8).
+	- Guaranteed totals: 4 stores, 4 employees, 16 shelves, 10 products, 64+ inventory items.
+
+## 29. Closure status (Issue #9)
+
+### ES
+- Estado de arquitectura: ✅ IMPLEMENTADO - cambios en capas de aplicacion (routes/utils.py: +98 lineas), presentacion (templates), y datos (load_test_data.py) sin modificacion de persistencia.
+- Estado de integridad: ✅ VALIDADO - reglas de validacion implementadas en centralized normalize_ngsi_payload() llamado por todos endpoints CRUD, 20+ nuevas validaciones sin conflictos.
+- Estado de Mermaid: ✅ RENDERIZADO - diagrama UML ERD en dashboard sin dependencias externas no-CDN (solo jsdelivr CDN), responsive en mobile y desktop.
+- Mejoras visuales Mermaid (fase post-inicial): Tema personalizado aplicado con themeVariables en static/js/app.js usando paleta corporativa (primaryColor: #0aa64f, primaryBorderColor: #0f5c3f, white: #ffffff), etiquetas de relaciones mejoradas (belongs, contains, tracks, holds, stocked_as), documentacion detallada de campos en diagrama ERD con tipos y restricciones.
+- Correccion de render Mermaid: se elimina bloque ERD duplicado de INVENTORYITEM y se ajusta contraste de texto en themeVariables para garantizar lectura de atributos y relaciones.
+- Orden dashboard actualizado: Panel de Control -> Featured Products -> Store Management -> Stores Map (diagrama de datos se mantiene como seccion complementaria).
+- Script de datos reforzado: load_test_data.py garantiza 4 productos por estanteria con verificacion estricta de 4 shelves por tienda y minimo 4 productos unicos por shelf.
+- Estado de continuidad: ✅ MANTENIDO - Orion-first preservado sin sincronizacion, fallback SQLite sin cambios, backward compatible.
+- Merge status: ✅ COMPLETADO (commit 327b906 desde feature/issue-9-modelo-ampliado a main, commit 34ecec7 para mejoras Mermaid)
+- Test status: ✅ 108/108 PASSING sin regresiones.
+
+### EN
+- Architecture status: ✅ IMPLEMENTED - changes in application (routes/utils.py: +98 lines), presentation (templates), and data (load_test_data.py) layers without persistence modification.
+- Integrity status: ✅ VALIDATED - validation rules implemented in centralized normalize_ngsi_payload() called by all CRUD endpoints, 20+ new validations without conflicts.
+- Mermaid status: ✅ RENDERED - ERD UML diagram on dashboard with no external non-CDN dependencies (only jsdelivr CDN), responsive on mobile and desktop.
+- Visual Mermaid improvements (post-initial phase): Custom theme applied with themeVariables in static/js/app.js using corporate color palette (primaryColor: #0aa64f, primaryBorderColor: #0f5c3f, white: #ffffff), improved relationship labels (belongs, contains, tracks, holds, stocked_as), detailed field documentation in ERD diagram with types and constraints.
+- Mermaid rendering fix: removed duplicated INVENTORYITEM ERD block and increased text contrast in themeVariables to ensure attributes and relationships are visible.
+- Dashboard order updated: Control Panel -> Featured Products -> Store Management -> Stores Map (data model diagram remains as a complementary section).
+- Data script hardened: load_test_data.py now guarantees 4 products per shelf with strict verification of 4 shelves per store and at least 4 unique products per shelf.
+- Continuity status: ✅ MAINTAINED - Orion-first preserved without synchronization, SQLite fallback unchanged, backward compatible.
+- Merge status: ✅ COMPLETED (commit 327b906 from feature/issue-9-modelo-ampliado to main, commit 34ecec7 for Mermaid improvements)
+- Test status: ✅ 108/108 PASSING without regressions.
+
+## 30. Implementation progress (Issue #11 NGSIv2 Store context providers)
+
+### ES
+- Estado: implementacion completada en rama para separar el registro de providers externos de Store en dos contratos NGSIv2 dedicados.
+- Decisiones arquitectonicas aplicadas:
+  - Punto de integracion mantenido en `DataSourceSelector._register_external_integrations()` invocado por `bootstrap()` al arrancar.
+  - Se preserva estrategia Orion-first: los registros se ejecutan solo cuando `health_check()` de Orion es exitoso.
+  - Se preserva fallback SQLite sin sincronizacion cruzada.
+  - `OrionClient.register_provider()` conserva contrato idempotente (exito en `201` o `409`).
+- Contratos de registrations en startup:
+  - Registration weather para `Store` con `attrs: [temperature, relativeHumidity]`.
+  - Registration tweets para `Store` con `attrs: [tweets]`.
+  - Ambos por entidad `Store` usando `id` explicito por tienda existente en startup, con `status: active` y `legacyForwarding: true`.
+- Configuracion de integracion:
+  - `PROVIDER_BASE_URL` + endpoints explicitos `WEATHER_PROVIDER_URL` y `TWEETS_PROVIDER_URL`.
+  - Provider propio en app Flask (`/providers/weather`, `/providers/tweets`) con respuesta compatible para forwarding de Orion.
+  - Se evita URL generica de tutorial cuando no expone endpoints NGSI activos.
+- Capas afectadas:
+  - Integration/Data access: `models/data_source.py`.
+  - Quality: `tests/unit/test_data_source.py`.
+  - Operational docs: `README.md`.
+
+### EN
+- Status: implementation completed in branch to split external Store provider registration into two dedicated NGSIv2 contracts.
+- Applied architectural decisions:
+  - Integration point remains `DataSourceSelector._register_external_integrations()` called by `bootstrap()` at startup.
+  - Orion-first strategy is preserved: registrations run only when Orion `health_check()` succeeds.
+  - SQLite fallback is preserved without cross-source synchronization.
+  - `OrionClient.register_provider()` keeps idempotent semantics (success on `201` or `409`).
+- Startup registration contracts:
+  - Weather registration for `Store` with `attrs: [temperature, relativeHumidity]`.
+  - Tweets registration for `Store` with `attrs: [tweets]`.
+  - Both are created per `Store` entity using explicit store `id` at startup, with `status: active` and `legacyForwarding: true`.
+- Integration configuration:
+  - `PROVIDER_BASE_URL` + explicit endpoints `WEATHER_PROVIDER_URL` and `TWEETS_PROVIDER_URL`.
+  - In-app custom provider (`/providers/weather`, `/providers/tweets`) returning Orion-compatible forwarding responses.
+  - Generic tutorial URL is avoided when NGSI endpoints are not active.
+- Affected layers:
+  - Integration/Data access: `models/data_source.py`.
+  - Application/Integration: `routes/providers.py`, `app.py`.
+  - Quality: `tests/unit/test_data_source.py`.
+  - Operational docs: `README.md`.

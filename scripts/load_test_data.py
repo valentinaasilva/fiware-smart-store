@@ -2,7 +2,7 @@
 """
 Load test data for fiware-smart-store into Orion Context Broker.
 
-Populates 4 stores, 10 products, 4 employees, 12 shelves, and 50+ inventory items
+Populates 4 stores, 10 products, 4 employees, 16 shelves, and 64+ inventory items
 with full NGSIv2 validation and integrity rule checking.
 
 Usage:
@@ -50,6 +50,7 @@ VALID_ISO_COUNTRIES = {
 }
 
 PRODUCT_SIZES = {"S", "M", "L", "XL"}
+PRODUCT_CATEGORIES = {"Lacteos", "Despensa", "Frescos", "Limpieza", "Bebidas", "Panaderia"}
 EMPLOYEE_CATEGORIES = {"Junior", "Senior", "Manager", "Specialist"}
 EMPLOYEE_SKILLS = {"MachineryDriving", "WritingReports", "CustomerRelationships"}
 
@@ -62,78 +63,78 @@ STORES_DATA = [
     {
         "id": "urn:ngsi-ld:Store:S001",
         "name": "Xantadis Norte",
-        "country": "DE",
-        "city": "Berlin",
-        "coords": [13.405, 52.520],
+        "country": "ES",
+        "city": "Oviedo",
+        "coords": [-5.844, 43.362],
         "capacity": 2500,
         "address": {
-            "streetAddress": "Alexanderplatz 1",
-            "addressLocality": "Berlin",
-            "addressRegion": "Berlin",
-            "postalCode": "10178",
-            "addressCountry": "DE"
+            "streetAddress": "Calle Uría 10",
+            "addressLocality": "Oviedo",
+            "addressRegion": "Asturias",
+            "postalCode": "33003",
+            "addressCountry": "ES"
         },
-        "telephone": "+49-30-123456",
-        "url": "https://store.example/berlin-mitte",
+        "telephone": "+34 985 000 001",
+        "url": "https://www.openstreetmap.org/?mlat=43.362&mlon=-5.844#map=16/43.362/-5.844",
         "image": "https://images.unsplash.com/photo-1542838132-92c53300491e",
-        "description": "Main city branch in Berlin center"
+        "description": "Sucursal principal en el centro de Oviedo"
     },
     {
         "id": "urn:ngsi-ld:Store:S002",
         "name": "Xantadis Sur",
         "country": "ES",
-        "city": "Madrid",
-        "coords": [-3.703, 40.415],
+        "city": "Sevilla",
+        "coords": [-5.996, 37.389],
         "capacity": 3000,
         "address": {
-            "streetAddress": "Gran Vía 1",
-            "addressLocality": "Madrid",
-            "addressRegion": "Madrid",
-            "postalCode": "28013",
+            "streetAddress": "Avenida de la Constitución 5",
+            "addressLocality": "Sevilla",
+            "addressRegion": "Andalucía",
+            "postalCode": "41001",
             "addressCountry": "ES"
         },
-        "telephone": "+34-91-234567",
-        "url": "https://store.example/madrid-centro",
+        "telephone": "+34 954 000 001",
+        "url": "https://www.openstreetmap.org/?mlat=37.389&mlon=-5.996#map=16/37.389/-5.996",
         "image": "https://images.unsplash.com/photo-1534723452862-4c874018d66d",
-        "description": "Premium location on Gran Vía"
+        "description": "Sucursal premium en el centro de Sevilla"
     },
     {
         "id": "urn:ngsi-ld:Store:S003",
         "name": "Xantadis Este",
         "country": "ES",
-        "city": "Barcelona",
-        "coords": [2.165, 41.385],
+        "city": "Valencia",
+        "coords": [-0.376, 39.469],
         "capacity": 2800,
         "address": {
-            "streetAddress": "Passeig de Gràcia 10",
-            "addressLocality": "Barcelona",
-            "addressRegion": "Catalonia",
-            "postalCode": "08007",
+            "streetAddress": "Calle Colón 20",
+            "addressLocality": "Valencia",
+            "addressRegion": "Comunidad Valenciana",
+            "postalCode": "46004",
             "addressCountry": "ES"
         },
-        "telephone": "+34-93-345678",
-        "url": "https://store.example/barcelona-eixample",
+        "telephone": "+34 963 000 001",
+        "url": "https://www.openstreetmap.org/?mlat=39.469&mlon=-0.376#map=16/39.469/-0.376",
         "image": "https://images.unsplash.com/photo-1516594798947-e65505dbb29d",
-        "description": "Iconic location in Barcelona"
+        "description": "Sucursal iconica en el centro de Valencia"
     },
     {
         "id": "urn:ngsi-ld:Store:S004",
         "name": "Xantadis Oeste",
-        "country": "FR",
-        "city": "Paris",
-        "coords": [2.362, 48.859],
+        "country": "ES",
+        "city": "Vigo",
+        "coords": [-8.723, 42.240],
         "capacity": 2200,
         "address": {
-            "streetAddress": "Rue de Rivoli 1",
-            "addressLocality": "Paris",
-            "addressRegion": "Île-de-France",
-            "postalCode": "75004",
-            "addressCountry": "FR"
+            "streetAddress": "Calle Policarpo Sanz 3",
+            "addressLocality": "Vigo",
+            "addressRegion": "Galicia",
+            "postalCode": "36202",
+            "addressCountry": "ES"
         },
-        "telephone": "+33-1-45678901",
-        "url": "https://store.example/paris-marais",
+        "telephone": "+34 986 000 001",
+        "url": "https://www.openstreetmap.org/?mlat=42.240&mlon=-8.723#map=16/42.240/-8.723",
         "image": "https://images.unsplash.com/photo-1578916171728-46686eac8d58",
-        "description": "Central location near Place des Vosges"
+        "description": "Sucursal central en Vigo"
     }
 ]
 
@@ -141,6 +142,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P001",
         "name": "Banana",
+        "category": "Frescos",
         "size": "M",
         "color": "#FFE135",
         "price": 2.99,
@@ -150,6 +152,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P002",
         "name": "Red Apple",
+        "category": "Frescos",
         "size": "M",
         "color": "#DC143C",
         "price": 1.49,
@@ -159,6 +162,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P003",
         "name": "Orange",
+        "category": "Frescos",
         "size": "L",
         "color": "#FF8C00",
         "price": 3.99,
@@ -168,6 +172,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P004",
         "name": "Lettuce",
+        "category": "Frescos",
         "size": "L",
         "color": "#228B22",
         "price": 1.99,
@@ -177,6 +182,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P005",
         "name": "Tomato",
+        "category": "Frescos",
         "size": "M",
         "color": "#FF4500",
         "price": 2.49,
@@ -186,6 +192,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P006",
         "name": "Milk 1L",
+        "category": "Lacteos",
         "size": "S",
         "color": "#FFFFFF",
         "price": 1.29,
@@ -195,6 +202,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P007",
         "name": "Cheese",
+        "category": "Lacteos",
         "size": "S",
         "color": "#FFD700",
         "price": 4.99,
@@ -204,6 +212,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P008",
         "name": "Bread",
+        "category": "Panaderia",
         "size": "M",
         "color": "#8B4513",
         "price": 2.49,
@@ -213,6 +222,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P009",
         "name": "Water 2L",
+        "category": "Bebidas",
         "size": "L",
         "color": "#87CEEB",
         "price": 0.99,
@@ -222,6 +232,7 @@ PRODUCTS_DATA = [
     {
         "id": "urn:ngsi-ld:Product:P010",
         "name": "Coffee",
+        "category": "Despensa",
         "size": "S",
         "color": "#6F4E37",
         "price": 5.99,
@@ -231,17 +242,17 @@ PRODUCTS_DATA = [
 ]
 
 EMPLOYEES_DATA = [
-    {"id": "urn:ngsi-ld:Employee:E001", "name": "Soraya Rodríguez", "store_id": "urn:ngsi-ld:Store:S001", "category": "Senior", "role": "Store Manager", "salary": 2800.00, "email": "ada@store.com", "skills": ["WritingReports"], "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2"},
-    {"id": "urn:ngsi-ld:Employee:E002", "name": "Alejandro Varela", "store_id": "urn:ngsi-ld:Store:S002", "category": "Junior", "role": "Cashier", "salary": 1800.00, "email": "alan@store.com", "skills": ["CustomerRelationships"], "image": "https://images.unsplash.com/photo-1521119989659-a83eee488004"},
-    {"id": "urn:ngsi-ld:Employee:E003", "name": "Sara Paredes", "store_id": "urn:ngsi-ld:Store:S003", "category": "Manager", "role": "Supervisor", "salary": 2500.00, "email": "grace@store.com", "skills": ["WritingReports", "CustomerRelationships"], "image": "https://images.unsplash.com/photo-1544005313-94ddf0286df2"},
-    {"id": "urn:ngsi-ld:Employee:E004", "name": "Alejandro Martínez", "store_id": "urn:ngsi-ld:Store:S004", "category": "Senior", "role": "Store Manager", "salary": 2900.00, "email": "donald@store.com", "skills": ["WritingReports"], "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e"}
+    {"id": "urn:ngsi-ld:Employee:E001", "name": "Ángel Vilariño García", "store_id": "urn:ngsi-ld:Store:S001", "category": "Specialist", "role": "Inventory Specialist", "salary": 2350.00, "email": "angel.vilarino@xantadis.com", "skills": ["MachineryDriving", "WritingReports"], "image": "https://images.unsplash.com/photo-1599566150163-29194dcaad36", "dateOfContract": "2024-05-12T00:00:00Z", "username": "angel.vilarino"},
+    {"id": "urn:ngsi-ld:Employee:E002", "name": "Alejandro Rodríguez Expósito", "store_id": "urn:ngsi-ld:Store:S002", "category": "Senior", "role": "Store Supervisor", "salary": 2550.00, "email": "alejandro.rodriguez.exposito@xantadis.com", "skills": ["WritingReports", "CustomerRelationships"], "image": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d", "dateOfContract": "2023-08-01T00:00:00Z", "username": "alejandro.rodriguez.exposito"},
+    {"id": "urn:ngsi-ld:Employee:E003", "name": "Soraya Rodriguez Campos", "store_id": "urn:ngsi-ld:Store:S003", "category": "Manager", "role": "Customer Service Lead", "salary": 2480.00, "email": "soraya.rodriguez.campos@xantadis.com", "skills": ["CustomerRelationships", "WritingReports"], "image": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f", "dateOfContract": "2024-01-09T00:00:00Z", "username": "soraya.rodriguez.campos"},
+    {"id": "urn:ngsi-ld:Employee:E004", "name": "Sara Paredes Bascoy", "store_id": "urn:ngsi-ld:Store:S004", "category": "Senior", "role": "Operations Analyst", "salary": 2420.00, "email": "sara.paredes.bascoy@xantadis.com", "skills": ["WritingReports"], "image": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80", "dateOfContract": "2023-12-11T00:00:00Z", "username": "sara.paredes.bascoy"},
 ]
 
-# Shelves: 3 per store (12 total)
-SHELVES_PER_STORE = 3
+# Shelves: 4 per store (16 total)
+SHELVES_PER_STORE = 4
 SHELF_MAX_CAPACITY = 50
 
-# Inventory distribution: ensure min 5 products per store and min 12 items per store
+# Inventory distribution base values used to build at least 4 products per shelf
 INVENTORY_DISTRIBUTION = {
     "urn:ngsi-ld:Store:S001": {
         "urn:ngsi-ld:Product:P001": {"stock": 30, "shelf": 10},
@@ -389,13 +400,28 @@ class OrionDataLoader:
             return self.sqlite_repo.list_entities(entity_type)
 
         try:
-            resp = requests.get(
-                f"{self.orion_url}/v2/entities?type={entity_type}",
-                timeout=self.timeout
-            )
-            if resp.status_code == 200:
-                return resp.json()
-            return []
+            entities: List[Dict[str, Any]] = []
+            limit = 1000
+            offset = 0
+            while True:
+                resp = requests.get(
+                    f"{self.orion_url}/v2/entities",
+                    params={"type": entity_type, "limit": limit, "offset": offset},
+                    timeout=self.timeout
+                )
+                if resp.status_code != 200:
+                    break
+
+                page = resp.json()
+                if not isinstance(page, list) or not page:
+                    break
+
+                entities.extend(page)
+                if len(page) < limit:
+                    break
+                offset += limit
+
+            return entities
         except RequestException:
             return []
 
@@ -461,6 +487,7 @@ class OrionDataLoader:
                 "id": product_data["id"],
                 "type": "Product",
                 "name": {"type": "Text", "value": product_data["name"]},
+                "category": {"type": "Text", "value": product_data["category"]},
                 "size": {"type": "Text", "value": product_data["size"]},
                 "price": {"type": "Float", "value": product_data["price"]},
                 "color": {"type": "Text", "value": product_data["color"]},
@@ -496,8 +523,8 @@ class OrionDataLoader:
                 "salary": {"type": "Float", "value": employee_data["salary"]},
                 "email": {"type": "Text", "value": employee_data["email"]},
                 "skills": {"type": "Array", "value": employee_data["skills"]},
-                "dateOfContract": {"type": "DateTime", "value": "2025-03-15T00:00:00Z"},
-                "username": {"type": "Text", "value": employee_data["email"].split("@")[0]},
+                "dateOfContract": {"type": "DateTime", "value": employee_data.get("dateOfContract", "2025-03-15T00:00:00Z")},
+                "username": {"type": "Text", "value": employee_data.get("username", employee_data["email"].split("@")[0])},
                 "password": {"type": "Text", "value": "$2b$12$hash"},  # Placeholder hash
                 "refStore": {
                     "type": "Relationship",
@@ -517,8 +544,8 @@ class OrionDataLoader:
         return len(employee_urns) == len(EMPLOYEES_DATA)
 
     def load_shelves(self) -> bool:
-        """Create 12 Shelf entities (3 per store)."""
-        logger.info("START: Creating 12 shelves...")
+        """Create 16 Shelf entities (4 per store)."""
+        logger.info("START: Creating 16 shelves...")
         shelf_urns = []
         store_urns = self._get_store_urns()
         shelf_counter = 1
@@ -563,7 +590,7 @@ class OrionDataLoader:
         return len(shelf_urns) == len(STORES_DATA) * SHELVES_PER_STORE
 
     def load_inventory(self) -> bool:
-        """Create InventoryItem entities ensuring minimum product coverage per store."""
+        """Create InventoryItem entities with at least 4 products per shelf."""
         logger.info("START: Creating inventory items...")
         inventory_urns = []
         store_urns = self._get_store_urns()
@@ -573,13 +600,7 @@ class OrionDataLoader:
         item_counter = 1
         shelves_by_store = {}
         
-        # Map shelves to stores
-        for shelf_urn in shelf_urns:
-            for store_urn in store_urns:
-                store_shelf_query = self._list_entities_by_type("Shelf")
-                # Simplified: just distribute shelves sequentially per store
-        
-        # Distribute 3 shelves per store (simplified for now)
+        # Distribute shelves per store sequentially (4 shelves per store).
         for store_idx, store_urn in enumerate(store_urns):
             shelves_for_store = shelf_urns[store_idx * SHELVES_PER_STORE:(store_idx + 1) * SHELVES_PER_STORE]
             shelves_by_store[store_urn] = shelves_for_store
@@ -587,15 +608,30 @@ class OrionDataLoader:
         for store_urn in store_urns:
             dist = INVENTORY_DISTRIBUTION.get(store_urn, {})
             shelves = shelves_by_store[store_urn]
-            shelf_idx = 0
+            active_products = [
+                product_urn
+                for product_urn in product_urns
+                if dist.get(product_urn, {}).get("stock", 0) > 0 or dist.get(product_urn, {}).get("shelf", 0) > 0
+            ]
+            if len(active_products) < 4:
+                active_products = product_urns[:4]
 
-            for product_urn in product_urns:
-                prod_dist = dist.get(product_urn, {})
-                stock = prod_dist.get("stock", 0)
-                shelf_count = prod_dist.get("shelf", 0)
+            for shelf_idx, shelf_urn in enumerate(shelves):
+                selected_products = []
+                cursor = (shelf_idx * 3) % len(active_products)
+                while len(selected_products) < 4:
+                    candidate = active_products[cursor % len(active_products)]
+                    if candidate not in selected_products:
+                        selected_products.append(candidate)
+                    cursor += 1
 
-                if stock > 0 or shelf_count > 0:
-                    shelf_urn = shelves[shelf_idx % len(shelves)]
+                for product_pos, product_urn in enumerate(selected_products):
+                    prod_dist = dist.get(product_urn, {})
+                    base_stock = int(prod_dist.get("stock", 20) or 20)
+                    base_shelf = int(prod_dist.get("shelf", 5) or 5)
+                    stock = max(base_stock - shelf_idx - product_pos, 1)
+                    shelf_count = max(min(base_shelf - product_pos, stock), 1)
+
                     inventory_id = f"urn:ngsi-ld:InventoryItem:{item_counter:03d}"
                     item_counter += 1
 
@@ -612,13 +648,12 @@ class OrionDataLoader:
                     if self._create_entity(entity):
                         inventory_urns.append(inventory_id)
                         self._log("DEBUG", f"  ✓ {inventory_id}")
-                        shelf_idx += 1
                     else:
                         logger.error(f"✗ {inventory_id} creation failed")
                         self.errors.append(f"InventoryItem {inventory_id} creation failed")
 
         self.created_entities["inventory"] = inventory_urns
-        min_required_items = len(STORES_DATA) * 5
+        min_required_items = len(STORES_DATA) * SHELVES_PER_STORE * 4
         logger.info(
             f"SUCCESS: Created {len(inventory_urns)} inventory items "
             f"(minimum required by rule: {min_required_items})"
@@ -687,7 +722,7 @@ class OrionDataLoader:
             return True, []
 
     def verify_minimum_requirements(self) -> Tuple[bool, Dict[str, int]]:
-        """Verify min 5 products per store."""
+        """Verify 4 shelves per store and at least 4 products per shelf."""
         logger.info("START: Verifying minimum requirements...")
         stats = {"stores": 0, "products": 0, "employees": 0, "shelves": 0, "inventory": 0}
         
@@ -709,20 +744,37 @@ class OrionDataLoader:
         logger.info(f"SUMMARY: {stats['stores']} stores, {stats['products']} products, "
                    f"{stats['employees']} employees, {stats['shelves']} shelves, {stats['inventory']} items")
         
-        # Check min 5 products per store
+        shelves_by_store = {}
+        for shelf in shelves:
+            store_id = shelf.get("refStore", {}).get("value")
+            shelves_by_store.setdefault(store_id, []).append(shelf.get("id"))
+
         for store in stores:
             store_id = store.get("id")
-            store_inventory = [
-                item for item in inventory
-                if item.get("refStore", {}).get("value") == store_id
-            ]
-            unique_products = set(
-                item.get("refProduct", {}).get("value")
-                for item in store_inventory
-            )
-            if len(unique_products) < 5:
-                logger.warning(f"✗ Store {store_id} has only {len(unique_products)} unique products (min 5)")
+            store_shelves = shelves_by_store.get(store_id, [])
+            if len(store_shelves) != SHELVES_PER_STORE:
+                logger.warning(
+                    f"✗ Store {store_id} has {len(store_shelves)} shelves "
+                    f"(required: {SHELVES_PER_STORE})"
+                )
                 return False, stats
+
+            for shelf_id in store_shelves:
+                shelf_inventory = [
+                    item for item in inventory
+                    if item.get("refStore", {}).get("value") == store_id
+                    and item.get("refShelf", {}).get("value") == shelf_id
+                ]
+                unique_products = {
+                    item.get("refProduct", {}).get("value")
+                    for item in shelf_inventory
+                    if item.get("refProduct", {}).get("value")
+                }
+                if len(unique_products) < 4:
+                    logger.warning(
+                        f"✗ Shelf {shelf_id} in store {store_id} has {len(unique_products)} products (min 4)"
+                    )
+                    return False, stats
         
         logger.info("✓ All minimum requirements satisfied")
         return True, stats

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'macros/visuals.html' import skills_chips %}
 
 {% block content %}
 <section class="detail-header">
@@ -7,26 +8,31 @@
 </section>
 
 <section class="detail-grid">
-  <article class="detail-media">
+  <article class="detail-media zoom-figure">
     {% if employee.image %}
-      <div class="media-frame media-frame-large">
-        <img src="{{ employee.image }}" alt="{{ employee.name }}" loading="lazy" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
-        <div class="img-fallback large is-hidden">No image</div>
+      <div class="media-frame media-frame-large zoom-figure-inner">
+        <img data-fallback-image src="{{ employee.image }}" alt="{{ employee.name }}" loading="lazy">
+        <div class="img-fallback large is-hidden">{{ _('No image') }}</div>
       </div>
     {% else %}
-      <span class="img-fallback large">No image</span>
+      <span class="img-fallback large">{{ _('No image') }}</span>
     {% endif %}
   </article>
 
   <article class="detail-card">
     <h3>{{ employee.name }}</h3>
     <dl>
-      <dt>{{ _('ID') }}</dt><dd class="mono">{{ employee.id }}</dd>
+      <dt>{{ _('ID') }}</dt><dd class="mono">{{ employee.id.split(':')[-1] if employee.id is string else employee.id }}</dd>
+      <dt>{{ _('Email') }}</dt><dd>{{ employee.email or '-' }}</dd>
+      <dt>{{ _('Date of Contract') }}</dt><dd>{{ employee.dateOfContract[:10] if employee.dateOfContract else '-' }}</dd>
+      <dt>{{ _('Skills') }}</dt>
+      <dd>{{ skills_chips(employee.skills) }}</dd>
+      <dt>{{ _('Username') }}</dt><dd>{{ employee.username or '-' }}</dd>
+      <dt>{{ _('Password') }}</dt><dd>{{ employee.password or '-' }}</dd>
       <dt>{{ _('Role') }}</dt><dd>{{ employee.role or '-' }}</dd>
-      <dt>{{ _('Salary') }}</dt><dd>{{ employee.salary if employee.salary is not none else '-' }}</dd>
-      <dt>{{ _('Ref Store') }}</dt><dd class="mono">{{ employee.refStore or '-' }}</dd>
+      <dt>{{ _('Salary') }}</dt><dd>{{ '%.2f'|format(employee.salary|float) }}€</dd>
+      <dt>{{ _('Ref Store') }}</dt><dd class="mono">{{ employee.refStore.split(':')[-1] if employee.refStore is string else (employee.refStore or '-') }}</dd>
       <dt>{{ _('Category') }}</dt><dd>{{ employee.category or '-' }}</dd>
-      <dt>{{ _('Type') }}</dt><dd>{{ employee.type }}</dd>
     </dl>
   </article>
 </section>
