@@ -21,6 +21,8 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-04-06: Correccion operativa final: las URLs de `Store.url` se actualizan a enlaces funcionales (OpenStreetMap por coordenadas) para que la accion desde detalle de tienda navegue a un destino valido.
+- 2026-04-06: Issue #23 en progreso: la vista detalle de Product pasa a mostrar InventoryItems agrupados por Store con total de `stockCount` por cabecera, filas por Shelf con `shelfCount`, y alta guiada de InventoryItem por Store usando solo Shelfs disponibles que no contienen ya ese Product.
 - 2026-04-01: Hotfix Linux Docker networking: se agrega `extra_hosts: host.docker.internal:host-gateway` en Orion para asegurar que callbacks NGSI y providers externos de Store sean alcanzables desde el contenedor, restaurando visibilidad de `temperature`, `relativeHumidity` y notificaciones realtime.
 - 2026-04-01: Issue #20 completado: los precios de productos, ofertas y el salario de empleados se muestran de forma consistente con el simbolo € al final en todas las vistas principales y en actualizaciones realtime.
 - 2026-04-01: Issue #19 completado: descripcion de Stores, categorias de productos y nombres de productos se traducen dinamicamente segun idioma seleccionado sin alterar los datos persistidos.
@@ -39,6 +41,8 @@
 - 2026-03-29: Mejoras operativas: buscador funcional de productos, selector de tema con modo sistema, CRUD directo en listados, categoria de producto y ampliacion de dataset de empleados.
 
 ### EN
+- 2026-04-06: Final operational fix: `Store.url` values were updated to functional links (OpenStreetMap by coordinates) so the navigation action in store detail opens a valid destination.
+- 2026-04-06: Issue #23 in progress: Product detail now groups InventoryItems by Store with a `stockCount` total in each header, shelf-level rows with `shelfCount`, and guided InventoryItem creation per Store using only available Shelves that do not already contain that Product.
 - 2026-04-01: Linux Docker networking hotfix: `extra_hosts: host.docker.internal:host-gateway` was added to Orion so NGSI callbacks and Store external providers are reachable from the container, restoring visibility of `temperature`, `relativeHumidity`, and realtime notifications.
 - 2026-04-01: Issue #20 completed: product prices, featured offers, and employee salaries are displayed consistently with the € symbol at the end across all main views and realtime updates.
 - 2026-04-01: Issue #19 completed: store descriptions, product categories, and product names are translated dynamically according to the selected language without changing persisted data.
@@ -179,7 +183,7 @@ Out of scope:
 - FR-028: La UI debe mostrar importes monetarios con el simbolo € al final en listas, detalles, dashboard y actualizaciones realtime.
 - FR-022: Vista detalle product con InventoryItems agrupados por store y shelf.
 - FR-023: CRUD de inventory items desde detalle product.
-- FR-024: Select dinamico de shelves segun store seleccionada.
+- FR-024: En detalle de Product, el alta de InventoryItem por Store debe ofrecer un select dinamico con Shelfs de esa Store que no contengan ya el Product actual.
 
 #### 6.4 Employees
 - FR-030: Listado empleados con imagen, nombre, category, skills e iconos asociados.
@@ -244,7 +248,7 @@ Out of scope:
 - FR-028: The UI must display monetary amounts with the € symbol at the end in lists, details, dashboard, and realtime updates.
 - FR-022: Product detail with InventoryItems grouped by store and shelf.
 - FR-023: Inventory item CRUD from product detail.
-- FR-024: Dynamic shelf select filtered by selected store.
+- FR-024: In Product detail, InventoryItem creation per Store must provide a dynamic shelf select filtered to Shelves in that Store that do not already contain the current Product.
 
 #### 6.4 Employees
 - FR-030: Employee list with image, name, category, skills, mapped icons.

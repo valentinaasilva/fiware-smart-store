@@ -1,3 +1,6 @@
+from collections import defaultdict
+from uuid import uuid4
+
 from flask import Blueprint, current_app, g, jsonify, redirect, render_template, request, url_for
 
 from models.i18n import DEFAULT_LOCALE, translate
@@ -25,6 +28,19 @@ def _as_int(value, default=0):
         return int(parsed)
     except (TypeError, ValueError):
         return default
+
+
+def _short_entity_id(entity_id: str | None) -> str:
+    if not isinstance(entity_id, str):
+        return ""
+    return entity_id.split(":")[-1]
+
+
+def _build_inventory_item_id(product_id: str, store_id: str, shelf_id: str) -> str:
+    return (
+        "urn:ngsi-ld:InventoryItem:"
+        f"{_short_entity_id(store_id)}-{_short_entity_id(shelf_id)}-{_short_entity_id(product_id)}-{uuid4().hex[:6]}"
+    )
 
 
 def _filter_products(products: list[dict], query: str, locale: str) -> list[dict]:
@@ -137,9 +153,13 @@ def _build_product_detail_context(product_id: str) -> dict:
 
     denorm_inventory = denormalize_ngsi_entities(inventory_items)
     available_stores = {}
+    used_shelves_by_store: dict[str, set[str]] = defaultdict(set)
+    grouped_by_store: dict[str, dict] = {}
     for item in denorm_inventory:
         store_id = item.get("refStore")
+        shelf_id = item.get("refShelf")
         store = store_by_id.get(store_id)
+        shelf = shelf_by_id.get(shelf_id)
         if not store:
             continue
         denorm_store = maybe_denormalize_for_view(store)
@@ -152,6 +172,27 @@ def _build_product_detail_context(product_id: str) -> dict:
             }
         available_stores[store_id]["stockCount"] += _as_int(item.get("stockCount"), 0)
         available_stores[store_id]["shelfCount"] += _as_int(item.get("shelfCount"), 0)
+
+        store_group = grouped_by_store.setdefault(
+            store_id,
+            {
+                "id": store_id,
+                "name": denorm_store.get("name", store_id),
+                "stockCountTotal": 0,
+                "shelves": [],
+                "availableShelves": [],
+            },
+        )
+        store_group["stockCountTotal"] += _as_int(item.get("stockCount"), 0)
+        store_group["shelves"].append(
+            {
+                **item,
+                "storeName": denorm_store.get("name", store_id),
+                "shelfName": maybe_denormalize_for_view(shelf).get("name") if shelf else shelf_id,
+            }
+        )
+        if isinstance(shelf_id, str):
+            used_shelves_by_store[store_id].add(shelf_id)
 
     inventory_rows = []
     for item in denorm_inventory:
@@ -168,11 +209,32 @@ def _build_product_detail_context(product_id: str) -> dict:
     denorm_stores = [maybe_denormalize_for_view(store) for store in stores]
     denorm_shelves = [maybe_denormalize_for_view(shelf) for shelf in shelves]
 
+    for store_id, group in grouped_by_store.items():
+        for shelf in denorm_shelves:
+            shelf_id = shelf.get("id")
+            if shelf.get("refStore") != store_id:
+                continue
+            if shelf_id in used_shelves_by_store.get(store_id, set()):
+                continue
+            group["availableShelves"].append(
+                {
+                    "id": shelf_id,
+                    "shortId": _short_entity_id(shelf_id),
+                    "name": shelf.get("name") or shelf_id,
+                }
+            )
+
+        group["availableShelves"] = sorted(group["availableShelves"], key=lambda row: row.get("name", ""))
+        group["shelves"] = sorted(group["shelves"], key=lambda row: row.get("shelfName", ""))
+
+    product_inventory_groups = sorted(grouped_by_store.values(), key=lambda row: row.get("name", ""))
+
     return {
         "inventory_items": sorted(inventory_rows, key=lambda row: row.get("id", "")),
         "available_stores": sorted(available_stores.values(), key=lambda row: row.get("name", "")),
         "all_stores": sorted(denorm_stores, key=lambda row: row.get("name", "")),
         "all_shelves": sorted(denorm_shelves, key=lambda row: row.get("name", "")),
+        "product_inventory_groups": product_inventory_groups,
     }
 
 
@@ -340,6 +402,11 @@ def create_product_inventory(product_id: str):
 
     incoming = extract_payload(request)
     incoming["refProduct"] = {"type": "Relationship", "value": product_id}
+    if not incoming.get("id"):
+        ref_store = _extract_attr_value(incoming.get("refStore"))
+        ref_shelf = _extract_attr_value(incoming.get("refShelf"))
+        if isinstance(ref_store, str) and isinstance(ref_shelf, str):
+            incoming["id"] = _build_inventory_item_id(product_id, ref_store, ref_shelf)
     try:
         payload = normalize_ngsi_payload(incoming, "InventoryItem")
         _ensure_product_inventory_business_rules(selector, payload, product_id)

@@ -75,7 +75,7 @@ STORES_DATA = [
             "addressCountry": "ES"
         },
         "telephone": "+34 985 000 001",
-        "url": "https://store.xantadis.es/oviedo",
+        "url": "https://www.openstreetmap.org/?mlat=43.362&mlon=-5.844#map=16/43.362/-5.844",
         "image": "https://images.unsplash.com/photo-1542838132-92c53300491e",
         "description": "Sucursal principal en el centro de Oviedo"
     },
@@ -94,7 +94,7 @@ STORES_DATA = [
             "addressCountry": "ES"
         },
         "telephone": "+34 954 000 001",
-        "url": "https://store.xantadis.es/sevilla",
+        "url": "https://www.openstreetmap.org/?mlat=37.389&mlon=-5.996#map=16/37.389/-5.996",
         "image": "https://images.unsplash.com/photo-1534723452862-4c874018d66d",
         "description": "Sucursal premium en el centro de Sevilla"
     },
@@ -113,7 +113,7 @@ STORES_DATA = [
             "addressCountry": "ES"
         },
         "telephone": "+34 963 000 001",
-        "url": "https://store.xantadis.es/valencia",
+        "url": "https://www.openstreetmap.org/?mlat=39.469&mlon=-0.376#map=16/39.469/-0.376",
         "image": "https://images.unsplash.com/photo-1516594798947-e65505dbb29d",
         "description": "Sucursal iconica en el centro de Valencia"
     },
@@ -132,7 +132,7 @@ STORES_DATA = [
             "addressCountry": "ES"
         },
         "telephone": "+34 986 000 001",
-        "url": "https://store.xantadis.es/vigo",
+        "url": "https://www.openstreetmap.org/?mlat=42.240&mlon=-8.723#map=16/42.240/-8.723",
         "image": "https://images.unsplash.com/photo-1578916171728-46686eac8d58",
         "description": "Sucursal central en Vigo"
     }

@@ -89,22 +89,6 @@
     </div>
   </article>
 
-  <article class="table-shell tweets-shell">
-    <h3>{{ _('Tweets') }}</h3>
-    <ul class="tweet-list">
-      {% set tweets = store_data.get('tweets') %}
-      {% if tweets is sequence and tweets is not string and tweets|length > 0 %}
-        {% for tweet in tweets %}
-        <li><span class="tweet-icon" aria-hidden="true">𝕏</span><span>{{ tweet }}</span></li>
-        {% endfor %}
-      {% elif tweets %}
-        <li><span class="tweet-icon" aria-hidden="true">𝕏</span><span>{{ tweets }}</span></li>
-      {% else %}
-        <li>{{ _('No records') }}</li>
-      {% endif %}
-    </ul>
-  </article>
-
   <article class="table-shell notifications-shell">
     <h3>{{ _('Notifications') }}</h3>
     <ul id="store-notification-list" class="notification-list" data-store-notifications data-store-short="{{ simplified_id }}">
@@ -310,5 +294,21 @@
     <input type="number" name="maxCapacity" min="1" placeholder="{{ _('Capacity example') }}" required>
     <button type="submit">{{ _('Add Shelf') }}</button>
   </form>
+</section>
+
+<section class="table-shell tweets-shell">
+  <h3>{{ _('Tweets') }}</h3>
+  <ul class="tweet-list">
+    {% set tweets = store_data.get('tweets') %}
+    {% if tweets is sequence and tweets is not string and tweets|length > 0 %}
+      {% for tweet in tweets %}
+      <li><span class="tweet-icon" aria-hidden="true">𝕏</span><span>{{ tweet }}</span></li>
+      {% endfor %}
+    {% elif tweets %}
+      <li><span class="tweet-icon" aria-hidden="true">𝕏</span><span>{{ tweets }}</span></li>
+    {% else %}
+      <li>{{ _('No records') }}</li>
+    {% endif %}
+  </ul>
 </section>
 {% endblock %}

@@ -17,6 +17,8 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-04-06: Correccion final de datos de navegacion: `Store.url` deja de usar dominios de ejemplo no resolubles y pasa a enlaces funcionales de OpenStreetMap para mantener coherencia UX en el detalle de tienda.
+- 2026-04-06: Issue #23 en progreso: `routes/products.py` agrega contexto de inventario agrupado por Store (totales y filas por Shelf) y habilita alta de InventoryItem sin id explicito mediante generacion de URN en backend; `static/js/product-inventory.js` controla apertura de formulario por Store y carga dinamica de Shelfs disponibles.
 - 2026-04-01: Hotfix de conectividad Linux: Orion en Docker incorpora `extra_hosts: host.docker.internal:host-gateway` para enrutar callbacks de subscriptions y consultas a providers de Store hacia Flask en host.
 - 2026-04-01: Issue #20 completado: el formato monetario visible se estandariza con sufijo € en precios de productos, ofertas del dashboard y salarios de empleados; SocketIO reutiliza el mismo sufijo via `data-price-suffix` para mantener consistencia en actualizaciones realtime.
 - 2026-04-01: Issue #19 completado: la capa de presentacion resuelve dinamicamente Store.description, Product.category y Product.name segun el idioma activo, usando el sistema i18n existente y sin mutar los datos NGSIv2 almacenados.
@@ -35,6 +37,8 @@
 - 2026-03-29: Se incorporan busqueda de productos por query, selector de tema dark/light/system y formularios CRUD en listados para Store/Product/Employee.
 
 ### EN
+- 2026-04-06: Final navigation-data fix: `Store.url` no longer uses unresolved placeholder domains and now points to functional OpenStreetMap links to keep a coherent UX in store detail.
+- 2026-04-06: Issue #23 in progress: `routes/products.py` now builds Store-grouped inventory context (totals and shelf-level rows) and supports InventoryItem creation without an explicit id by generating the URN server-side; `static/js/product-inventory.js` drives per-Store form toggling and dynamic loading of available Shelves.
 - 2026-04-01: Linux connectivity hotfix: Orion in Docker now includes `extra_hosts: host.docker.internal:host-gateway` to route subscription callbacks and Store provider queries back to host Flask.
 - 2026-04-01: Issue #20 completed: visible monetary formatting is standardized with a trailing € suffix for product prices, dashboard offers, and employee salaries; SocketIO reuses the same suffix via `data-price-suffix` to keep realtime updates consistent.
 - 2026-04-01: Issue #19 completed: the presentation layer now dynamically resolves Store.description, Product.category, and Product.name according to the active language using the existing i18n system without mutating persisted NGSIv2 data.
@@ -102,6 +106,7 @@ Capas y componentes:
 - Reglas de calidad front-end de Issue #14: sin handlers inline, prioridad CSS para comportamiento visual y sin generacion HTML dinamica desde JavaScript.
 - Fallback de imagenes centralizado en `static/js/image-fallback.js` usando atributo `data-fallback-image`.
 - Actualizaciones dinamicas limitadas a nodos existentes mediante `textContent`, atributos y `classList`.
+- Interaccion en detalle de Product para inventario agrupado por Store y alta en Shelf disponible gestionada por `static/js/product-inventory.js`.
 - i18n JS-first: textos de estado/error y ayudas de interaccion en Leaflet/Three.js se inyectan como `data-*` traducidos desde templates y se consumen en `static/js/app.js`.
 
 2. Application layer
@@ -139,6 +144,7 @@ Layers and components:
 - Front-end quality rules from Issue #14: no inline event handlers, CSS-first visual behavior, and no dynamic HTML generation from JavaScript.
 - Image fallback handling delegated to `static/js/image-fallback.js` using `data-fallback-image` attributes.
 - Dynamic UI updates constrained to existing nodes via `textContent`, attributes, and `classList`.
+- Product-detail inventory grouping by Store and available-Shelf creation flow handled by `static/js/product-inventory.js`.
 - JS i18n pattern: status/error/help copy for Leaflet/Three.js is injected as translated `data-*` attributes from templates and consumed in `static/js/app.js`.
 
 2. Application layer

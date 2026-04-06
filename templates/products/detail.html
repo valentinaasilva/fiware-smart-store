@@ -78,20 +78,51 @@
   <table>
     <thead>
       <tr>
-        <th>{{ _('ID') }}</th>
-        <th>{{ _('Ref Store') }}</th>
-        <th>{{ _('Shelf') }}</th>
+        <th>{{ _('Store / Shelf') }}</th>
         <th>{{ _('Stock Count') }}</th>
         <th>{{ _('Shelf Count') }}</th>
         <th>{{ _('Actions') }}</th>
       </tr>
     </thead>
     <tbody>
-      {% for item in inventory_items %}
+      {% for store_group in product_inventory_groups %}
+      <tr class="inventory-store-group-row">
+        <th colspan="4" scope="rowgroup">
+          <div class="inventory-store-group-header">
+            <div>
+              <strong>{{ _(store_group.name) }}</strong>
+              <span class="mono">{{ store_group.id.split(':')[-1] if store_group.id is string else store_group.id }}</span>
+              <span class="muted-pill">{{ _('Total stock') }}: {{ store_group.stockCountTotal }}</span>
+            </div>
+            <button type="button" class="button-link secondary js-toggle-product-store-form" data-target-form="store-add-form-{{ loop.index0 }}">
+              {{ _('Add InventoryItem in another Shelf') }}
+            </button>
+          </div>
+        </th>
+      </tr>
+      <tr id="store-add-form-{{ loop.index0 }}" class="is-hidden js-product-store-form-row" data-available-shelves='{{ store_group.availableShelves|tojson|safe }}'>
+        <td colspan="4">
+          <form method="post" action="{{ url_for('products.create_product_inventory', product_id=product.id) }}" class="inline-form js-product-store-form">
+            <input type="hidden" name="refStore" value="{{ store_group.id }}">
+            <input type="hidden" name="stockCount" value="0">
+            <input type="hidden" name="shelfCount" value="0">
+            <label>
+              {{ _('Shelf') }}
+              <select name="refShelf" required class="js-shelf-target-select" data-placeholder="{{ _('Select shelf') }}">
+                <option value="">{{ _('Select shelf') }}</option>
+              </select>
+            </label>
+            <button type="submit">{{ _('Create InventoryItem') }}</button>
+            <p class="page-subtitle js-no-shelf-msg is-hidden">{{ _('No available shelves for this product in the selected store.') }}</p>
+          </form>
+        </td>
+      </tr>
+      {% for item in store_group.shelves %}
       <tr>
-        <td class="mono">{{ item.id.split(':')[-1] if item.id is string else item.id }}</td>
-        <td>{{ _(item.storeName) }}</td>
-        <td>{{ _(item.shelfName) }}</td>
+        <td>
+          <div><strong>{{ _(item.shelfName) }}</strong></div>
+          <div class="mono">{{ item.id.split(':')[-1] if item.id is string else item.id }}</div>
+        </td>
         <td>{{ item.stockCount }}</td>
         <td>{{ item.shelfCount }}</td>
         <td>
@@ -115,30 +146,11 @@
           </form>
         </td>
       </tr>
+      {% endfor %}
       {% else %}
-      <tr><td colspan="6">{{ _('No records') }}</td></tr>
+      <tr><td colspan="4">{{ _('No records') }}</td></tr>
       {% endfor %}
     </tbody>
   </table>
-
-  <h4>{{ _('Add Inventory Item') }}</h4>
-  <form method="post" action="{{ url_for('products.create_product_inventory', product_id=product.id) }}" class="inline-form">
-    <input type="text" name="id" placeholder="{{ _('Inventory item ID example') }}" required>
-    <select name="refStore" required>
-      <option value="">{{ _('Ref Store') }}</option>
-      {% for store in all_stores %}
-      <option value="{{ store.id }}">{{ _(store.name) }}</option>
-      {% endfor %}
-    </select>
-    <select name="refShelf" required>
-      <option value="">{{ _('Shelf') }}</option>
-      {% for shelf in all_shelves %}
-      <option value="{{ shelf.id }}">{{ _(shelf.name) }}</option>
-      {% endfor %}
-    </select>
-    <input type="number" name="stockCount" min="0" placeholder="{{ _('Stock example') }}" required>
-    <input type="number" name="shelfCount" min="0" placeholder="{{ _('Shelf example') }}" required>
-    <button type="submit">{{ _('Add Inventory Item') }}</button>
-  </form>
 </section>
 {% endblock %}

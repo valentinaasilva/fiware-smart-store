@@ -17,6 +17,8 @@
 ## 1.1 Change log
 
 ### ES
+- 2026-04-06: Ajuste de calidad de datos sin cambios de esquema: se corrigen valores de `Store.url` a enlaces navegables (OpenStreetMap por coordenadas) para evitar URLs de placeholder sin resolucion.
+- 2026-04-06: Issue #23: sin cambios de esquema NGSIv2. Se documenta operativa de vista Product para agrupar InventoryItem por Store/Shelf y alta de nuevos InventoryItem por Shelf disponible con generacion automatica de `InventoryItem.id` (URN) en backend cuando no se informa desde formulario.
 - 2026-04-01: Hotfix operativo Linux sin cambios de esquema: se asegura resolucion de `host.docker.internal` en Orion Docker para recuperar flujo de atributos externos de Store (`temperature`, `relativeHumidity`, `tweets`) y eventos NGSIv2 hacia webhooks.
 - 2026-04-01: Issue #20: sin cambios estructurales NGSIv2. El formato con sufijo € se aplica solo en la presentacion para precios de Product, ofertas del dashboard, precios derivados de InventoryItem y salarios de Employee.
 - 2026-04-01: Issue #19: sin cambios estructurales NGSIv2. La UI traduce dinamicamente `Store.description`, `Product.category` y `Product.name` segun idioma, usando mapeos de presentacion y sin modificar datos persistidos.
@@ -35,6 +37,8 @@
 - 2026-03-29: Se añade atributo `Product.category` y se amplian datos semilla de Employee a 12 registros con `dateOfContract` y `username` consistentes.
 
 ### EN
+- 2026-04-06: Data quality adjustment with no schema changes: `Store.url` values were corrected to navigable links (OpenStreetMap by coordinates) to avoid unresolved placeholder URLs.
+- 2026-04-06: Issue #23: no NGSIv2 schema changes. Product view behavior is documented for Store/Shelf grouped InventoryItem rendering and new InventoryItem creation on available Shelves with backend auto-generated `InventoryItem.id` URN when form input does not provide it.
 - 2026-04-01: Linux operational hotfix with no schema changes: `host.docker.internal` resolution is ensured in Orion Docker to restore Store external attributes flow (`temperature`, `relativeHumidity`, `tweets`) and NGSIv2 events to webhooks.
 - 2026-04-01: Issue #20: no NGSIv2 structural changes. The trailing € format is presentation-only for Product prices, dashboard offers, InventoryItem-derived prices, and Employee salaries.
 - 2026-04-01: Issue #19: no NGSIv2 structural changes. The UI dynamically translates `Store.description`, `Product.category`, and `Product.name` by language using presentation-layer mappings only, without modifying persisted data.
